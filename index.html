@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <!-- Lab Data Formatter Website -->
 <!-- Last Modified: 2026-03-20 01:00 (UTC+8) -->
-<!-- Version: v1.3.2 -->
+<!-- Version: v1.4.1 -->
 <html lang="zh-TW">
 <head>
 <meta charset="UTF-8">
@@ -437,24 +437,34 @@ td {
   <h2 class="section-title">更新紀錄</h2>
   <div class="changelog-item">
     <div class="cl-header">
-      <span class="cl-ver">v1.3.2</span>
+      <span class="cl-ver">v1.4.1</span>
       <span class="cl-date">2026-03-20</span>
       <span class="cl-tag">Latest</span>
     </div>
     <ul class="cl-list">
+      <li>所有正則表達式預編譯（RegexOptions.Compiled），降低解析時 CPU 運算負擔</li>
+      <li>架構重構：剪貼簿監控改為事件驅動（AddClipboardFormatListener），CPU 佔用降為 0</li>
+      <li>剪貼簿存取加入 Retry 機制（3 次重試），防止防毒軟體衝突導致崩潰</li>
+      <li>按鍵模擬改用 SendInput 取代過時的 keybd_event，防止修飾鍵衝突</li>
+      <li>Alt+1 擷取加入視窗焦點檢查，僅在 ORD/HIS 相關視窗才觸發，避免誤操作</li>
+      <li>按鍵模擬移至背景執行緒（ThreadPool），不再阻塞 UI</li>
+      <li>程式關閉時完整釋放所有 GDI 資源（NotifyIcon、Timer、Icon），無幽靈圖示</li>
+    </ul>
+  </div>
+  <div class="changelog-item">
+    <div class="cl-header">
+      <span class="cl-ver">v1.3.0</span>
+      <span class="cl-date">2026-03-20</span>
+    </div>
+    <ul class="cl-list">
       <li>LDL 顯示改為 L，HDL 改為 H</li>
-      <li>ACR 顯示改為 ACR，PCR 改為 PCR</li>
       <li>新增 Iron/TIBC/Ferritin 分組（取整數）</li>
       <li>PCR 支援 P/C 格式匹配</li>
-      <li>合併時間窗口從 10 秒延長至 15 秒</li>
-      <li>超過 80 字元自動換行（逗號斷點，續行縮排 6 格）</li>
-      <li>設定視窗新增「輸出項目勾選」區塊，偏好存入 JSON</li>
-      <li>新增 HCO3 項目（VBG 報告，取整數，排在 Na/K 後面）</li>
-      <li>勾選區塊新增「全選/全不選」切換按鈕</li>
-      <li>擷取鍵改為 Alt+1（預設），貼上鍵改為 Alt+2</li>
-      <li>擷取鍵和貼上鍵皆可自訂 Ctrl 或 Alt + 任意鍵</li>
-      <li>啟動畫面改為「病歷小幫手上線」</li>
-      <li>啟動時顯示「病歷小幫手上線」動畫，漸入後縮小消失</li>
+      <li>合併時間窗口延長至 15 秒</li>
+      <li>超過 80 字元自動換行</li>
+      <li>新增 HCO3 項目（VBG 報告，取整數）</li>
+      <li>擷取鍵 Alt+1，貼上鍵 Alt+2（可自訂）</li>
+      <li>設定視窗新增輸出項目勾選區塊</li>
     </ul>
   </div>
   <div class="changelog-item">
@@ -519,7 +529,7 @@ td {
 <script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script>
 var readmeText = [
 "================================================================",
-"  Lab Data Formatter v1.3.2 使用說明",
+"  Lab Data Formatter v1.4.1 使用說明",
 "  作者：吳岳霖醫師  DAL93@tpech.gov.tw",
 "================================================================",
 "",
@@ -632,7 +642,7 @@ function copyReadme() {
       }
     }
   }).catch(function(){
-    verEl.textContent = "v1.3.2";
+    verEl.textContent = "v1.4.1";
     dateEl.textContent = "2026-03-20";
     dlExe.href = fallbackZip;
     dlReadme.href = "https://raw.githubusercontent.com/"+repo+"/main/readme.txt";
