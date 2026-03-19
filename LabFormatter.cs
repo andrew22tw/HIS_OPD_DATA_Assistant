@@ -1,8 +1,8 @@
-// Lab Data Formatter v1.3.2
+// Lab Data Formatter v1.4.1
 // Author: \u5433\u5cb3\u9716\u91ab\u5e2b (DAL93@tpech.gov.tw)
 // Compile: build.bat (auto-finds csc.exe)
-// Hotkeys: Ctrl+0=Settings, Ctrl+1~4=Custom slots
-// Workflow: Ctrl+C report -> auto convert -> Ctrl+3 paste
+// Hotkeys: Alt+1=Capture, Alt+2=Paste, Ctrl+0=Settings, Ctrl+1~4=Custom slots
+// Architecture: Event-driven clipboard (WM_CLIPBOARDUPDATE), SendInput, window-aware capture
 
 using System;
 using System.Collections.Generic;
@@ -73,7 +73,14 @@ static class Json {
 
 // ══════════ Lab Parsing ══════════
 static class Lab {
-    public class Item { public string Key,Pattern,Disp; public bool On; }
+    public class Item {
+        public string Key,Pattern,Disp; public bool On;
+        public Regex Rx; // Precompiled regex
+    }
+    // Precompiled value extraction patterns
+    static readonly Regex RxFlag = new Regex(@"(?:^|\s)[HL]{1,2}\s*([\d]+\.?\d*)", RegexOptions.Compiled);
+    static readonly Regex RxVal = new Regex(@"\s{2,}([\d]+\.?\d*)", RegexOptions.Compiled);
+
     public static List<Item> Items = new List<Item> {
         // ── Order: AC,HbA1c,BUN/Cr,Na/K,HCO3,ALT/AST,Alb,TC/TG/L/H,UA,Ca/IP,Iron/TIBC/Ferritin,Hb,ACR,PCR ──
         new Item{Key="GluAC",Pattern=@"\bGlu",           Disp="AC",   On=true},
@@ -106,25 +113,26 @@ static class Lab {
         new Item{Key="UAC",  Pattern=@"\bUACR\b|\bACR\b|\bA/C\b",Disp="ACR",On=true},
         new Item{Key="UPC",  Pattern=@"\bUPCR\b|\bPCR\b|\bP/C\b",Disp="PCR",On=true},
     };
+    // Precompile all item regexes at startup
+    static Lab() { foreach(var it in Items) it.Rx=new Regex(it.Pattern, RegexOptions.Compiled); }
     static string[][] Groups = {
         new[]{"BUN","Cr"}, new[]{"Na","K"}, new[]{"ALT","AST"},
         new[]{"Chol","TG","LDL","HDL"}, new[]{"Ca","P"},
         new[]{"Iron","TIBC","Ferritin"}
     };
 
-    public static string ExtractVal(string line, string pattern) {
-        var m = Regex.Match(line, pattern);
+    public static string ExtractVal(string line, Regex rx) {
+        var m = rx.Match(line);
         if (!m.Success) return null;
         var rest = line.Substring(m.Index + m.Length);
-        // Match H/HH/L/LL flag with or without space before number
-        var v = Regex.Match(rest, @"(?:^|\s)[HL]{1,2}\s*([\d]+\.?\d*)");
+        var v = RxFlag.Match(rest);
         if (v.Success) return v.Groups[1].Value;
-        // Fallback: 2+ spaces then number (normal values without flag)
-        v = Regex.Match(rest, @"\s{2,}([\d]+\.?\d*)");
+        v = RxVal.Match(rest);
         return v.Success ? v.Groups[1].Value : null;
     }
+    static readonly Regex RxDate = new Regex("\u63a1\u6aa2\u6642\u9593[\uff1a:]?\\s*(\\d{2,3})/(\\d{2})/(\\d{2})", RegexOptions.Compiled);
     public static string ExtractDate(string text) {
-        var m = Regex.Match(text, "\u63a1\u6aa2\u6642\u9593[\uff1a:]?\\s*(\\d{2,3})/(\\d{2})/(\\d{2})");
+        var m = RxDate.Match(text);
         return m.Success ? m.Groups[1].Value + m.Groups[2].Value : "";
     }
     public static bool IsLabData(string text) {
@@ -152,7 +160,7 @@ static class Lab {
                 bool isUrineItem = urineKeys.Contains(it.Key);
                 if (isUrineItem && !inUrine) continue;
                 if (!isUrineItem && inUrine) continue;
-                var v = ExtractVal(line, it.Pattern);
+                var v = ExtractVal(line, it.Rx);
                 if (v != null) vals[it.Key] = v;
             }
         }
@@ -382,16 +390,45 @@ static class NativeMethods {
 }
 
 // ══════════ Main App ══════════
+// SendInput structures (replaces deprecated keybd_event)
+[StructLayout(LayoutKind.Sequential)]
+struct KEYBDINPUT {
+    public ushort wVk; public ushort wScan; public uint dwFlags;
+    public uint time; public IntPtr dwExtraInfo;
+}
+[StructLayout(LayoutKind.Sequential)]
+struct MOUSEINPUT {
+    public int dx,dy; public uint mouseData,dwFlags,time; public IntPtr dwExtraInfo;
+}
+[StructLayout(LayoutKind.Explicit)]
+struct INPUTUNION {
+    [FieldOffset(0)] public MOUSEINPUT mi;
+    [FieldOffset(0)] public KEYBDINPUT ki;
+}
+[StructLayout(LayoutKind.Sequential)]
+struct INPUT {
+    public uint type; public INPUTUNION u;
+}
+
 class App : Form {
-    const string VER="v1.3.2";
+    const string VER="v1.4.1";
+    // ── Win32 APIs ──
     [DllImport("user32")] static extern bool RegisterHotKey(IntPtr h,int id,uint mod,uint vk);
     [DllImport("user32")] static extern bool UnregisterHotKey(IntPtr h,int id);
-    [DllImport("user32")] static extern void keybd_event(byte vk,byte scan,uint flags,UIntPtr extra);
     [DllImport("user32")] static extern bool DestroyIcon(IntPtr handle);
+    [DllImport("user32")] static extern uint SendInput(uint n, INPUT[] inputs, int size);
+    // Event-driven clipboard (replaces Timer polling)
+    [DllImport("user32")] static extern bool AddClipboardFormatListener(IntPtr hwnd);
+    [DllImport("user32")] static extern bool RemoveClipboardFormatListener(IntPtr hwnd);
+    const int WM_CLIPBOARDUPDATE = 0x031D;
+    // Window-aware capture
+    [DllImport("user32")] static extern IntPtr GetForegroundWindow();
+    [DllImport("user32",CharSet=CharSet.Auto)] static extern int GetWindowText(IntPtr h, System.Text.StringBuilder sb, int max);
+    // Capture window title keywords (configurable in JSON)
+    List<string> captureWindowKeywords = new List<string>{"ORD","\u6aa2\u9a57","\u5831\u544a","HIS","EMR"};
 
     NotifyIcon tray; Config cfg = new Config();
     string labResult; string lastClip; DateTime ignoreUntil;
-    System.Windows.Forms.Timer clipTimer;
     const uint MOD_CTRL=2; const uint MOD_ALT=1; const int WM_HOTKEY=0x312;
     // Hotkey IDs: 0=settings, 1~4=output slots, 5=capture
     static readonly Dictionary<int,uint> HK = new Dictionary<int,uint>{
@@ -399,9 +436,9 @@ class App : Form {
     const int HKID_CAPTURE=5;
     const int HKID_PASTE=6;
 
-    // ── Multi-report merge buffer (10s window) ──
-    List<string> rawBuffer = new List<string>();  // stores raw clipboard text
-    System.Windows.Forms.Timer mergeTimer;
+    // ── Multi-report merge buffer ──
+    List<string> rawBuffer = new List<string>();
+    System.Windows.Forms.Timer mergeTimer = new System.Windows.Forms.Timer{Interval=15000};
 
     Icon MakeIcon(Color c) {
         var bmp=new Bitmap(32,32); using(var g=Graphics.FromImage(bmp)){
@@ -463,22 +500,41 @@ class App : Form {
         RegisterCaptureHotkey();
         RegisterPasteHotkey();
 
-        lastClip=TryGetClip(); ignoreUntil=DateTime.MinValue;
-        clipTimer=new System.Windows.Forms.Timer{Interval=400};
-        clipTimer.Tick+=(s,e)=>PollClip();
-        clipTimer.Start();
+        lastClip=SafeGetClip(); ignoreUntil=DateTime.MinValue;
+        // Wire up timer events (initialized at field level, handlers set once)
+        mergeTimer.Tick+=(s,e)=>{mergeTimer.Stop(); FinalizeMerge();};
+        previewTimer.Tick+=(s,e)=>{previewTimer.Stop();if(previewForm!=null&&!previewForm.IsDisposed)previewForm.Hide();};
+        yellowTimer.Tick+=(s,e)=>{yellowTimer.Stop();
+            SetTray(Color.Gold,labResult!=null?
+                cfg.PasteMod+"+"+cfg.PasteKey+" \u8cbc\u4e0a | "+labResult.Substring(0,Math.Min(40,labResult.Length)):
+                cfg.CaptureMod+"+"+cfg.CaptureKey+" \u64f7\u53d6");};
+        // Event-driven clipboard monitoring (no more Timer polling)
+        AddClipboardFormatListener(Handle);
     }
 
-    string TryGetClip(){try{return Clipboard.ContainsText()?Clipboard.GetText():"";}catch{return"";}}
+    // ── Safe clipboard with retry (prevents ExternalException crashes) ──
+    string SafeGetClip(){
+        for(int retry=0;retry<3;retry++){
+            try{if(Clipboard.ContainsText()) return Clipboard.GetText();}
+            catch{Thread.Sleep(30);}
+        }
+        return "";
+    }
+    bool SafeSetClip(string t){
+        for(int retry=0;retry<3;retry++){
+            try{Clipboard.SetText(t);return true;}
+            catch{Thread.Sleep(30);}
+        }
+        return false;
+    }
 
-    void PollClip() {
-        var t=TryGetClip();
+    // Called by WM_CLIPBOARDUPDATE (event-driven, replaces Timer polling)
+    void OnClipboardChanged() {
+        var t=SafeGetClip();
         if(t!=""&&t!=lastClip){lastClip=t;
             if(DateTime.Now<ignoreUntil)return;
             if(!Lab.IsLabData(t))return;
-            // Add raw text to buffer
             rawBuffer.Add(t);
-            // Convert ALL buffered raw text as one combined report
             var combined=string.Join("\n",rawBuffer);
             var r=Lab.Convert(combined,cfg.GetLabItems());
             if(r!=null){
@@ -491,9 +547,6 @@ class App : Form {
             }}
     }
     void ResetMergeTimer() {
-        if(mergeTimer==null){
-            mergeTimer=new System.Windows.Forms.Timer{Interval=15000};
-            mergeTimer.Tick+=(s,e)=>{mergeTimer.Stop(); FinalizeMerge();};}
         mergeTimer.Stop(); mergeTimer.Start();
     }
     void FinalizeMerge() {
@@ -505,7 +558,7 @@ class App : Form {
     Form previewForm;
     Label previewLabel;
     Label previewTitle;
-    System.Windows.Forms.Timer previewTimer;
+    System.Windows.Forms.Timer previewTimer = new System.Windows.Forms.Timer();
     void ShowPreview(string result, int count) {
         if(previewForm==null||previewForm.IsDisposed) {
             previewForm=new Form{
@@ -538,9 +591,9 @@ class App : Form {
         }
         // Update title with count
         if(count>1)
-            previewTitle.Text="\u2713 "+count+"\u7b46\u5831\u544a\u5df2\u8f49\u63db\uff0c10\u79d2\u5167\u53ef\u7e7c\u7e8c\u8907\u88fd | Ctrl+3 \u8cbc\u4e0a";
+            previewTitle.Text="\u2713 "+count+"\u7b46\u5831\u544a\u5df2\u8f49\u63db\uff0c15\u79d2\u5167\u53ef\u7e7c\u7e8c\u64f7\u53d6 | "+cfg.PasteMod+"+"+cfg.PasteKey+" \u8cbc\u4e0a";
         else
-            previewTitle.Text="\u2713 \u5831\u544a\u5df2\u8f49\u63db\uff0c\u6309 Ctrl+3 \u8cbc\u4e0a";
+            previewTitle.Text="\u2713 \u5831\u544a\u5df2\u8f49\u63db\uff0c\u6309 "+cfg.PasteMod+"+"+cfg.PasteKey+" \u8cbc\u4e0a";
 
         previewLabel.Text=result;
         // Size: width by longest line, height by line count
@@ -559,46 +612,77 @@ class App : Form {
         previewForm.Show();
         // Auto-hide after 12 seconds (longer for multi-report)
         int hideDelay=count>1?15000:8000;
-        if(previewTimer==null){previewTimer=new System.Windows.Forms.Timer();
-            previewTimer.Tick+=(s,e)=>{previewTimer.Stop();if(previewForm!=null&&!previewForm.IsDisposed)previewForm.Hide();};}
         previewTimer.Interval=hideDelay;
         previewTimer.Stop(); previewTimer.Start();
     }
     // Hide preview when Ctrl+3 pastes
     void HidePreview(){
         if(previewForm!=null&&!previewForm.IsDisposed&&previewForm.Visible) previewForm.Hide();
-        if(previewTimer!=null) previewTimer.Stop();
+        previewTimer.Stop();
     }
     void SetTray(Color c,string tip){
         var old=tray.Icon; tray.Icon=MakeIcon(c); if(old!=null)old.Dispose();
         tray.Text=tip.Length>63?tip.Substring(0,63):tip;}
-    System.Windows.Forms.Timer yellowTimer;
+    System.Windows.Forms.Timer yellowTimer = new System.Windows.Forms.Timer{Interval=3000};
     void DelayYellow(){
-        if(yellowTimer==null){yellowTimer=new System.Windows.Forms.Timer{Interval=3000};
-            yellowTimer.Tick+=(s,e)=>{yellowTimer.Stop();
-                SetTray(Color.Gold,labResult!=null?
-                    "Ctrl+3 \u8cbc\u4e0a | "+labResult.Substring(0,Math.Min(40,labResult.Length)):
-                    "\u7b49\u5f85 Ctrl+C...");};}
         yellowTimer.Stop(); yellowTimer.Start();
     }
     void WriteClip(string t){ignoreUntil=DateTime.Now.AddMilliseconds(800);
-        try{Clipboard.SetText(t);}catch{} lastClip=t;}
-    void SimCtrlV(){Thread.Sleep(50);
-        keybd_event(0x12,0,2,UIntPtr.Zero);keybd_event(0x11,0,2,UIntPtr.Zero);keybd_event(0x10,0,2,UIntPtr.Zero);
-        Thread.Sleep(30);
-        keybd_event(0x11,0,0,UIntPtr.Zero);keybd_event(0x56,0,0,UIntPtr.Zero);
-        keybd_event(0x56,0,2,UIntPtr.Zero);keybd_event(0x11,0,2,UIntPtr.Zero);}
-    void SimCtrlAC(){Thread.Sleep(50);
-        // Release all modifiers first
-        keybd_event(0x12,0,2,UIntPtr.Zero);keybd_event(0x11,0,2,UIntPtr.Zero);keybd_event(0x10,0,2,UIntPtr.Zero);
-        Thread.Sleep(30);
-        // Ctrl+A
-        keybd_event(0x11,0,0,UIntPtr.Zero);keybd_event(0x41,0,0,UIntPtr.Zero);
-        keybd_event(0x41,0,2,UIntPtr.Zero);keybd_event(0x11,0,2,UIntPtr.Zero);
-        Thread.Sleep(80);
-        // Ctrl+C
-        keybd_event(0x11,0,0,UIntPtr.Zero);keybd_event(0x43,0,0,UIntPtr.Zero);
-        keybd_event(0x43,0,2,UIntPtr.Zero);keybd_event(0x11,0,2,UIntPtr.Zero);}
+        SafeSetClip(t); lastClip=t;}
+
+    // ── SendInput helpers (replaces deprecated keybd_event) ──
+    static void SendKeys(params ushort[] vks){
+        var inputs=new List<INPUT>();
+        // Key down
+        foreach(var vk in vks){
+            var inp=new INPUT(); inp.type=1; inp.u.ki.wVk=vk; inp.u.ki.dwFlags=0;
+            inputs.Add(inp);
+        }
+        // Key up (reverse order)
+        for(int i=vks.Length-1;i>=0;i--){
+            var inp=new INPUT(); inp.type=1; inp.u.ki.wVk=vks[i]; inp.u.ki.dwFlags=2;
+            inputs.Add(inp);
+        }
+        SendInput((uint)inputs.Count, inputs.ToArray(), Marshal.SizeOf(typeof(INPUT)));
+    }
+    static void ReleaseAllModifiers(){
+        // Release Ctrl(0x11), Alt(0x12), Shift(0x10) to prevent ghost modifiers
+        var inputs=new INPUT[3];
+        inputs[0]=new INPUT(); inputs[0].type=1; inputs[0].u.ki.wVk=0x12; inputs[0].u.ki.dwFlags=2;
+        inputs[1]=new INPUT(); inputs[1].type=1; inputs[1].u.ki.wVk=0x11; inputs[1].u.ki.dwFlags=2;
+        inputs[2]=new INPUT(); inputs[2].type=1; inputs[2].u.ki.wVk=0x10; inputs[2].u.ki.dwFlags=2;
+        SendInput(3, inputs, Marshal.SizeOf(typeof(INPUT)));
+    }
+
+    void SimCtrlV(){
+        ThreadPool.QueueUserWorkItem(delegate{
+            Thread.Sleep(50);
+            ReleaseAllModifiers(); Thread.Sleep(30);
+            SendKeys(0x11, 0x56); // Ctrl+V
+        });
+    }
+    void SimCtrlAC(){
+        ThreadPool.QueueUserWorkItem(delegate{
+            Thread.Sleep(50);
+            ReleaseAllModifiers(); Thread.Sleep(30);
+            SendKeys(0x11, 0x41); // Ctrl+A
+            Thread.Sleep(80);
+            SendKeys(0x11, 0x43); // Ctrl+C
+        });
+    }
+
+    // ── Window-aware capture: only trigger in ORD/HIS windows ──
+    bool IsCaptureAllowed(){
+        var hwnd=GetForegroundWindow();
+        if(hwnd==IntPtr.Zero) return false;
+        var sb=new System.Text.StringBuilder(512);
+        GetWindowText(hwnd,sb,512);
+        var title=sb.ToString();
+        if(title=="") return true; // Unknown window, allow (fallback)
+        foreach(var kw in captureWindowKeywords)
+            if(title.IndexOf(kw,StringComparison.OrdinalIgnoreCase)>=0) return true;
+        return false;
+    }
     void RegisterCaptureHotkey(){
         UnregisterHotKey(Handle,HKID_CAPTURE);
         uint mod=VK.ModFlag(cfg.CaptureMod);
@@ -613,9 +697,15 @@ class App : Form {
     }
 
     protected override void WndProc(ref Message m) {
+        // Event-driven clipboard monitoring
+        if(m.Msg==WM_CLIPBOARDUPDATE){ OnClipboardChanged(); base.WndProc(ref m); return; }
         if(m.Msg==WM_HOTKEY){int id=(int)m.WParam;
             if(id==0){ShowSettings();return;}
-            if(id==HKID_CAPTURE){SimCtrlAC();return;}
+            if(id==HKID_CAPTURE){
+                // Window-aware: only capture in ORD/HIS windows
+                if(IsCaptureAllowed()) SimCtrlAC();
+                return;
+            }
             if(id==HKID_PASTE){
                 // Same as lab-type paste
                 if(rawBuffer.Count>0){
@@ -645,15 +735,21 @@ class App : Form {
                     HidePreview();SetTray(Color.LimeGreen,"\u2713 \u5df2\u8cbc\u4e0a");DelayYellow();}
                     else{SetTray(Color.Red,"\u8acb\u5148 Ctrl+C \u8907\u88fd\u5831\u544a");DelayYellow();}}
                 else if(s.Type=="template"&&s.Text!=""){
-                    var clip=TryGetClip();WriteClip(s.Text.Replace("{clipboard}",clip));SimCtrlV();}
+                    var clip=SafeGetClip();WriteClip(s.Text.Replace("{clipboard}",clip));SimCtrlV();}
             }catch{}}
         base.WndProc(ref m);
     }
     protected override void OnFormClosed(FormClosedEventArgs e){
-        foreach(var k in HK.Keys)UnregisterHotKey(Handle,k);
+        RemoveClipboardFormatListener(Handle);
+        foreach(var k in HK.Keys) UnregisterHotKey(Handle,k);
         UnregisterHotKey(Handle,HKID_CAPTURE);
         UnregisterHotKey(Handle,HKID_PASTE);
-        tray.Visible=false;base.OnFormClosed(e);}
+        mergeTimer.Stop(); mergeTimer.Dispose();
+        yellowTimer.Stop(); yellowTimer.Dispose();
+        previewTimer.Stop(); previewTimer.Dispose();
+        if(previewForm!=null&&!previewForm.IsDisposed) previewForm.Close();
+        tray.Visible=false; tray.Icon.Dispose(); tray.Dispose();
+        base.OnFormClosed(e);}
     protected override void SetVisibleCore(bool v){base.SetVisibleCore(false);}
 
     // ══════ Settings Window ══════
