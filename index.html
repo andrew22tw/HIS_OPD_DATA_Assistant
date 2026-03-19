@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <!-- Lab Data Formatter Website -->
 <!-- Last Modified: 2026-03-20 01:00 (UTC+8) -->
-<!-- Version: v1.3.0 -->
+<!-- Version: v1.3.1 -->
 <html lang="zh-TW">
 <head>
 <meta charset="UTF-8">
@@ -410,7 +410,7 @@ td {
   <h2 class="section-title">更新紀錄</h2>
   <div class="changelog-item">
     <div class="cl-header">
-      <span class="cl-ver">v1.3.0</span>
+      <span class="cl-ver">v1.3.1</span>
       <span class="cl-date">2026-03-20</span>
       <span class="cl-tag">Latest</span>
     </div>
@@ -426,6 +426,7 @@ td {
       <li>勾選區塊新增「全選/全不選」切換按鈕</li>
       <li>新增擷取鍵（預設 Ctrl+`），一鍵執行全選+複製</li>
       <li>擷取鍵可自訂 Ctrl 或 Alt + 任意鍵</li>
+      <li>啟動時顯示「門診小幫手上線」動畫，漸入後縮小消失</li>
     </ul>
   </div>
   <div class="changelog-item">
@@ -490,7 +491,7 @@ td {
 <script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script>
 var readmeText = [
 "================================================================",
-"  Lab Data Formatter v1.3.0 使用說明",
+"  Lab Data Formatter v1.3.1 使用說明",
 "  作者：吳岳霖醫師  DAL93@tpech.gov.tw",
 "================================================================",
 "",
@@ -602,7 +603,7 @@ function copyReadme() {
       }
     }
   }).catch(function(){
-    verEl.textContent = "v1.3.0";
+    verEl.textContent = "v1.3.1";
     dateEl.textContent = "2026-03-20";
     dlExe.href = fallbackZip;
     dlReadme.href = "https://raw.githubusercontent.com/"+repo+"/main/readme.txt";
