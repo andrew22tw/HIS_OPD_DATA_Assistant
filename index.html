@@ -649,8 +649,8 @@ function copyReadme() {
   }).catch(function(){
     verEl.textContent = "v1.4.1";
     dateEl.textContent = "2026-03-20";
-    dlExe.href = fallbackExe;
-    dlReadme.href = fallbackReadme;
+    dlExe.href    = fallbackExe;    // ✅ 正確引用
+    dlReadme.href = fallbackReadme; // ✅ 正確引用
   });
 
   // Fetch total download count across ALL releases
