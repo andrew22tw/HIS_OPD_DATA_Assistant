@@ -1,162 +1,586 @@
-================================================================
-  Lab Data Formatter v1.1.0 使用說明
-  作者：吳岳霖醫師  DAL93@tpech.gov.tw
-================================================================
-
-【簡介】
-
-  Lab Data Formatter 是一個常駐系統匣的小工具，
-  能自動擷取醫院檢驗報告文字，轉換成簡潔格式，
-  方便貼到病歷或筆記中。
-
-  例如把整頁報告轉成：
-  11503 AC:122(6.5),BUN/Cr:27/1.71,Na/K:140/3.6,ALT:25
-
-================================================================
-
-【安裝方式】
-
-  1. 從網頁下載 LabFormatter.exe 和 readme.txt
-  2. 放在任何位置（桌面即可）
-  3. 雙擊 LabFormatter.exe 啟動，圖示出現在右下角系統匣
-
-  免安裝，下載即用。
-
-================================================================
-
-【基本操作】
-
-  步驟一：在醫院系統中，框選檢驗報告文字
-  步驟二：按 Ctrl+C 複製
-  步驟三：系統匣燈泡變綠，右下角彈出預覽視窗
-  步驟四：切到要貼上的地方，按 Ctrl+3 自動貼上
-
-================================================================
-
-【熱鍵說明】
-
-  Ctrl+0    開啟設定視窗
-  Ctrl+1    自訂快貼 1（可設定常用文字片段）
-  Ctrl+2    自訂快貼 2
-  Ctrl+3    貼上檢驗報告轉換結果（預設）
-  Ctrl+4    自訂快貼 3
-
-  在設定視窗中可以修改每個熱鍵的功能。
-
-================================================================
-
-【多份報告合併】
-
-  如果同一位病人有多份報告（例如生化、血液、尿液），
-  只要在 10 秒內連續 Ctrl+C 複製，程式會自動合併。
-
-  例如：
-    第 1 次 Ctrl+C → 複製生化報告 → 預覽顯示結果
-    第 2 次 Ctrl+C → 複製 HbA1c 報告 → 自動合併，顯示 [2筆]
-    第 3 次 Ctrl+C → 複製尿液報告 → 自動合併，顯示 [3筆]
-    按 Ctrl+3 → 一次貼上全部結果
-
-  超過 10 秒沒有新報告，下次複製視為新的一筆。
-
-  程式會自動區分血液和尿液檢體：
-  - 血液項目（BUN、Cr、Na、K 等）只從「檢體 血液」擷取
-  - 尿液項目（UAC、UPC）只從「檢體 尿液」擷取
-  - 不會互相混淆
-
-================================================================
-
-【輸出格式說明】
-
-  日期格式：民國年YYYMM（例如 11503 = 民國 115 年 3 月）
-
-  輸出順序：
-  AC → HbA1c → BUN/Cr → Na/K → ALT/AST → Alb →
-  TC/TG/LD/HD → UA → Ca/IP → Hb → UAC → UPC
-
-  自動分組（用 / 連接）：
-  - BUN/Cr        腎功能
-  - Na/K          電解質
-  - ALT/AST       肝功能
-  - TC/TG/LD/HD   血脂
-  - Ca/IP         鈣磷
-
-  特殊規則：
-  - AC 有 HbA1c 時合併顯示：AC:122(6.5)
-  - AC 沒有 HbA1c 時單獨顯示：AC:122
-  - BUN 自動取整數
-  - 只有 HbA1c 沒有 AC 時：HbA1c:6.5
-
-  顯示名稱對照：
-  - Glu AC       → AC
-  - Cholesterol  → TC
-  - LDL-C        → LD
-  - HDL-C        → HD
-  - Phosphate/P  → IP
-  - Uric Acid    → UA
-  - ACR/UACR     → UAC
-  - UPCR/PCR     → UPC
-
-================================================================
-
-【設定視窗】
-
-  按 Ctrl+0 或右鍵點系統匣圖示 → 設定
-
-  每個熱鍵可設定為以下類型：
-  - 快貼文字：按熱鍵自動貼上預設的文字
-  - 報告整理：Ctrl+C 複製報告後，按此鍵貼上轉換結果
-  - 範本套用：文字中的 {clipboard} 會被替換成剪貼簿內容
-  - 未設定：此熱鍵不動作
-
-  修改完按「儲存設定」。
-
-  也可以直接用記事本編輯 JSON 設定檔，
-  編輯完在設定視窗按「讀取」重新載入。
-
-================================================================
-
-【系統匣燈泡顏色】
-
-  黃色    等待中（尚未複製報告）
-  綠色    已轉換（有結果可以貼上）
-  紅色    錯誤（例如沒有先複製報告就按 Ctrl+3）
-
-================================================================
-
-【檔案說明】
-
-  LabFormatter.exe              主程式（下載即用）
-  readme.txt                    本說明文件
-
-  設定檔位置（自動建立）：
-  我的文件\EMR_Report\lab_formatter_config.json
-
-  每台電腦的設定檔獨立存放在個人文件資料夾，
-  即使多人共用同一台電腦，各自的設定不會互相影響。
-
-================================================================
-
-【常見問題】
-
-  Q: Ctrl+3 按了沒反應？
-  A: 請先 Ctrl+C 複製報告，等燈泡變綠再按。
-
-  Q: 複製了但沒轉換？
-  A: 確認複製的是檢驗報告文字，程式需要至少 3 個
-     關鍵字（如 BUN、mg/dl、Cr 等）才會觸發。
-
-  Q: 合併的結果不對？
-  A: 確認 10 秒內連續複製。如果超過 10 秒，
-     前一筆會被清除，重新開始。
-
-  Q: 熱鍵和其他軟體衝突？
-  A: 可以在 JSON 設定檔中修改熱鍵配置。
-
-  Q: 怎麼完全關閉程式？
-  A: 右鍵系統匣圖示 → 結束
-
-================================================================
-
-  意見回饋：吳岳霖醫師  DAL93@tpech.gov.tw
-
-================================================================
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Lab Data Formatter - 檢驗報告快速整理工具</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@300;400;500;700;900&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg: #0a0e17;
+  --surface: #111827;
+  --surface2: #1a2235;
+  --border: #1e293b;
+  --accent: #22c55e;
+  --accent2: #4ade80;
+  --accent-dim: rgba(34,197,94,0.12);
+  --text: #e2e8f0;
+  --text2: #94a3b8;
+  --text3: #64748b;
+  --gold: #fbbf24;
+  --red: #ef4444;
+  --blue: #3b82f6;
+}
+* { margin:0; padding:0; box-sizing:border-box; }
+body {
+  font-family:'Noto Sans TC',sans-serif;
+  background:var(--bg);
+  color:var(--text);
+  line-height:1.7;
+  overflow-x:hidden;
+}
+/* ── Hero ── */
+.hero {
+  position:relative;
+  padding:80px 0 60px;
+  text-align:center;
+  overflow:hidden;
+}
+.hero::before {
+  content:'';
+  position:absolute;
+  top:-50%;left:-50%;width:200%;height:200%;
+  background:radial-gradient(circle at 50% 40%, rgba(34,197,94,0.08) 0%, transparent 50%);
+  animation:pulse 8s ease-in-out infinite;
+}
+@keyframes pulse {
+  0%,100%{opacity:0.5;transform:scale(1)}
+  50%{opacity:1;transform:scale(1.05)}
+}
+.hero-content { position:relative; z-index:1; }
+.hero h1 {
+  font-size:3rem; font-weight:900; letter-spacing:-1px;
+  background:linear-gradient(135deg, var(--accent), var(--accent2), var(--gold));
+  -webkit-background-clip:text; -webkit-text-fill-color:transparent;
+  background-clip:text;
+}
+.hero .subtitle { font-size:1.15rem; color:var(--text2); margin-top:8px; font-weight:300; }
+ 
+/* ── Version Badge ── */
+.version-bar {
+  display:flex; justify-content:center; gap:16px; margin-top:28px; flex-wrap:wrap;
+}
+.badge {
+  display:inline-flex; align-items:center; gap:8px;
+  padding:8px 20px; border-radius:100px;
+  font-family:'JetBrains Mono',monospace; font-size:0.95rem;
+}
+.badge-version { background:var(--accent-dim); border:1px solid rgba(34,197,94,0.3); color:var(--accent2); }
+.badge-date { background:rgba(59,130,246,0.1); border:1px solid rgba(59,130,246,0.25); color:var(--blue); }
+.badge-dot {
+  width:8px;height:8px;border-radius:50%;background:var(--accent);
+  animation:blink 2s ease-in-out infinite;
+}
+@keyframes blink { 0%,100%{opacity:1} 50%{opacity:0.3} }
+ 
+/* ── Container ── */
+.container { max-width:860px; margin:0 auto; padding:0 24px; }
+ 
+/* ── Section ── */
+.section { padding:50px 0; }
+.section-title {
+  font-size:1.5rem; font-weight:700; margin-bottom:24px;
+  padding-left:16px;
+  border-left:4px solid var(--accent);
+}
+ 
+/* ── Demo Block ── */
+.demo {
+  background:var(--surface);
+  border:1px solid var(--border);
+  border-radius:12px;
+  padding:28px 32px;
+  margin:30px 0;
+}
+.demo-label {
+  font-size:0.8rem; color:var(--text3); text-transform:uppercase;
+  letter-spacing:2px; margin-bottom:12px; font-weight:500;
+}
+.demo-input {
+  font-family:'JetBrains Mono',monospace;
+  font-size:0.85rem; color:var(--text3); line-height:1.6;
+  white-space:pre-wrap; margin-bottom:20px;
+  max-height:160px; overflow-y:auto;
+  padding:12px; background:var(--surface2); border-radius:8px;
+}
+.demo-arrow {
+  text-align:center; font-size:1.6rem; color:var(--accent);
+  margin:12px 0; letter-spacing:4px;
+}
+.demo-output {
+  font-family:'JetBrains Mono',monospace;
+  font-size:1.1rem; color:var(--accent2);
+  padding:14px 18px;
+  background:rgba(34,197,94,0.08);
+  border:1px solid rgba(34,197,94,0.2);
+  border-radius:8px;
+  word-break:break-all;
+}
+ 
+/* ── Features Grid ── */
+.features {
+  display:grid; grid-template-columns:1fr 1fr; gap:16px;
+  margin-top:20px;
+}
+@media(max-width:640px){ .features{grid-template-columns:1fr;} }
+.feat {
+  background:var(--surface); border:1px solid var(--border);
+  border-radius:10px; padding:20px 22px;
+  transition:border-color 0.3s;
+}
+.feat:hover { border-color:rgba(34,197,94,0.4); }
+.feat-icon { font-size:1.4rem; margin-bottom:8px; }
+.feat-title { font-weight:700; margin-bottom:4px; }
+.feat-desc { font-size:0.9rem; color:var(--text2); }
+ 
+/* ── Readme ── */
+.readme-box {
+  background:var(--surface);
+  border:1px solid var(--border);
+  border-radius:12px;
+  overflow:hidden;
+}
+.readme-header {
+  display:flex; justify-content:space-between; align-items:center;
+  padding:14px 24px;
+  background:var(--surface2);
+  border-bottom:1px solid var(--border);
+}
+.readme-header span { font-weight:600; font-size:0.95rem; }
+.readme-copy {
+  padding:6px 16px; border-radius:6px; border:1px solid var(--border);
+  background:transparent; color:var(--text2); cursor:pointer;
+  font-size:0.85rem; transition:all 0.2s;
+}
+.readme-copy:hover { border-color:var(--accent); color:var(--accent); }
+.readme-content {
+  padding:24px;
+  font-family:'JetBrains Mono',monospace;
+  font-size:0.82rem; line-height:1.8;
+  color:var(--text2);
+  white-space:pre-wrap;
+  max-height:500px; overflow-y:auto;
+}
+.readme-content::-webkit-scrollbar { width:6px; }
+.readme-content::-webkit-scrollbar-track { background:var(--surface); }
+.readme-content::-webkit-scrollbar-thumb { background:var(--border); border-radius:3px; }
+ 
+/* ── Changelog ── */
+.changelog-item {
+  background:var(--surface);
+  border:1px solid var(--border);
+  border-radius:10px;
+  padding:20px 24px;
+  margin-bottom:12px;
+}
+.cl-header { display:flex; align-items:center; gap:12px; margin-bottom:10px; }
+.cl-ver {
+  font-family:'JetBrains Mono',monospace; font-weight:600;
+  color:var(--accent); font-size:1rem;
+}
+.cl-date { font-size:0.85rem; color:var(--text3); }
+.cl-tag {
+  font-size:0.7rem; padding:2px 10px; border-radius:100px;
+  background:var(--accent-dim); color:var(--accent2);
+  font-weight:600; text-transform:uppercase;
+}
+.cl-list { list-style:none; }
+.cl-list li {
+  padding:3px 0 3px 20px; position:relative;
+  font-size:0.9rem; color:var(--text2);
+}
+.cl-list li::before {
+  content:''; position:absolute; left:0; top:12px;
+  width:8px; height:8px; border-radius:50%;
+  background:var(--border);
+}
+ 
+/* ── Install Steps ── */
+.steps { counter-reset:step; margin-top:20px; }
+.step {
+  counter-increment:step;
+  display:flex; gap:18px; align-items:flex-start;
+  padding:16px 0;
+  border-bottom:1px solid var(--border);
+}
+.step:last-child { border-bottom:none; }
+.step::before {
+  content:counter(step);
+  flex-shrink:0;
+  width:36px; height:36px; border-radius:50%;
+  background:var(--accent-dim); border:1px solid rgba(34,197,94,0.3);
+  color:var(--accent); font-weight:700;
+  display:flex; align-items:center; justify-content:center;
+  font-family:'JetBrains Mono',monospace;
+}
+.step-text { padding-top:6px; }
+.step-text strong { color:var(--text); }
+.step-text p { font-size:0.9rem; color:var(--text2); margin-top:2px; }
+.code-inline {
+  font-family:'JetBrains Mono',monospace;
+  background:var(--surface2); padding:2px 8px; border-radius:4px;
+  font-size:0.85rem; color:var(--gold);
+}
+ 
+/* ── Hotkey Table ── */
+table {
+  width:100%; border-collapse:collapse; margin-top:16px;
+  font-size:0.9rem;
+}
+th {
+  text-align:left; padding:10px 16px;
+  background:var(--surface2); color:var(--text2);
+  font-weight:500; font-size:0.8rem;
+  text-transform:uppercase; letter-spacing:1px;
+}
+td {
+  padding:10px 16px; border-bottom:1px solid var(--border);
+}
+.kbd {
+  font-family:'JetBrains Mono',monospace;
+  background:var(--surface2); border:1px solid var(--border);
+  padding:3px 10px; border-radius:5px; font-size:0.85rem;
+  font-weight:600; color:var(--accent2);
+}
+ 
+/* ── Footer ── */
+.footer {
+  text-align:center; padding:40px 0 30px;
+  border-top:1px solid var(--border);
+  margin-top:40px;
+}
+.footer-name { font-weight:700; font-size:1rem; }
+.footer-email { color:var(--blue); font-size:0.9rem; margin-top:4px; }
+.footer-copy { color:var(--text3); font-size:0.8rem; margin-top:12px; }
+ 
+/* ── Tray Colors ── */
+.tray-colors { display:flex; gap:20px; margin-top:16px; flex-wrap:wrap; }
+.tray-item { display:flex; align-items:center; gap:8px; }
+.tray-dot { width:14px; height:14px; border-radius:50%; }
+.tray-dot.yellow { background:var(--gold); }
+.tray-dot.green { background:var(--accent); }
+.tray-dot.red { background:var(--red); }
+ 
+/* ── Download Buttons ── */
+.download-bar {
+  display:flex; justify-content:center; gap:14px; margin-top:24px; flex-wrap:wrap;
+}
+.dl-btn {
+  display:inline-flex; align-items:center; gap:8px;
+  padding:12px 28px; border-radius:10px;
+  font-family:'Noto Sans TC',sans-serif; font-size:1rem; font-weight:700;
+  text-decoration:none; transition:all 0.3s; cursor:pointer; border:none;
+}
+.dl-btn-main {
+  background:linear-gradient(135deg, var(--accent), #16a34a);
+  color:#fff; box-shadow:0 4px 20px rgba(34,197,94,0.3);
+}
+.dl-btn-main:hover { transform:translateY(-2px); box-shadow:0 6px 28px rgba(34,197,94,0.45); }
+.dl-btn-sub {
+  background:var(--surface2); border:1px solid var(--border); color:var(--text2);
+}
+.dl-btn-sub:hover { border-color:var(--accent); color:var(--accent2); }
+.dl-icon { font-size:1.2rem; }
+</style>
+</head>
+<body>
+ 
+<!-- ══════ Hero ══════ -->
+<div class="hero">
+  <div class="hero-content">
+    <h1>Lab Data Formatter</h1>
+    <p class="subtitle">檢驗報告快速整理工具 — 一鍵轉換，貼上即用</p>
+    <div class="version-bar">
+      <span class="badge badge-version"><span class="badge-dot"></span>最新版本 <span id="latestVer">載入中...</span></span>
+      <span class="badge badge-date">更新日期 <span id="latestDate">...</span></span>
+    </div>
+    <div class="download-bar">
+      <a class="dl-btn dl-btn-main" id="dlExe" href="#">
+        <span class="dl-icon">⬇</span>下載 LabFormatter.exe
+      </a>
+      <a class="dl-btn dl-btn-sub" id="dlReadme" href="#">
+        <span class="dl-icon">📄</span>下載 readme.txt
+      </a>
+      <a class="dl-btn dl-btn-sub" href="https://github.com/andrew22tw/HIS_OPD_DATA_Assistant" target="_blank">
+        <span class="dl-icon">📂</span>GitHub 原始碼
+      </a>
+    </div>
+  </div>
+</div>
+ 
+<div class="container">
+ 
+<!-- ══════ Demo ══════ -->
+<div class="demo">
+  <div class="demo-label">轉換範例</div>
+  <div class="demo-input">  Glu AC                   H 122         mg/dl         70 - 99
+  HbA1c                    H 6.8         %             4.0 - 5.6
+  BUN                        27.0        mg/dl        5.0 - 24.0
+  Cr                       H 1.71        mg/dl       0.70 - 1.20
+  Na                         140         mEq/L        135 - 148
+  K                          3.6         mEq/L        3.5 - 5.1
+  ALT                        25           U/L           7 - 42</div>
+  <div class="demo-arrow">▼ ▼ ▼</div>
+  <div class="demo-output">11503 AC:122(6.8),BUN/Cr:27/1.71,Na/K:140/3.6,ALT:25</div>
+</div>
+ 
+<!-- ══════ Features ══════ -->
+<div class="section">
+  <h2 class="section-title">功能特色</h2>
+  <div class="features">
+    <div class="feat">
+      <div class="feat-icon">⚡</div>
+      <div class="feat-title">即時轉換</div>
+      <div class="feat-desc">Ctrl+C 複製報告後自動辨識轉換，右下角彈出預覽</div>
+    </div>
+    <div class="feat">
+      <div class="feat-icon">📋</div>
+      <div class="feat-title">多份合併</div>
+      <div class="feat-desc">10 秒內連續複製多份報告（生化、CBC、尿液），自動合併成一行</div>
+    </div>
+    <div class="feat">
+      <div class="feat-icon">🩸</div>
+      <div class="feat-title">血液/尿液分離</div>
+      <div class="feat-desc">自動區分檢體來源，血液 Cr 和尿液 Cr 不會混淆</div>
+    </div>
+    <div class="feat">
+      <div class="feat-icon">⚙️</div>
+      <div class="feat-title">自訂熱鍵</div>
+      <div class="feat-desc">Ctrl+1~4 可自訂為快貼文字、報告整理、範本套用</div>
+    </div>
+    <div class="feat">
+      <div class="feat-icon">💾</div>
+      <div class="feat-title">極輕量</div>
+      <div class="feat-desc">exe 僅約 30KB，免安裝，下載即用</div>
+    </div>
+    <div class="feat">
+      <div class="feat-icon">👤</div>
+      <div class="feat-title">個人設定</div>
+      <div class="feat-desc">設定檔存在 Documents\EMR_Report，多人共用電腦互不影響</div>
+    </div>
+  </div>
+</div>
+ 
+<!-- ══════ Hotkeys ══════ -->
+<div class="section">
+  <h2 class="section-title">熱鍵說明</h2>
+  <table>
+    <tr><th>熱鍵</th><th>功能</th><th>說明</th></tr>
+    <tr><td><span class="kbd">Ctrl+0</span></td><td>開啟設定</td><td>編輯熱鍵、檢視結果</td></tr>
+    <tr><td><span class="kbd">Ctrl+1</span></td><td>自訂快貼 1</td><td>可設定常用文字片段</td></tr>
+    <tr><td><span class="kbd">Ctrl+2</span></td><td>自訂快貼 2</td><td>可設定常用文字片段</td></tr>
+    <tr><td><span class="kbd">Ctrl+3</span></td><td>貼上報告</td><td>貼上轉換後的結果（預設）</td></tr>
+    <tr><td><span class="kbd">Ctrl+4</span></td><td>自訂快貼 3</td><td>可設定常用文字片段</td></tr>
+  </table>
+  <h3 style="margin-top:28px;font-size:1.1rem;font-weight:600;">系統匣燈泡</h3>
+  <div class="tray-colors">
+    <div class="tray-item"><div class="tray-dot yellow"></div><span>等待中</span></div>
+    <div class="tray-item"><div class="tray-dot green"></div><span>已轉換，可貼上</span></div>
+    <div class="tray-item"><div class="tray-dot red"></div><span>錯誤</span></div>
+  </div>
+</div>
+ 
+<!-- ══════ Output Format ══════ -->
+<div class="section">
+  <h2 class="section-title">輸出格式</h2>
+  <table>
+    <tr><th>順序</th><th>項目</th><th>自動分組</th></tr>
+    <tr><td>1</td><td>AC（HbA1c）</td><td>AC 有 A1c 時顯示 AC:值(A1c值)</td></tr>
+    <tr><td>2</td><td>BUN / Cr</td><td>BUN/Cr:21/1.40（BUN 取整數）</td></tr>
+    <tr><td>3</td><td>Na / K</td><td>Na/K:139/3.5</td></tr>
+    <tr><td>4</td><td>ALT / AST</td><td>ALT/AST:14/22</td></tr>
+    <tr><td>5</td><td>Alb</td><td></td></tr>
+    <tr><td>6</td><td>TC / TG / LD / HD</td><td>TC/TG/LD/HD:165/121/81/53</td></tr>
+    <tr><td>7</td><td>UA</td><td></td></tr>
+    <tr><td>8</td><td>Ca / IP</td><td>Ca/IP:9.3/5.9</td></tr>
+    <tr><td>9</td><td>Hb</td><td></td></tr>
+    <tr><td>10</td><td>UAC</td><td>從尿液檢體擷取</td></tr>
+    <tr><td>11</td><td>UPC</td><td>從尿液檢體擷取</td></tr>
+  </table>
+</div>
+ 
+<!-- ══════ Changelog ══════ -->
+<div class="section">
+  <h2 class="section-title">更新紀錄</h2>
+  <div class="changelog-item">
+    <div class="cl-header">
+      <span class="cl-ver">v1.1.0</span>
+      <span class="cl-date">2026-03-19</span>
+      <span class="cl-tag">Latest</span>
+    </div>
+    <ul class="cl-list">
+      <li>新增血液/尿液檢體自動分離，Cr 不再混淆</li>
+      <li>新增 UAC（ACR）、UPC 尿液項目</li>
+      <li>新增 ALT/AST、Ca/IP 自動分組</li>
+      <li>AC + HbA1c 自動合併顯示為 AC:值(A1c值)</li>
+      <li>HbA1c 支援大小寫（HbA1c / HbA1C）</li>
+      <li>BUN 自動取整數</li>
+      <li>支援 HH/LL 危急值旗標（如 Cr HH10.14）</li>
+      <li>多份報告 10 秒內合併，日期不重複</li>
+      <li>Ctrl+C 後右下角浮動預覽視窗</li>
+      <li>設定視窗改為單頁直接編輯</li>
+      <li>設定檔移至 Documents\EMR_Report（個人化）</li>
+      <li>新增使用說明按鈕</li>
+      <li>Cholesterol→TC, LDL→LD, HDL→HD, Phosphate→IP</li>
+    </ul>
+  </div>
+  <div class="changelog-item">
+    <div class="cl-header">
+      <span class="cl-ver">v1.0.0</span>
+      <span class="cl-date">2026-03-19</span>
+    </div>
+    <ul class="cl-list">
+      <li>首次發佈</li>
+      <li>系統匣常駐（黃/綠/紅燈泡）</li>
+      <li>Ctrl+C 自動偵測報告並轉換</li>
+      <li>Ctrl+0~4 熱鍵系統</li>
+      <li>JSON 設定檔</li>
+      <li>手動轉換視窗</li>
+      <li>C# 5.0 相容（.NET Framework 4.0+）</li>
+    </ul>
+  </div>
+</div>
+ 
+<!-- ══════ Readme ══════ -->
+<div class="section">
+  <h2 class="section-title">完整使用說明</h2>
+  <div class="readme-box">
+    <div class="readme-header">
+      <span>📄 readme.txt</span>
+      <button class="readme-copy" onclick="copyReadme()">複製全文</button>
+    </div>
+    <div class="readme-content" id="readmeContent"></div>
+  </div>
+</div>
+ 
+</div><!-- /container -->
+ 
+<!-- ══════ Footer ══════ -->
+<div class="footer">
+  <div class="footer-name">吳岳霖醫師</div>
+  <div class="footer-email"><a href="/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="5c181d10656f1c282c393f34723b332a72282b">[email&#160;protected]</a></div>
+  <div class="footer-copy">Lab Data Formatter &copy; 2026</div>
+</div>
+ 
+<script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script>
+var readmeText = [
+"================================================================",
+"  Lab Data Formatter v1.1.0 使用說明",
+"  作者：吳岳霖醫師  DAL93@tpech.gov.tw",
+"================================================================",
+"",
+"【簡介】",
+"",
+"  Lab Data Formatter 是一個常駐系統匣的小工具，",
+"  能自動擷取醫院檢驗報告文字，轉換成簡潔格式，",
+"  方便貼到病歷或筆記中。",
+"",
+"  例如把整頁報告轉成：",
+"  11503 AC:122(6.5),BUN/Cr:27/1.71,Na/K:140/3.6,ALT:25",
+"",
+"================================================================",
+"",
+"【安裝方式】",
+"",
+"  1. 從網頁下載 LabFormatter.exe",
+"  2. 放在任何位置（桌面即可）",
+"  3. 雙擊執行，圖示出現在右下角系統匣",
+"",
+"  免安裝，下載即用。",
+"",
+"================================================================",
+"",
+"【基本操作】",
+"",
+"  步驟一：在醫院系統中，框選檢驗報告文字",
+"  步驟二：按 Ctrl+C 複製",
+"  步驟三：系統匣燈泡變綠，右下角彈出預覽視窗",
+"  步驟四：切到要貼上的地方，按 Ctrl+3 自動貼上",
+"",
+"================================================================",
+"",
+"【熱鍵說明】",
+"",
+"  Ctrl+0    開啟設定視窗",
+"  Ctrl+1    自訂快貼 1（可設定常用文字片段）",
+"  Ctrl+2    自訂快貼 2",
+"  Ctrl+3    貼上檢驗報告轉換結果（預設）",
+"  Ctrl+4    自訂快貼 3",
+"",
+"================================================================",
+"",
+"【多份報告合併】",
+"",
+"  如果同一位病人有多份報告（例如生化、血液、尿液），",
+"  只要在 10 秒內連續 Ctrl+C 複製，程式會自動合併。",
+"",
+"  程式會自動區分血液和尿液檢體：",
+"  - 血液項目只從「檢體 血液」擷取",
+"  - 尿液項目（UAC、UPC）只從「檢體 尿液」擷取",
+"",
+"================================================================",
+"",
+"【輸出格式】",
+"",
+"  日期格式：民國年YYYMM（例如 11503 = 民國 115 年 3 月）",
+"",
+"  輸出順序：",
+"  AC → HbA1c → BUN/Cr → Na/K → ALT/AST → Alb →",
+"  TC/TG/LD/HD → UA → Ca/IP → Hb → UAC → UPC",
+"",
+"  特殊規則：",
+"  - AC 有 HbA1c 時合併：AC:122(6.5)",
+"  - BUN 自動取整數",
+"  - 血液/尿液自動分離",
+"",
+"================================================================",
+"",
+"  意見回饋：吳岳霖醫師  DAL93@tpech.gov.tw",
+"",
+"================================================================"
+].join("\n");
+ 
+document.getElementById("readmeContent").textContent = readmeText;
+ 
+function copyReadme() {
+  navigator.clipboard.writeText(readmeText).then(function(){
+    var btn = document.querySelector(".readme-copy");
+    btn.textContent = "\u5df2\u8907\u88fd \u2713";
+    setTimeout(function(){ btn.textContent = "\u8907\u88fd\u5168\u6587"; }, 2000);
+  });
+}
+ 
+// ── Auto-fetch latest release from GitHub ──
+(function(){
+  var repo = "andrew22tw/HIS_OPD_DATA_Assistant";
+  var api = "https://api.github.com/repos/" + repo + "/releases/latest";
+  var verEl = document.getElementById("latestVer");
+  var dateEl = document.getElementById("latestDate");
+  var dlExe = document.getElementById("dlExe");
+  var dlReadme = document.getElementById("dlReadme");
+ 
+  var fallbackZip = "https://github.com/" + repo + "/archive/refs/heads/main.zip";
+ 
+  fetch(api).then(function(r){ return r.json(); }).then(function(data){
+    if(data.tag_name){
+      verEl.textContent = data.tag_name;
+      var d = new Date(data.published_at);
+      dateEl.textContent = d.getFullYear()+"-"+String(d.getMonth()+1).padStart(2,"0")+"-"+String(d.getDate()).padStart(2,"0");
+      var assets = data.assets || [];
+      for(var i=0;i<assets.length;i++){
+        var name = assets[i].name.toLowerCase();
+        if(name.indexOf(".exe")>=0) dlExe.href = assets[i].browser_download_url;
+        if(name.indexOf("readme")>=0) dlReadme.href = assets[i].browser_download_url;
+      }
+    }
+  }).catch(function(){
+    verEl.textContent = "v1.1.0";
+    dateEl.textContent = "2026-03-19";
+    dlExe.href = fallbackZip;
+    dlReadme.href = "https://raw.githubusercontent.com/"+repo+"/main/readme.txt";
+  });
+})();
+</script>
+</body>
+</html>
