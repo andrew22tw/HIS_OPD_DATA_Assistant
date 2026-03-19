@@ -375,7 +375,7 @@ static class NativeMethods {
 
 // ══════════ Main App ══════════
 class App : Form {
-    const string VER="v1.3.0";
+    const string VER="v1.3.1";
     [DllImport("user32")] static extern bool RegisterHotKey(IntPtr h,int id,uint mod,uint vk);
     [DllImport("user32")] static extern bool UnregisterHotKey(IntPtr h,int id);
     [DllImport("user32")] static extern void keybd_event(byte vk,byte scan,uint flags,UIntPtr extra);
@@ -854,6 +854,86 @@ class App : Form {
     [STAThread] static void Main() {
         Application.EnableVisualStyles();
         Application.SetCompatibleTextRenderingDefault(false);
+        Splash.Show();
         Application.Run(new App());
+    }
+}
+
+// ══════════ Splash Screen ══════════
+static class Splash {
+    public static void Show() {
+        var f=new Form{
+            FormBorderStyle=FormBorderStyle.None,
+            StartPosition=FormStartPosition.CenterScreen,
+            Size=new Size(420,200),
+            BackColor=Color.FromArgb(16,24,40),
+            ShowInTaskbar=false,
+            TopMost=true,
+            Opacity=0
+        };
+        // Round corners
+        var path=new System.Drawing.Drawing2D.GraphicsPath();
+        path.AddArc(0,0,20,20,180,90); path.AddArc(f.Width-20,0,20,20,270,90);
+        path.AddArc(f.Width-20,f.Height-20,20,20,0,90); path.AddArc(0,f.Height-20,20,20,90,90);
+        path.CloseFigure();
+        f.Region=new Region(path);
+
+        // Title
+        var lbl1=new Label{Text="\u9580\u8a3a\u5c0f\u5e6b\u624b",
+            ForeColor=Color.FromArgb(74,222,128),
+            Font=new Font("Microsoft JhengHei UI",28,FontStyle.Bold),
+            AutoSize=false,Width=420,Height=70,Top=30,
+            TextAlign=ContentAlignment.MiddleCenter};
+        // Subtitle
+        var lbl2=new Label{Text="\u4e0a\u7dda\u4e2d...",
+            ForeColor=Color.FromArgb(148,163,184),
+            Font=new Font("Microsoft JhengHei UI",14),
+            AutoSize=false,Width=420,Height=40,Top=100,
+            TextAlign=ContentAlignment.MiddleCenter};
+        // Version
+        var lbl3=new Label{Text="Lab Data Formatter",
+            ForeColor=Color.FromArgb(100,116,139),
+            Font=new Font("Consolas",10),
+            AutoSize=false,Width=420,Height=25,Top=150,
+            TextAlign=ContentAlignment.MiddleCenter};
+        f.Controls.AddRange(new Control[]{lbl1,lbl2,lbl3});
+
+        int phase=0; int tick=0;
+        int origW=f.Width, origH=f.Height;
+        var cx=f.Left+origW/2; var cy=f.Top+origH/2;
+
+        var timer=new System.Windows.Forms.Timer{Interval=30};
+        timer.Tick+=delegate{
+            tick++;
+            if(phase==0){
+                // Fade in (0~15 ticks = 0.45s)
+                double p=(double)tick/15; if(p>1)p=1;
+                f.Opacity=p;
+                if(tick>=15){phase=1;tick=0;lbl2.Text="\u4e0a\u7dda\u5b8c\u6210 \u2713";
+                    lbl2.ForeColor=Color.FromArgb(74,222,128);}
+            } else if(phase==1){
+                // Hold (0~50 ticks = 1.5s)
+                if(tick>=50){phase=2;tick=0;
+                    cx=f.Left+f.Width/2; cy=f.Top+f.Height/2;}
+            } else if(phase==2){
+                // Shrink + fade out (0~20 ticks = 0.6s)
+                double p=(double)tick/20; if(p>1)p=1;
+                f.Opacity=1.0-p;
+                int w=(int)(origW*(1.0-p*0.6));
+                int h=(int)(origH*(1.0-p*0.6));
+                if(w<10)w=10; if(h<10)h=10;
+                f.SetBounds(cx-w/2,cy-h/2,w,h);
+                // Update region for new size
+                var rp=new System.Drawing.Drawing2D.GraphicsPath();
+                int r2=Math.Max((int)(10*(1.0-p)),2);
+                rp.AddArc(0,0,r2*2,r2*2,180,90); rp.AddArc(w-r2*2,0,r2*2,r2*2,270,90);
+                rp.AddArc(w-r2*2,h-r2*2,r2*2,r2*2,0,90); rp.AddArc(0,h-r2*2,r2*2,r2*2,90,90);
+                rp.CloseFigure();
+                f.Region=new Region(rp);
+                if(tick>=20){timer.Stop();f.Close();}
+            }
+        };
+        f.Shown+=delegate{timer.Start();};
+        f.ShowDialog();
     }
 }
