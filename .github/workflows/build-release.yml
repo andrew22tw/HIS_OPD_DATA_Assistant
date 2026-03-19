@@ -1,0 +1,61 @@
+name: Build and Release
+
+on:
+  push:
+    branches: [ main ]
+    paths:
+      - 'LabFormatter.cs'
+
+jobs:
+  build:
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Extract version from source
+        id: version
+        shell: pwsh
+        run: |
+          $src = Get-Content LabFormatter.cs -Raw
+          if ($src -match 'const string VER="(v[^"]+)"') {
+            $ver = $Matches[1]
+            echo "VER=$ver" >> $env:GITHUB_OUTPUT
+            echo "Version: $ver"
+          } else {
+            echo "VER=v0.0.0" >> $env:GITHUB_OUTPUT
+          }
+
+      - name: Find csc.exe and compile
+        shell: pwsh
+        run: |
+          $csc = Get-ChildItem "C:\Windows\Microsoft.NET\Framework64\v4*\csc.exe" -ErrorAction SilentlyContinue | Select-Object -Last 1
+          if (-not $csc) { $csc = Get-ChildItem "C:\Windows\Microsoft.NET\Framework\v4*\csc.exe" -ErrorAction SilentlyContinue | Select-Object -Last 1 }
+          if (-not $csc) { throw "csc.exe not found" }
+          echo "Using: $($csc.FullName)"
+          & $csc.FullName /target:winexe /out:LabFormatter.exe /optimize+ /nologo LabFormatter.cs
+          if ($LASTEXITCODE -ne 0) { throw "Compile failed" }
+          $size = (Get-Item LabFormatter.exe).Length
+          echo "OK: LabFormatter.exe ($size bytes)"
+
+      - name: Create Release
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: ${{ steps.version.outputs.VER }}
+          name: Lab Data Formatter ${{ steps.version.outputs.VER }}
+          body: |
+            ## Lab Data Formatter ${{ steps.version.outputs.VER }}
+            
+            ### 下載
+            - **LabFormatter.exe** - 直接執行，不需安裝
+            - **readme.txt** - 使用說明
+            
+            ### 安裝方式
+            1. 下載 LabFormatter.exe 和 readme.txt
+            2. 放在同一個資料夾
+            3. 雙擊 LabFormatter.exe 啟動
+          files: |
+            LabFormatter.exe
+            readme.txt
+          make_latest: true
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
