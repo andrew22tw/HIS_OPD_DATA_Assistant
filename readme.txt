@@ -1,5 +1,5 @@
 ================================================================
-  Lab Data Formatter v1.2.0 使用說明
+  Lab Data Formatter v1.2.1 使用說明
   作者：吳岳霖醫師  DAL93@tpech.gov.tw
 ================================================================
 
@@ -70,8 +70,8 @@
   日期格式：民國年YYYMM（例如 11503 = 民國 115 年 3 月）
 
   輸出順序：
-  AC → HbA1c → BUN/Cr → Na/K → ALT/AST → Alb →
-  TC/TG/LD/HD → UA → Ca/IP → Hb → UAC → UPC
+  AC → HbA1c → BUN/Cr → Na/K → HCO3 → ALT/AST → Alb →
+  TC/TG/L/H → UA → Ca/IP → Iron/TIBC/Ferritin → Hb → ACR → PCR
 
   自動分組（用 / 連接）：
   - BUN/Cr        腎功能
