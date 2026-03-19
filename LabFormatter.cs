@@ -1,4 +1,4 @@
-// Lab Data Formatter v1.1.0
+// Lab Data Formatter v1.1.1
 // Author: \u5433\u5cb3\u9716\u91ab\u5e2b (DAL93@tpech.gov.tw)
 // Compile: build.bat (auto-finds csc.exe)
 // Hotkeys: Ctrl+0=Settings, Ctrl+1~4=Custom slots
@@ -314,7 +314,7 @@ static class NativeMethods {
 
 // ══════════ Main App ══════════
 class App : Form {
-    const string VER="v1.1.0";
+    const string VER="v1.1.1";
     [DllImport("user32")] static extern bool RegisterHotKey(IntPtr h,int id,uint mod,uint vk);
     [DllImport("user32")] static extern bool UnregisterHotKey(IntPtr h,int id);
     [DllImport("user32")] static extern void keybd_event(byte vk,byte scan,uint flags,UIntPtr extra);
