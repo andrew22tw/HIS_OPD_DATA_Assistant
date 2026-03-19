@@ -1,4 +1,4 @@
-// Lab Data Formatter v1.1.1
+// Lab Data Formatter v1.2.0
 // Author: \u5433\u5cb3\u9716\u91ab\u5e2b (DAL93@tpech.gov.tw)
 // Compile: build.bat (auto-finds csc.exe)
 // Hotkeys: Ctrl+0=Settings, Ctrl+1~4=Custom slots
@@ -314,7 +314,7 @@ static class NativeMethods {
 
 // ══════════ Main App ══════════
 class App : Form {
-    const string VER="v1.1.1";
+    const string VER="v1.2.0";
     [DllImport("user32")] static extern bool RegisterHotKey(IntPtr h,int id,uint mod,uint vk);
     [DllImport("user32")] static extern bool UnregisterHotKey(IntPtr h,int id);
     [DllImport("user32")] static extern void keybd_event(byte vk,byte scan,uint flags,UIntPtr extra);
@@ -335,13 +335,39 @@ class App : Form {
         var bmp=new Bitmap(32,32); using(var g=Graphics.FromImage(bmp)){
             g.SmoothingMode=System.Drawing.Drawing2D.SmoothingMode.AntiAlias;
             g.Clear(Color.Transparent);
-            using(var b=new SolidBrush(Color.FromArgb(60,c)))g.FillEllipse(b,2,0,28,28);
-            using(var b=new SolidBrush(c))g.FillEllipse(b,7,3,18,18);
-            using(var b=new SolidBrush(ControlPaint.Dark(c)))g.FillRectangle(b,11,20,10,5);
-            using(var b=new SolidBrush(ControlPaint.DarkDark(c)))g.FillRectangle(b,12,25,8,4);
-            using(var p=new Pen(Color.FromArgb(180,255,255,255),1.5f)){
-                g.DrawLine(p,14,14,15,7); g.DrawLine(p,15,7,17,12);
-                g.DrawLine(p,17,12,19,7); g.DrawLine(p,19,7,20,14);}
+            // Soft status glow behind head
+            using(var b=new SolidBrush(Color.FromArgb(35,c)))g.FillEllipse(b,0,3,31,28);
+            // Big round face (chibi proportion)
+            using(var b=new SolidBrush(Color.FromArgb(255,225,195)))g.FillEllipse(b,3,10,26,21);
+            // Hair tufts (dark brown)
+            using(var b=new SolidBrush(Color.FromArgb(90,55,30))){
+                g.FillEllipse(b,3,11,7,8); g.FillEllipse(b,22,11,7,8);}
+            // Doctor cap (white puffy dome)
+            using(var b=new SolidBrush(Color.White)){
+                g.FillEllipse(b,5,0,22,14);
+                g.FillRectangle(b,4,7,24,6);}
+            // Cross on cap (status color)
+            using(var b=new SolidBrush(c)){
+                g.FillRectangle(b,14,2,4,8);
+                g.FillRectangle(b,11,4,10,4);}
+            // Cap brim
+            using(var p=new Pen(Color.FromArgb(180,200,200,200),0.8f))g.DrawLine(p,5,12,27,12);
+            // Big kawaii eyes
+            using(var b=new SolidBrush(Color.FromArgb(45,45,55))){
+                g.FillEllipse(b,8,16,6,6); g.FillEllipse(b,18,16,6,6);}
+            // Eye sparkle (big)
+            using(var b=new SolidBrush(Color.White)){
+                g.FillEllipse(b,9,16,3,3); g.FillEllipse(b,19,16,3,3);}
+            // Eye sparkle (tiny)
+            using(var b=new SolidBrush(Color.FromArgb(220,255,255,255))){
+                g.FillEllipse(b,12,20,2,1); g.FillEllipse(b,22,20,2,1);}
+            // Rosy blush cheeks
+            using(var b=new SolidBrush(Color.FromArgb(65,255,100,110))){
+                g.FillEllipse(b,4,22,8,4); g.FillEllipse(b,20,22,8,4);}
+            // Happy cat smile :3
+            using(var p=new Pen(Color.FromArgb(210,90,70),1.2f)){
+                g.DrawArc(p,10,23,6,3,10,160);
+                g.DrawArc(p,16,23,6,3,10,160);}
         }
         var hIcon=bmp.GetHicon(); var icon=Icon.FromHandle(hIcon);
         var clone=(Icon)icon.Clone(); DestroyIcon(hIcon); bmp.Dispose();
