@@ -1,5 +1,5 @@
 ================================================================
-  Lab Data Formatter v1.1.0 使用說明
+  Lab Data Formatter v1.2.0 使用說明
   作者：吳岳霖醫師  DAL93@tpech.gov.tw
 ================================================================
 
@@ -16,12 +16,11 @@
 
 【安裝方式】
 
-  1. 把 LabFormatter.cs 和 build.bat 放在同一個資料夾
-  2. 雙擊 build.bat 編譯
-  3. 產生 LabFormatter.exe（約 30KB）
-  4. 雙擊 LabFormatter.exe 啟動，圖示出現在右下角系統匣
+  1. 從網頁下載 LabFormatter.exe 和 readme.txt
+  2. 放在任何位置（桌面即可）
+  3. 雙擊 LabFormatter.exe 啟動，圖示出現在右下角系統匣
 
-  不需要安裝任何軟體，Windows 10/11 內建編譯器。
+  免安裝，下載即用。
 
 ================================================================
 
@@ -126,9 +125,7 @@
 
 【檔案說明】
 
-  LabFormatter.exe              主程式（放任何位置皆可）
-  LabFormatter.cs               原始碼
-  build.bat                     編譯腳本
+  LabFormatter.exe              主程式（下載即用）
   readme.txt                    本說明文件
 
   設定檔位置（自動建立）：
