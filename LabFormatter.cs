@@ -1,4 +1,4 @@
-// Lab Data Formatter v1.3.0
+// Lab Data Formatter v1.3.1
 // Author: \u5433\u5cb3\u9716\u91ab\u5e2b (DAL93@tpech.gov.tw)
 // Compile: build.bat (auto-finds csc.exe)
 // Hotkeys: Ctrl+0=Settings, Ctrl+1~4=Custom slots
