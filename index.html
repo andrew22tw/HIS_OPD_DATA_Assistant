@@ -301,7 +301,7 @@ td {
       <span class="badge badge-dl">下載次數 <span id="dlCount">...</span></span>
     </div>
     <div class="download-bar">
-      <a class="dl-btn dl-btn-main" id="dlExe" href="https://github.com/andrew22tw/HIS_OPD_DATA_Assistant/releases/latest/download/LabFormatter.exe">
+      <a class="dl-btn dl-btn-main" id="dlExe" href="https://github.com/andrew22tw/HIS_OPD_DATA_Assistant/releases/latest/download/LabFormatter.exe" onclick="incrementDl()">
         <span class="dl-icon">⬇</span>下載 LabFormatter.exe
       </a>
       <a class="dl-btn dl-btn-sub" id="dlReadme" href="https://github.com/andrew22tw/HIS_OPD_DATA_Assistant/releases/latest/download/readme.txt">
@@ -626,10 +626,7 @@ function copyReadme() {
   var dlCountEl = document.getElementById("dlCount");
   var dlExe = document.getElementById("dlExe");
   var dlReadme = document.getElementById("dlReadme");
-// ★ FIX: 用變數存好 fallback URL，確保 catch 裡能正確引用
-  var fallbackExe    = "https://github.com/" + repo + "/releases/latest/download/LabFormatter.exe";
-  var fallbackReadme = "https://github.com/" + repo + "/releases/latest/download/readme.txt";
-  
+
   // Set fallback URLs immediately (so buttons always work)
   dlExe.href = "https://github.com/" + repo + "/releases/latest/download/LabFormatter.exe";
   dlReadme.href = "https://github.com/" + repo + "/releases/latest/download/readme.txt";
@@ -652,24 +649,44 @@ function copyReadme() {
   }).catch(function(){
     verEl.textContent = "v1.4.1";
     dateEl.textContent = "2026-03-20";
-    dlExe.href    = fallbackExe;    // ✅ 正確引用
-    dlReadme.href = fallbackReadme; // ✅ 正確引用
   });
 
-  // Fetch total download count across ALL releases
+  // Fetch total download count across ALL releases + local tracking
+  var localCount = 0;
+  try { localCount = parseInt(localStorage.getItem("ldf_dl_count")||"0",10)||0; } catch(ex){}
+  dlCountEl.textContent = localCount > 0 ? localCount.toLocaleString() : "...";
+
   fetch(apiAll).then(function(r){
     if(!r.ok) throw new Error("API "+r.status);
     return r.json();
   }).then(function(releases){
     if(!Array.isArray(releases)) return;
-    var total=0;
+    var ghTotal=0;
     for(var ri=0;ri<releases.length;ri++){
       var assets=releases[ri].assets||[];
-      for(var ai=0;ai<assets.length;ai++) total+=assets[ai].download_count||0;
+      for(var ai=0;ai<assets.length;ai++) ghTotal+=assets[ai].download_count||0;
     }
-    dlCountEl.textContent = total.toLocaleString();
-  }).catch(function(){ dlCountEl.textContent = "-"; });
+    // Show whichever is higher (local tracks faster than GitHub API cache)
+    var display = Math.max(ghTotal, localCount);
+    dlCountEl.textContent = display.toLocaleString();
+    // Sync: if GitHub caught up, update local to match
+    if(ghTotal > localCount){
+      try { localStorage.setItem("ldf_dl_count", ghTotal.toString()); } catch(ex){}
+    }
+  }).catch(function(){
+    dlCountEl.textContent = localCount > 0 ? localCount.toLocaleString() : "-";
+  });
 })();
+
+// Download counter: +1 on click, persist in localStorage
+function incrementDl(){
+  var el = document.getElementById("dlCount");
+  var cur = 0;
+  try { cur = parseInt(localStorage.getItem("ldf_dl_count")||"0",10)||0; } catch(ex){}
+  cur++;
+  try { localStorage.setItem("ldf_dl_count", cur.toString()); } catch(ex){}
+  if(el) el.textContent = cur.toLocaleString();
+}
 
 // Render footer email dynamically (prevents Cloudflare email obfuscation)
 (function(){
