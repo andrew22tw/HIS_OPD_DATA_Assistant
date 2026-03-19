@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <!-- Lab Data Formatter Website -->
 <!-- Last Modified: 2026-03-20 01:00 (UTC+8) -->
-<!-- Version: v1.3.1 -->
+<!-- Version: v1.3.2 -->
 <html lang="zh-TW">
 <head>
 <meta charset="UTF-8">
@@ -369,11 +369,12 @@ td {
   <h2 class="section-title">熱鍵說明</h2>
   <table>
     <tr><th>熱鍵</th><th>功能</th><th>說明</th></tr>
-    <tr><td><span class="kbd">Ctrl+`</span></td><td>擷取</td><td>自動全選+複製（可自訂按鍵）</td></tr>
+    <tr><td><span class="kbd">Alt+1</span></td><td>擷取</td><td>自動全選+複製（可自訂按鍵）</td></tr>
+    <tr><td><span class="kbd">Alt+2</span></td><td>貼上報告</td><td>貼上整理後的結果（可自訂按鍵）</td></tr>
     <tr><td><span class="kbd">Ctrl+0</span></td><td>開啟設定</td><td>編輯熱鍵、檢視結果</td></tr>
     <tr><td><span class="kbd">Ctrl+1</span></td><td>自訂快貼 1</td><td>可設定常用文字片段</td></tr>
     <tr><td><span class="kbd">Ctrl+2</span></td><td>自訂快貼 2</td><td>可設定常用文字片段</td></tr>
-    <tr><td><span class="kbd">Ctrl+3</span></td><td>貼上報告</td><td>貼上轉換後的結果（預設）</td></tr>
+    <tr><td><span class="kbd">Ctrl+3</span></td><td>貼上報告</td><td>備用貼上（同 Alt+2）</td></tr>
     <tr><td><span class="kbd">Ctrl+4</span></td><td>自訂快貼 3</td><td>可設定常用文字片段</td></tr>
   </table>
   <h3 style="margin-top:28px;font-size:1.1rem;font-weight:600;">系統匣燈泡</h3>
@@ -410,7 +411,7 @@ td {
   <h2 class="section-title">更新紀錄</h2>
   <div class="changelog-item">
     <div class="cl-header">
-      <span class="cl-ver">v1.3.1</span>
+      <span class="cl-ver">v1.3.2</span>
       <span class="cl-date">2026-03-20</span>
       <span class="cl-tag">Latest</span>
     </div>
@@ -424,9 +425,10 @@ td {
       <li>設定視窗新增「輸出項目勾選」區塊，偏好存入 JSON</li>
       <li>新增 HCO3 項目（VBG 報告，取整數，排在 Na/K 後面）</li>
       <li>勾選區塊新增「全選/全不選」切換按鈕</li>
-      <li>新增擷取鍵（預設 Ctrl+`），一鍵執行全選+複製</li>
-      <li>擷取鍵可自訂 Ctrl 或 Alt + 任意鍵</li>
-      <li>啟動時顯示「門診小幫手上線」動畫，漸入後縮小消失</li>
+      <li>擷取鍵改為 Alt+1（預設），貼上鍵改為 Alt+2</li>
+      <li>擷取鍵和貼上鍵皆可自訂 Ctrl 或 Alt + 任意鍵</li>
+      <li>啟動畫面改為「病歷小幫手上線」</li>
+      <li>啟動時顯示「病歷小幫手上線」動畫，漸入後縮小消失</li>
     </ul>
   </div>
   <div class="changelog-item">
@@ -491,7 +493,7 @@ td {
 <script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script>
 var readmeText = [
 "================================================================",
-"  Lab Data Formatter v1.3.1 使用說明",
+"  Lab Data Formatter v1.3.2 使用說明",
 "  作者：吳岳霖醫師  DAL93@tpech.gov.tw",
 "================================================================",
 "",
@@ -518,16 +520,17 @@ var readmeText = [
 "",
 "【基本操作】",
 "",
-"  步驟一：在醫院系統中，開啟檢驗報告視窗",
-"  步驟二：按 Ctrl+` 擷取（自動全選+複製）",
+"  步驟一：將滑鼠移到 ORD 系統的檢驗報告上",
+"  步驟二：按 Alt+1 擷取（自動全選+複製）",
 "  步驟三：系統匣燈泡變綠，右下角彈出預覽視窗",
-"  步驟四：切到要貼上的地方，按 Ctrl+3 自動貼上",
+"  步驟四：切到要貼上的地方，按 Alt+2 貼上結果",
 "",
 "================================================================",
 "",
 "【熱鍵說明】",
 "",
-"  Ctrl+`    擷取（自動全選+複製，可自訂）",
+"  Alt+1     擷取（自動全選+複製，可自訂）",
+"  Alt+2     貼上整理後的報告（可自訂）",
 "  Ctrl+0    開啟設定視窗",
 "  Ctrl+1    自訂快貼 1（可設定常用文字片段）",
 "  Ctrl+2    自訂快貼 2",
@@ -539,7 +542,7 @@ var readmeText = [
 "【多份報告合併】",
 "",
 "  如果同一位病人有多份報告（例如生化、血液、尿液），",
-"  只要在 15 秒內連續擷取 複製，程式會自動合併。",
+"  只要在 15 秒內連續按 Alt+1 擷取，程式會自動合併。",
 "",
 "  程式會自動區分血液和尿液檢體：",
 "  - 血液項目只從「檢體 血液」擷取",
@@ -603,7 +606,7 @@ function copyReadme() {
       }
     }
   }).catch(function(){
-    verEl.textContent = "v1.3.1";
+    verEl.textContent = "v1.3.2";
     dateEl.textContent = "2026-03-20";
     dlExe.href = fallbackZip;
     dlReadme.href = "https://raw.githubusercontent.com/"+repo+"/main/readme.txt";
