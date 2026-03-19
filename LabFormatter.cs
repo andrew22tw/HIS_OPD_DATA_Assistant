@@ -1,4 +1,4 @@
-// Lab Data Formatter v1.3.1
+// Lab Data Formatter v1.3.0
 // Author: \u5433\u5cb3\u9716\u91ab\u5e2b (DAL93@tpech.gov.tw)
 // Compile: build.bat (auto-finds csc.exe)
 // Hotkeys: Ctrl+0=Settings, Ctrl+1~4=Custom slots
@@ -375,7 +375,7 @@ static class NativeMethods {
 
 // ══════════ Main App ══════════
 class App : Form {
-    const string VER="v1.3.1";
+    const string VER="v1.3.0";
     [DllImport("user32")] static extern bool RegisterHotKey(IntPtr h,int id,uint mod,uint vk);
     [DllImport("user32")] static extern bool UnregisterHotKey(IntPtr h,int id);
     [DllImport("user32")] static extern void keybd_event(byte vk,byte scan,uint flags,UIntPtr extra);
@@ -684,21 +684,6 @@ class App : Form {
             cx+=115; if(cx>fw-140){cx=12;cy+=22;}
         }
 
-        saveBtn.Click+=(s,e)=>{
-            for(int i=0;i<4;i++) slots[i].SaveTo(cfg.Slots[i]);
-            // Save checked lab items
-            var checkedKeys=new List<string>();
-            foreach(var kv in chkItems) if(kv.Value.Checked) checkedKeys.Add(kv.Key);
-            foreach(var sl in cfg.Slots) if(sl.Type=="lab") sl.LabItems=checkedKeys;
-            // Save capture hotkey
-            cfg.CaptureMod=capModCombo.Text;
-            cfg.CaptureKey=capKeyBox.Text.Trim();
-            if(cfg.CaptureKey=="") cfg.CaptureKey="`";
-            cfg.Save();
-            RegisterCaptureHotkey();
-            SetTray(Color.LimeGreen,"\u2713 \u5df2\u5132\u5b58");DelayYellow();
-        };
-
         // ── Capture hotkey row ──
         int chy=iy+itemGb.Height+6;
         f.Controls.Add(new Label{Text="\u64f7\u53d6\u9375\uff08\u5168\u9078+\u8907\u88fd\uff09:",
@@ -717,6 +702,21 @@ class App : Form {
         f.Controls.Add(new Label{Text="\u76ee\u524d: "+cfg.CaptureMod+"+"+cfg.CaptureKey+" \u2192 \u81ea\u52d5 Ctrl+A Ctrl+C",
             Left=286,Top=chy+3,Width=280,AutoSize=false,
             ForeColor=Color.Gray,Font=new Font("Microsoft JhengHei UI",8)});
+
+        saveBtn.Click+=(s,e)=>{
+            for(int i=0;i<4;i++) slots[i].SaveTo(cfg.Slots[i]);
+            // Save checked lab items
+            var checkedKeys=new List<string>();
+            foreach(var kv in chkItems) if(kv.Value.Checked) checkedKeys.Add(kv.Key);
+            foreach(var sl in cfg.Slots) if(sl.Type=="lab") sl.LabItems=checkedKeys;
+            // Save capture hotkey
+            cfg.CaptureMod=capModCombo.Text;
+            cfg.CaptureKey=capKeyBox.Text.Trim();
+            if(cfg.CaptureKey=="") cfg.CaptureKey="`";
+            cfg.Save();
+            RegisterCaptureHotkey();
+            SetTray(Color.LimeGreen,"\u2713 \u5df2\u5132\u5b58");DelayYellow();
+        };
 
         // JSON row
         int jy=chy+28;
