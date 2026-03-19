@@ -1,4 +1,4 @@
-// Lab Data Formatter v1.2.0
+// Lab Data Formatter v1.2.1
 // Author: \u5433\u5cb3\u9716\u91ab\u5e2b (DAL93@tpech.gov.tw)
 // Compile: build.bat (auto-finds csc.exe)
 // Hotkeys: Ctrl+0=Settings, Ctrl+1~4=Custom slots
@@ -75,36 +75,41 @@ static class Json {
 static class Lab {
     public class Item { public string Key,Pattern,Disp; public bool On; }
     public static List<Item> Items = new List<Item> {
-        // ── Order: AC, HbA1c, BUN/Cr, Na/K, ALT/AST, Alb, TC/TG/LD/HD, UA, Ca/IP, Hb, UAC, UPC ──
+        // ── Order: AC,HbA1c,BUN/Cr,Na/K,HCO3,ALT/AST,Alb,TC/TG/L/H,UA,Ca/IP,Iron/TIBC/Ferritin,Hb,ACR,PCR ──
         new Item{Key="GluAC",Pattern=@"\bGlu",           Disp="AC",   On=true},
-        new Item{Key="HbA1c",Pattern=@"\bHbA1[Cc]\b",      Disp="HbA1c",On=true},
+        new Item{Key="HbA1c",Pattern=@"\bHbA1[Cc]\b",    Disp="HbA1c",On=true},
         new Item{Key="BUN",  Pattern=@"\bBUN\b",         Disp="BUN",  On=true},
         new Item{Key="Cr",   Pattern=@"\bCr\b(?!P|E)",   Disp="Cr",   On=true},
         new Item{Key="eGFR", Pattern=@"eGFR",            Disp="eGFR", On=false},
         new Item{Key="Na",   Pattern=@"\bNa\b(?!m)",     Disp="Na",   On=true},
         new Item{Key="K",    Pattern=@"(?<![A-Za-z])K(?=\s)",Disp="K",On=true},
+        new Item{Key="HCO3", Pattern=@"\bHCO3\b",        Disp="HCO3", On=true},
         new Item{Key="CRP",  Pattern=@"\bCRP\b",         Disp="CRP",  On=false},
         new Item{Key="ALT",  Pattern=@"\bALT\b",         Disp="ALT",  On=true},
         new Item{Key="AST",  Pattern=@"\bAST\b",         Disp="AST",  On=true},
         new Item{Key="Alb",  Pattern=@"\bAlbumin\b(?!.*Cr)",Disp="Alb",On=true},
         new Item{Key="Chol", Pattern=@"\bCholesterol\b", Disp="TC",   On=true},
         new Item{Key="TG",   Pattern=@"\bTG\b",          Disp="TG",   On=true},
-        new Item{Key="LDL",  Pattern=@"\bLDL",           Disp="LD",   On=true},
-        new Item{Key="HDL",  Pattern=@"\bHDL",           Disp="HD",   On=true},
+        new Item{Key="LDL",  Pattern=@"\bLDL",           Disp="L",    On=true},
+        new Item{Key="HDL",  Pattern=@"\bHDL",           Disp="H",    On=true},
         new Item{Key="UA",   Pattern=@"\bUric\b",        Disp="UA",   On=true},
         new Item{Key="Ca",   Pattern=@"(?<![a-z])Ca\b",  Disp="Ca",   On=true},
         new Item{Key="P",    Pattern=@"\bPhosphate\b|(?<=\s)P(?=\s{2,})",Disp="IP",On=true},
+        new Item{Key="Iron", Pattern=@"\bIron\b",        Disp="Iron", On=true},
+        new Item{Key="TIBC", Pattern=@"\bTIBC\b",        Disp="TIBC", On=true},
+        new Item{Key="Ferritin",Pattern=@"\bFerritin\b", Disp="Ferritin",On=true},
         new Item{Key="WBC",  Pattern=@"\bWBC\b",         Disp="WBC",  On=true},
         new Item{Key="PLT",  Pattern=@"\bPlatelet\b",    Disp="PLT",  On=true},
         new Item{Key="TBil", Pattern=@"\bT-Bil\b",       Disp="TBil", On=true},
         new Item{Key="Mg",   Pattern=@"\bMg\b",          Disp="Mg",   On=true},
         new Item{Key="Hb",   Pattern=@"\bHb\b(?!A)",     Disp="Hb",   On=true},
-        new Item{Key="UAC",  Pattern=@"\bUACR\b|\bACR\b",   Disp="UAC",  On=true},
-        new Item{Key="UPC",  Pattern=@"\bUPCR\b|\bPCR\b",   Disp="UPC",  On=true},
+        new Item{Key="UAC",  Pattern=@"\bUACR\b|\bACR\b|\bA/C\b",Disp="ACR",On=true},
+        new Item{Key="UPC",  Pattern=@"\bUPCR\b|\bPCR\b|\bP/C\b",Disp="PCR",On=true},
     };
     static string[][] Groups = {
         new[]{"BUN","Cr"}, new[]{"Na","K"}, new[]{"ALT","AST"},
-        new[]{"Chol","TG","LDL","HDL"}, new[]{"Ca","P"}
+        new[]{"Chol","TG","LDL","HDL"}, new[]{"Ca","P"},
+        new[]{"Iron","TIBC","Ferritin"}
     };
 
     public static string ExtractVal(string line, string pattern) {
@@ -151,9 +156,10 @@ static class Lab {
                 if (v != null) vals[it.Key] = v;
             }
         }
-        // BUN: round to integer
-        if (vals.ContainsKey("BUN")) {
-            double bun; if(double.TryParse(vals["BUN"], out bun)) vals["BUN"]=((int)Math.Round(bun)).ToString();
+        // Round to integer: BUN, Iron, TIBC, Ferritin
+        var roundKeys = new[]{"BUN","HCO3","Iron","TIBC","Ferritin"};
+        foreach(var rk in roundKeys) {
+            if(vals.ContainsKey(rk)){double d;if(double.TryParse(vals[rk],out d))vals[rk]=((int)Math.Round(d)).ToString();}
         }
         var parts = new List<string>();
         var used = new HashSet<string>();
@@ -192,7 +198,22 @@ static class Lab {
         }
         if (parts.Count==0) return null;
         var r = string.Join(",", parts);
-        return date!="" ? date+" "+r : r;
+        if (date!="") r = date+" "+r;
+        // Word-wrap at 80 chars, break at comma, indent continuation with 6 spaces
+        if (r.Length>80) {
+            var sb = new System.Text.StringBuilder();
+            int col=0;
+            var tokens=r.Split(',');
+            for(int ti=0;ti<tokens.Length;ti++){
+                var tok=tokens[ti]+(ti<tokens.Length-1?",":"");
+                if(col==0){sb.Append(tok);col=tok.Length;}
+                else if(col+tok.Length>80){
+                    sb.Append("\n      ");col=6;sb.Append(tok);col+=tok.Length;}
+                else{sb.Append(tok);col+=tok.Length;}
+            }
+            r=sb.ToString();
+        }
+        return r;
     }
 }
 
@@ -314,7 +335,7 @@ static class NativeMethods {
 
 // ══════════ Main App ══════════
 class App : Form {
-    const string VER="v1.2.0";
+    const string VER="v1.2.1";
     [DllImport("user32")] static extern bool RegisterHotKey(IntPtr h,int id,uint mod,uint vk);
     [DllImport("user32")] static extern bool UnregisterHotKey(IntPtr h,int id);
     [DllImport("user32")] static extern void keybd_event(byte vk,byte scan,uint flags,UIntPtr extra);
@@ -418,7 +439,7 @@ class App : Form {
     }
     void ResetMergeTimer() {
         if(mergeTimer==null){
-            mergeTimer=new System.Windows.Forms.Timer{Interval=10000};
+            mergeTimer=new System.Windows.Forms.Timer{Interval=15000};
             mergeTimer.Tick+=(s,e)=>{mergeTimer.Stop(); FinalizeMerge();};}
         mergeTimer.Stop(); mergeTimer.Start();
     }
@@ -569,18 +590,48 @@ class App : Form {
         var saveBtn=new Button{Text="\u5132\u5b58\u8a2d\u5b9a",Left=fw/2-120,Top=sy+2,Width=120,Height=30,
             BackColor=Color.FromArgb(76,175,80),ForeColor=Color.White,
             Font=new Font("Microsoft JhengHei UI",10,FontStyle.Bold)};
-        saveBtn.Click+=(s,e)=>{
-            for(int i=0;i<4;i++) slots[i].SaveTo(cfg.Slots[i]);
-            cfg.Save(); SetTray(Color.LimeGreen,"\u2713 \u5df2\u5132\u5b58");DelayYellow();
-        };
         var helpBtn=new Button{Text="\u4f7f\u7528\u8aaa\u660e",Left=fw/2+10,Top=sy+2,Width=110,Height=30,
             BackColor=Color.FromArgb(33,150,243),ForeColor=Color.White,
             Font=new Font("Microsoft JhengHei UI",10)};
         helpBtn.Click+=(s,e)=>OpenReadme();
         f.Controls.Add(saveBtn);f.Controls.Add(helpBtn);
 
+        // ── Item checkboxes ──
+        int iy=sy+40;
+        var itemGb=new GroupBox{Text="\u8f38\u51fa\u9805\u76ee\u52fe\u9078\uff08\u53d6\u6d88\u52fe\u9078 = \u4e0d\u7d0d\u5165\u6574\u7406\uff09",
+            Left=10,Top=iy,Width=fw-20,Height=150,Font=new Font("Microsoft JhengHei UI",9)};
+        f.Controls.Add(itemGb);
+        var chkItems=new Dictionary<string,CheckBox>();
+        var labEnabled=cfg.GetLabItems();
+        // Toggle all button
+        bool toggleState=true;
+        var toggleBtn=new Button{Text="\u5168\u4e0d\u9078",Left=itemGb.Width-80,Top=16,Width=68,Height=22,
+            Font=new Font("Microsoft JhengHei UI",8)};
+        toggleBtn.Click+=(s,e)=>{
+            toggleState=!toggleState;
+            foreach(var kv in chkItems) kv.Value.Checked=toggleState;
+            toggleBtn.Text=toggleState?"\u5168\u4e0d\u9078":"\u5168\u9078";
+        };
+        itemGb.Controls.Add(toggleBtn);
+        int cx=12,cy=18;
+        foreach(var it in Lab.Items){
+            var cb=new CheckBox{Text=it.Disp+"("+it.Key+")",Left=cx,Top=cy,Width=110,Height=20,
+                Checked=labEnabled.Contains(it.Key),Font=new Font("Microsoft JhengHei UI",8)};
+            chkItems[it.Key]=cb; itemGb.Controls.Add(cb);
+            cx+=115; if(cx>fw-140){cx=12;cy+=22;}
+        }
+
+        saveBtn.Click+=(s,e)=>{
+            for(int i=0;i<4;i++) slots[i].SaveTo(cfg.Slots[i]);
+            // Save checked lab items
+            var checkedKeys=new List<string>();
+            foreach(var kv in chkItems) if(kv.Value.Checked) checkedKeys.Add(kv.Key);
+            foreach(var sl in cfg.Slots) if(sl.Type=="lab") sl.LabItems=checkedKeys;
+            cfg.Save(); SetTray(Color.LimeGreen,"\u2713 \u5df2\u5132\u5b58");DelayYellow();
+        };
+
         // JSON row
-        int jy=sy+38;
+        int jy=iy+itemGb.Height+8;
         var jlbl=new Label{Text="JSON:",Left=10,Top=jy+2,Width=38,ForeColor=Color.Gray};
         var pe=new TextBox{Left=50,Top=jy,Width=fw-200,ReadOnly=true,Text=Config.JsonPath,
             BackColor=Color.WhiteSmoke,Font=new Font("Consolas",8)};
