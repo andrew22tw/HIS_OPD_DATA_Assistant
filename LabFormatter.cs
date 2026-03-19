@@ -1,4 +1,4 @@
-// Lab Data Formatter v1.2.1
+// Lab Data Formatter v1.3.0
 // Author: \u5433\u5cb3\u9716\u91ab\u5e2b (DAL93@tpech.gov.tw)
 // Compile: build.bat (auto-finds csc.exe)
 // Hotkeys: Ctrl+0=Settings, Ctrl+1~4=Custom slots
@@ -222,8 +222,42 @@ class Slot {
     public string Name="",Type="none",Text="",Hotkey="";
     public List<string> LabItems=new List<string>();
 }
+static class VK {
+    // Modifier name -> RegisterHotKey flag
+    public static uint ModFlag(string mod) { return mod=="Alt"?(uint)1:(uint)2; } // Alt=1,Ctrl=2
+    // Key name -> virtual key code
+    public static uint Code(string key) {
+        if(key.Length==1){
+            char c=char.ToUpper(key[0]);
+            if(c>='A'&&c<='Z') return (uint)c;
+            if(c>='0'&&c<='9') return (uint)c;
+        }
+        if(key=="`"||key=="~") return 0xC0;
+        if(key=="-") return 0xBD; if(key=="=") return 0xBB;
+        if(key=="["||key=="{") return 0xDB; if(key=="]"||key=="}") return 0xDD;
+        if(key=="\\"||key=="|") return 0xDC;
+        if(key==";"||key==":") return 0xBA; if(key=="'"||key=="\"") return 0xDE;
+        if(key==","||key=="<") return 0xBC; if(key=="."||key==">") return 0xBE;
+        if(key=="/"||key=="?") return 0xBF;
+        if(key.StartsWith("F")&&key.Length>=2){int n;if(int.TryParse(key.Substring(1),out n)&&n>=1&&n<=12)return(uint)(0x6F+n);}
+        return 0xC0; // default backtick
+    }
+    // Virtual key code -> display name
+    public static string Name(uint vk) {
+        if(vk>=0x41&&vk<=0x5A) return((char)vk).ToString();
+        if(vk>=0x30&&vk<=0x39) return((char)vk).ToString();
+        if(vk==0xC0) return "`"; if(vk==0xBD) return "-"; if(vk==0xBB) return "=";
+        if(vk==0xDB) return "["; if(vk==0xDD) return "]"; if(vk==0xDC) return "\\";
+        if(vk==0xBA) return ";"; if(vk==0xDE) return "'";
+        if(vk==0xBC) return ","; if(vk==0xBE) return "."; if(vk==0xBF) return "/";
+        if(vk>=0x70&&vk<=0x7B) return "F"+(vk-0x6F);
+        return "?";
+    }
+}
 class Config {
     public List<Slot> Slots = new List<Slot>();
+    public string CaptureMod = "Ctrl";
+    public string CaptureKey = "`";
     static string _path;
     static string _dir;
     static string ConfigDir {
@@ -264,6 +298,8 @@ class Config {
                     Slots.Add(slot);
                 }
             }
+            if(d.ContainsKey("capture_mod")) CaptureMod=d["capture_mod"].ToString();
+            if(d.ContainsKey("capture_key")) CaptureKey=d["capture_key"].ToString();
         } catch { }
         while(Slots.Count<4) {
             var i=Slots.Count;
@@ -290,6 +326,8 @@ class Config {
             if(s.Type=="lab") d["lab_items"]=s.LabItems.Cast<object>().ToList();
             arr.Add(d);}
         doc["slots"]=arr;
+        doc["capture_mod"]=CaptureMod;
+        doc["capture_key"]=CaptureKey;
         File.WriteAllText(Path, Json.Encode(doc,0), System.Text.Encoding.UTF8);
     }
     void CreateDefault() {
@@ -314,6 +352,8 @@ class Config {
             if(s.Type=="lab") d["lab_items"]=s.LabItems.Cast<object>().ToList();
             arr.Add(d);}
         doc["slots"]=arr;
+        doc["capture_mod"]="Ctrl";
+        doc["capture_key"]="`";
         try{File.WriteAllText(Path, Json.Encode(doc,0), System.Text.Encoding.UTF8);}catch{}
     }
     public HashSet<string> GetLabItems() {
@@ -335,7 +375,7 @@ static class NativeMethods {
 
 // ══════════ Main App ══════════
 class App : Form {
-    const string VER="v1.2.1";
+    const string VER="v1.3.0";
     [DllImport("user32")] static extern bool RegisterHotKey(IntPtr h,int id,uint mod,uint vk);
     [DllImport("user32")] static extern bool UnregisterHotKey(IntPtr h,int id);
     [DllImport("user32")] static extern void keybd_event(byte vk,byte scan,uint flags,UIntPtr extra);
@@ -344,9 +384,11 @@ class App : Form {
     NotifyIcon tray; Config cfg = new Config();
     string labResult; string lastClip; DateTime ignoreUntil;
     System.Windows.Forms.Timer clipTimer;
-    const uint MOD_CTRL=2; const int WM_HOTKEY=0x312;
+    const uint MOD_CTRL=2; const uint MOD_ALT=1; const int WM_HOTKEY=0x312;
+    // Hotkey IDs: 0=settings, 1~4=output slots, 5=capture
     static readonly Dictionary<int,uint> HK = new Dictionary<int,uint>{
         {0,0x30},{1,0x31},{2,0x32},{3,0x33},{4,0x34}};
+    const int HKID_CAPTURE=5;
 
     // ── Multi-report merge buffer (10s window) ──
     List<string> rawBuffer = new List<string>();  // stores raw clipboard text
@@ -397,7 +439,7 @@ class App : Form {
 
     public App() {
         cfg.Load(); ShowInTaskbar=false; WindowState=FormWindowState.Minimized; Visible=false;
-        tray=new NotifyIcon{Icon=MakeIcon(Color.Gold),Text="\u7b49\u5f85 Ctrl+C...",Visible=true};
+        tray=new NotifyIcon{Icon=MakeIcon(Color.Gold),Text="Lab Formatter "+VER,Visible=true};
         var menu=new ContextMenuStrip();
         menu.Items.Add("Ctrl+0 \u8a2d\u5b9a",null,(s,e)=>ShowSettings());
         menu.Items.Add("\u7de8\u8f2f JSON",null,(s,e)=>Config.OpenJson());
@@ -409,6 +451,7 @@ class App : Form {
         tray.DoubleClick+=(s,e)=>ShowSettings();
 
         foreach(var kv in HK) RegisterHotKey(Handle,kv.Key,MOD_CTRL,kv.Value);
+        RegisterCaptureHotkey();
 
         lastClip=TryGetClip(); ignoreUntil=DateTime.MinValue;
         clipTimer=new System.Windows.Forms.Timer{Interval=400};
@@ -535,10 +578,28 @@ class App : Form {
         Thread.Sleep(30);
         keybd_event(0x11,0,0,UIntPtr.Zero);keybd_event(0x56,0,0,UIntPtr.Zero);
         keybd_event(0x56,0,2,UIntPtr.Zero);keybd_event(0x11,0,2,UIntPtr.Zero);}
+    void SimCtrlAC(){Thread.Sleep(50);
+        // Release all modifiers first
+        keybd_event(0x12,0,2,UIntPtr.Zero);keybd_event(0x11,0,2,UIntPtr.Zero);keybd_event(0x10,0,2,UIntPtr.Zero);
+        Thread.Sleep(30);
+        // Ctrl+A
+        keybd_event(0x11,0,0,UIntPtr.Zero);keybd_event(0x41,0,0,UIntPtr.Zero);
+        keybd_event(0x41,0,2,UIntPtr.Zero);keybd_event(0x11,0,2,UIntPtr.Zero);
+        Thread.Sleep(80);
+        // Ctrl+C
+        keybd_event(0x11,0,0,UIntPtr.Zero);keybd_event(0x43,0,0,UIntPtr.Zero);
+        keybd_event(0x43,0,2,UIntPtr.Zero);keybd_event(0x11,0,2,UIntPtr.Zero);}
+    void RegisterCaptureHotkey(){
+        UnregisterHotKey(Handle,HKID_CAPTURE);
+        uint mod=VK.ModFlag(cfg.CaptureMod);
+        uint vk=VK.Code(cfg.CaptureKey);
+        RegisterHotKey(Handle,HKID_CAPTURE,mod,vk);
+    }
 
     protected override void WndProc(ref Message m) {
         if(m.Msg==WM_HOTKEY){int id=(int)m.WParam;
             if(id==0){ShowSettings();return;}
+            if(id==HKID_CAPTURE){SimCtrlAC();return;}
             int idx=id-1; if(idx<0||idx>=cfg.Slots.Count)return;
             var s=cfg.Slots[idx];
             try{
@@ -560,7 +621,9 @@ class App : Form {
         base.WndProc(ref m);
     }
     protected override void OnFormClosed(FormClosedEventArgs e){
-        foreach(var k in HK.Keys)UnregisterHotKey(Handle,k);tray.Visible=false;base.OnFormClosed(e);}
+        foreach(var k in HK.Keys)UnregisterHotKey(Handle,k);
+        UnregisterHotKey(Handle,HKID_CAPTURE);
+        tray.Visible=false;base.OnFormClosed(e);}
     protected override void SetVisibleCore(bool v){base.SetVisibleCore(false);}
 
     // ══════ Settings Window ══════
@@ -574,7 +637,7 @@ class App : Form {
         settingsForm=f;
         int fw=f.ClientSize.Width;
 
-        var lbl=new Label{Text="Ctrl+1~2,4 \u5feb\u901f\u8cbc\u4e0a\u6587\u5b57 | Ctrl+C \u8907\u88fd\u5831\u544a \u2192 Ctrl+3 \u8cbc\u4e0a\u6fc3\u7e2e\u5831\u544a",
+        var lbl=new Label{Text=cfg.CaptureMod+"+"+cfg.CaptureKey+" \u64f7\u53d6\u5831\u544a | Ctrl+3 \u8cbc\u4e0a\u7d50\u679c | Ctrl+0 \u8a2d\u5b9a",
             Left=0,Top=0,Width=fw,Height=22,TextAlign=ContentAlignment.MiddleCenter,ForeColor=Color.Gray};
         f.Controls.Add(lbl);
 
@@ -627,11 +690,36 @@ class App : Form {
             var checkedKeys=new List<string>();
             foreach(var kv in chkItems) if(kv.Value.Checked) checkedKeys.Add(kv.Key);
             foreach(var sl in cfg.Slots) if(sl.Type=="lab") sl.LabItems=checkedKeys;
-            cfg.Save(); SetTray(Color.LimeGreen,"\u2713 \u5df2\u5132\u5b58");DelayYellow();
+            // Save capture hotkey
+            cfg.CaptureMod=capModCombo.Text;
+            cfg.CaptureKey=capKeyBox.Text.Trim();
+            if(cfg.CaptureKey=="") cfg.CaptureKey="`";
+            cfg.Save();
+            RegisterCaptureHotkey();
+            SetTray(Color.LimeGreen,"\u2713 \u5df2\u5132\u5b58");DelayYellow();
         };
 
+        // ── Capture hotkey row ──
+        int chy=iy+itemGb.Height+6;
+        f.Controls.Add(new Label{Text="\u64f7\u53d6\u9375\uff08\u5168\u9078+\u8907\u88fd\uff09:",
+            Left=10,Top=chy+3,Width=130,AutoSize=false,
+            Font=new Font("Microsoft JhengHei UI",9)});
+        var capModCombo=new ComboBox{Left=142,Top=chy,Width=65,DropDownStyle=ComboBoxStyle.DropDownList,
+            Font=new Font("Microsoft JhengHei UI",9)};
+        capModCombo.Items.AddRange(new object[]{"Ctrl","Alt"});
+        capModCombo.SelectedItem=cfg.CaptureMod;
+        f.Controls.Add(capModCombo);
+        f.Controls.Add(new Label{Text="+",Left=210,Top=chy+3,Width=14,AutoSize=false,
+            Font=new Font("Microsoft JhengHei UI",9)});
+        var capKeyBox=new TextBox{Left=226,Top=chy,Width=50,Text=cfg.CaptureKey,MaxLength=5,
+            Font=new Font("Consolas",10),TextAlign=HorizontalAlignment.Center};
+        f.Controls.Add(capKeyBox);
+        f.Controls.Add(new Label{Text="\u76ee\u524d: "+cfg.CaptureMod+"+"+cfg.CaptureKey+" \u2192 \u81ea\u52d5 Ctrl+A Ctrl+C",
+            Left=286,Top=chy+3,Width=280,AutoSize=false,
+            ForeColor=Color.Gray,Font=new Font("Microsoft JhengHei UI",8)});
+
         // JSON row
-        int jy=iy+itemGb.Height+8;
+        int jy=chy+28;
         var jlbl=new Label{Text="JSON:",Left=10,Top=jy+2,Width=38,ForeColor=Color.Gray};
         var pe=new TextBox{Left=50,Top=jy,Width=fw-200,ReadOnly=true,Text=Config.JsonPath,
             BackColor=Color.WhiteSmoke,Font=new Font("Consolas",8)};
