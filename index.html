@@ -626,7 +626,10 @@ function copyReadme() {
   var dlCountEl = document.getElementById("dlCount");
   var dlExe = document.getElementById("dlExe");
   var dlReadme = document.getElementById("dlReadme");
-
+// ★ FIX: 用變數存好 fallback URL，確保 catch 裡能正確引用
+  var fallbackExe    = "https://github.com/" + repo + "/releases/latest/download/LabFormatter.exe";
+  var fallbackReadme = "https://github.com/" + repo + "/releases/latest/download/readme.txt";
+  
   // Set fallback URLs immediately (so buttons always work)
   dlExe.href = "https://github.com/" + repo + "/releases/latest/download/LabFormatter.exe";
   dlReadme.href = "https://github.com/" + repo + "/releases/latest/download/readme.txt";
