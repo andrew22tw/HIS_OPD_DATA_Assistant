@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <!-- Lab Data Formatter Website -->
 <!-- Last Modified: 2026-03-20 01:00 (UTC+8) -->
-<!-- Version: v1.2.0 -->
+<!-- Version: v1.2.1 -->
 <html lang="zh-TW">
 <head>
 <meta charset="UTF-8">
@@ -389,14 +389,16 @@ td {
     <tr><td>1</td><td>AC（HbA1c）</td><td>AC 有 A1c 時顯示 AC:值(A1c值)</td></tr>
     <tr><td>2</td><td>BUN / Cr</td><td>BUN/Cr:21/1.40（BUN 取整數）</td></tr>
     <tr><td>3</td><td>Na / K</td><td>Na/K:139/3.5</td></tr>
-    <tr><td>4</td><td>ALT / AST</td><td>ALT/AST:14/22</td></tr>
-    <tr><td>5</td><td>Alb</td><td></td></tr>
-    <tr><td>6</td><td>TC / TG / LD / HD</td><td>TC/TG/LD/HD:165/121/81/53</td></tr>
-    <tr><td>7</td><td>UA</td><td></td></tr>
-    <tr><td>8</td><td>Ca / IP</td><td>Ca/IP:9.3/5.9</td></tr>
-    <tr><td>9</td><td>Hb</td><td></td></tr>
-    <tr><td>10</td><td>UAC</td><td>從尿液檢體擷取</td></tr>
-    <tr><td>11</td><td>UPC</td><td>從尿液檢體擷取</td></tr>
+    <tr><td>4</td><td>HCO3</td><td>取整數（從 VBG 報告擷取）</td></tr>
+    <tr><td>5</td><td>ALT / AST</td><td>ALT/AST:14/22</td></tr>
+    <tr><td>6</td><td>Alb</td><td></td></tr>
+    <tr><td>7</td><td>TC / TG / L / H</td><td>TC/TG/L/H:165/121/81/53</td></tr>
+    <tr><td>8</td><td>UA</td><td></td></tr>
+    <tr><td>9</td><td>Ca / IP</td><td>Ca/IP:9.3/5.9</td></tr>
+    <tr><td>10</td><td>Iron / TIBC / Ferritin</td><td>Iron/TIBC/Ferritin:49/286/328（取整數）</td></tr>
+    <tr><td>11</td><td>Hb</td><td></td></tr>
+    <tr><td>12</td><td>ACR</td><td>從尿液檢體擷取</td></tr>
+    <tr><td>13</td><td>PCR</td><td>從尿液檢體擷取（支援 P/C 格式）</td></tr>
   </table>
 </div>
 
@@ -405,16 +407,20 @@ td {
   <h2 class="section-title">更新紀錄</h2>
   <div class="changelog-item">
     <div class="cl-header">
-      <span class="cl-ver">v1.2.0</span>
+      <span class="cl-ver">v1.2.1</span>
       <span class="cl-date">2026-03-20</span>
       <span class="cl-tag">Latest</span>
     </div>
     <ul class="cl-list">
-      <li>系統匣圖示改為超可愛醫師造型（Q版圓臉+大眼閃光+貓嘴:3+腮紅+蓬鬆醫師帽）</li>
-      <li>醫師帽十字顏色 = 狀態色（黃=等待/綠=就緒/紅=錯誤）</li>
-      <li>外圈狀態光環顯示當前狀態</li>
-      <li>網頁移除 GitHub 原始碼連結</li>
-      <li>index.html 加入修改日期時間戳記</li>
+      <li>LDL 顯示改為 L，HDL 改為 H</li>
+      <li>ACR 顯示改為 ACR，PCR 改為 PCR</li>
+      <li>新增 Iron/TIBC/Ferritin 分組（取整數）</li>
+      <li>PCR 支援 P/C 格式匹配</li>
+      <li>合併時間窗口從 10 秒延長至 15 秒</li>
+      <li>超過 80 字元自動換行（逗號斷點，續行縮排 6 格）</li>
+      <li>設定視窗新增「輸出項目勾選」區塊，偏好存入 JSON</li>
+      <li>新增 HCO3 項目（VBG 報告，取整數，排在 Na/K 後面）</li>
+      <li>勾選區塊新增「全選/全不選」切換按鈕</li>
     </ul>
   </div>
   <div class="changelog-item">
@@ -424,7 +430,7 @@ td {
     </div>
     <ul class="cl-list">
       <li>新增血液/尿液檢體自動分離，Cr 不再混淆</li>
-      <li>新增 UAC（ACR）、UPC 尿液項目</li>
+      <li>新增 ACR（ACR）、PCR 尿液項目</li>
       <li>新增 ALT/AST、Ca/IP 自動分組</li>
       <li>AC + HbA1c 自動合併顯示為 AC:值(A1c值)</li>
       <li>HbA1c 支援大小寫（HbA1c / HbA1C）</li>
@@ -479,7 +485,7 @@ td {
 <script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script>
 var readmeText = [
 "================================================================",
-"  Lab Data Formatter v1.2.0 使用說明",
+"  Lab Data Formatter v1.2.1 使用說明",
 "  作者：吳岳霖醫師  DAL93@tpech.gov.tw",
 "================================================================",
 "",
@@ -530,7 +536,7 @@ var readmeText = [
 "",
 "  程式會自動區分血液和尿液檢體：",
 "  - 血液項目只從「檢體 血液」擷取",
-"  - 尿液項目（UAC、UPC）只從「檢體 尿液」擷取",
+"  - 尿液項目（ACR、PCR）只從「檢體 尿液」擷取",
 "",
 "================================================================",
 "",
@@ -539,8 +545,8 @@ var readmeText = [
 "  日期格式：民國年YYYMM（例如 11503 = 民國 115 年 3 月）",
 "",
 "  輸出順序：",
-"  AC → HbA1c → BUN/Cr → Na/K → ALT/AST → Alb →",
-"  TC/TG/LD/HD → UA → Ca/IP → Hb → UAC → UPC",
+"  AC → HbA1c → BUN/Cr → Na/K → HCO3 → ALT/AST → Alb →",
+"  TC/TG/L/H → UA → Ca/IP → Iron/TIBC/Ferritin → Hb → ACR → PCR",
 "",
 "  特殊規則：",
 "  - AC 有 HbA1c 時合併：AC:122(6.5)",
@@ -588,7 +594,7 @@ function copyReadme() {
       }
     }
   }).catch(function(){
-    verEl.textContent = "v1.2.0";
+    verEl.textContent = "v1.2.1";
     dateEl.textContent = "2026-03-19";
     dlExe.href = fallbackZip;
     dlReadme.href = "https://raw.githubusercontent.com/"+repo+"/main/readme.txt";
