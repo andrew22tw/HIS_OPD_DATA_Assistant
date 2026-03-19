@@ -1,4 +1,4 @@
-// Lab Data Formatter v1.3.0
+// Lab Data Formatter v1.3.2
 // Author: \u5433\u5cb3\u9716\u91ab\u5e2b (DAL93@tpech.gov.tw)
 // Compile: build.bat (auto-finds csc.exe)
 // Hotkeys: Ctrl+0=Settings, Ctrl+1~4=Custom slots
@@ -256,8 +256,10 @@ static class VK {
 }
 class Config {
     public List<Slot> Slots = new List<Slot>();
-    public string CaptureMod = "Ctrl";
-    public string CaptureKey = "`";
+    public string CaptureMod = "Alt";
+    public string CaptureKey = "1";
+    public string PasteMod = "Alt";
+    public string PasteKey = "2";
     static string _path;
     static string _dir;
     static string ConfigDir {
@@ -300,6 +302,8 @@ class Config {
             }
             if(d.ContainsKey("capture_mod")) CaptureMod=d["capture_mod"].ToString();
             if(d.ContainsKey("capture_key")) CaptureKey=d["capture_key"].ToString();
+            if(d.ContainsKey("paste_mod")) PasteMod=d["paste_mod"].ToString();
+            if(d.ContainsKey("paste_key")) PasteKey=d["paste_key"].ToString();
         } catch { }
         while(Slots.Count<4) {
             var i=Slots.Count;
@@ -328,6 +332,8 @@ class Config {
         doc["slots"]=arr;
         doc["capture_mod"]=CaptureMod;
         doc["capture_key"]=CaptureKey;
+        doc["paste_mod"]=PasteMod;
+        doc["paste_key"]=PasteKey;
         File.WriteAllText(Path, Json.Encode(doc,0), System.Text.Encoding.UTF8);
     }
     void CreateDefault() {
@@ -352,8 +358,10 @@ class Config {
             if(s.Type=="lab") d["lab_items"]=s.LabItems.Cast<object>().ToList();
             arr.Add(d);}
         doc["slots"]=arr;
-        doc["capture_mod"]="Ctrl";
-        doc["capture_key"]="`";
+        doc["capture_mod"]="Alt";
+        doc["capture_key"]="1";
+        doc["paste_mod"]="Alt";
+        doc["paste_key"]="2";
         try{File.WriteAllText(Path, Json.Encode(doc,0), System.Text.Encoding.UTF8);}catch{}
     }
     public HashSet<string> GetLabItems() {
@@ -375,7 +383,7 @@ static class NativeMethods {
 
 // ══════════ Main App ══════════
 class App : Form {
-    const string VER="v1.3.0";
+    const string VER="v1.3.2";
     [DllImport("user32")] static extern bool RegisterHotKey(IntPtr h,int id,uint mod,uint vk);
     [DllImport("user32")] static extern bool UnregisterHotKey(IntPtr h,int id);
     [DllImport("user32")] static extern void keybd_event(byte vk,byte scan,uint flags,UIntPtr extra);
@@ -389,6 +397,7 @@ class App : Form {
     static readonly Dictionary<int,uint> HK = new Dictionary<int,uint>{
         {0,0x30},{1,0x31},{2,0x32},{3,0x33},{4,0x34}};
     const int HKID_CAPTURE=5;
+    const int HKID_PASTE=6;
 
     // ── Multi-report merge buffer (10s window) ──
     List<string> rawBuffer = new List<string>();  // stores raw clipboard text
@@ -452,6 +461,7 @@ class App : Form {
 
         foreach(var kv in HK) RegisterHotKey(Handle,kv.Key,MOD_CTRL,kv.Value);
         RegisterCaptureHotkey();
+        RegisterPasteHotkey();
 
         lastClip=TryGetClip(); ignoreUntil=DateTime.MinValue;
         clipTimer=new System.Windows.Forms.Timer{Interval=400};
@@ -595,11 +605,30 @@ class App : Form {
         uint vk=VK.Code(cfg.CaptureKey);
         RegisterHotKey(Handle,HKID_CAPTURE,mod,vk);
     }
+    void RegisterPasteHotkey(){
+        UnregisterHotKey(Handle,HKID_PASTE);
+        uint mod=VK.ModFlag(cfg.PasteMod);
+        uint vk=VK.Code(cfg.PasteKey);
+        RegisterHotKey(Handle,HKID_PASTE,mod,vk);
+    }
 
     protected override void WndProc(ref Message m) {
         if(m.Msg==WM_HOTKEY){int id=(int)m.WParam;
             if(id==0){ShowSettings();return;}
             if(id==HKID_CAPTURE){SimCtrlAC();return;}
+            if(id==HKID_PASTE){
+                // Same as lab-type paste
+                if(rawBuffer.Count>0){
+                    var combined=string.Join("\n",rawBuffer);
+                    labResult=Lab.Convert(combined,cfg.GetLabItems());
+                    rawBuffer.Clear();
+                    if(mergeTimer!=null) mergeTimer.Stop();
+                }
+                if(labResult!=null){WriteClip(labResult);SimCtrlV();
+                HidePreview();SetTray(Color.LimeGreen,"\u2713 \u5df2\u8cbc\u4e0a");DelayYellow();}
+                else{SetTray(Color.Red,"\u8acb\u5148\u64f7\u53d6\u5831\u544a");DelayYellow();}
+                return;
+            }
             int idx=id-1; if(idx<0||idx>=cfg.Slots.Count)return;
             var s=cfg.Slots[idx];
             try{
@@ -623,6 +652,7 @@ class App : Form {
     protected override void OnFormClosed(FormClosedEventArgs e){
         foreach(var k in HK.Keys)UnregisterHotKey(Handle,k);
         UnregisterHotKey(Handle,HKID_CAPTURE);
+        UnregisterHotKey(Handle,HKID_PASTE);
         tray.Visible=false;base.OnFormClosed(e);}
     protected override void SetVisibleCore(bool v){base.SetVisibleCore(false);}
 
@@ -637,7 +667,7 @@ class App : Form {
         settingsForm=f;
         int fw=f.ClientSize.Width;
 
-        var lbl=new Label{Text=cfg.CaptureMod+"+"+cfg.CaptureKey+" \u64f7\u53d6\u5831\u544a | Ctrl+3 \u8cbc\u4e0a\u7d50\u679c | Ctrl+0 \u8a2d\u5b9a",
+        var lbl=new Label{Text=cfg.CaptureMod+"+"+cfg.CaptureKey+" \u64f7\u53d6 | "+cfg.PasteMod+"+"+cfg.PasteKey+" \u8cbc\u4e0a | Ctrl+0 \u8a2d\u5b9a",
             Left=0,Top=0,Width=fw,Height=22,TextAlign=ContentAlignment.MiddleCenter,ForeColor=Color.Gray};
         f.Controls.Add(lbl);
 
@@ -699,8 +729,27 @@ class App : Form {
         var capKeyBox=new TextBox{Left=226,Top=chy,Width=50,Text=cfg.CaptureKey,MaxLength=5,
             Font=new Font("Consolas",10),TextAlign=HorizontalAlignment.Center};
         f.Controls.Add(capKeyBox);
-        f.Controls.Add(new Label{Text="\u76ee\u524d: "+cfg.CaptureMod+"+"+cfg.CaptureKey+" \u2192 \u81ea\u52d5 Ctrl+A Ctrl+C",
+        f.Controls.Add(new Label{Text="\u76ee\u524d: "+cfg.CaptureMod+"+"+cfg.CaptureKey+" \u2192 \u81ea\u52d5\u5168\u9078+\u8907\u88fd",
             Left=286,Top=chy+3,Width=280,AutoSize=false,
+            ForeColor=Color.Gray,Font=new Font("Microsoft JhengHei UI",8)});
+
+        // ── Paste hotkey row ──
+        int phy=chy+26;
+        f.Controls.Add(new Label{Text="\u8cbc\u4e0a\u9375\uff08\u8cbc\u4e0a\u7d50\u679c\uff09:",
+            Left=10,Top=phy+3,Width=130,AutoSize=false,
+            Font=new Font("Microsoft JhengHei UI",9)});
+        var pasteModCombo=new ComboBox{Left=142,Top=phy,Width=65,DropDownStyle=ComboBoxStyle.DropDownList,
+            Font=new Font("Microsoft JhengHei UI",9)};
+        pasteModCombo.Items.AddRange(new object[]{"Ctrl","Alt"});
+        pasteModCombo.SelectedItem=cfg.PasteMod;
+        f.Controls.Add(pasteModCombo);
+        f.Controls.Add(new Label{Text="+",Left=210,Top=phy+3,Width=14,AutoSize=false,
+            Font=new Font("Microsoft JhengHei UI",9)});
+        var pasteKeyBox=new TextBox{Left=226,Top=phy,Width=50,Text=cfg.PasteKey,MaxLength=5,
+            Font=new Font("Consolas",10),TextAlign=HorizontalAlignment.Center};
+        f.Controls.Add(pasteKeyBox);
+        f.Controls.Add(new Label{Text="\u76ee\u524d: "+cfg.PasteMod+"+"+cfg.PasteKey+" \u2192 \u8cbc\u4e0a\u6574\u7406\u7d50\u679c",
+            Left=286,Top=phy+3,Width=280,AutoSize=false,
             ForeColor=Color.Gray,Font=new Font("Microsoft JhengHei UI",8)});
 
         saveBtn.Click+=(s,e)=>{
@@ -709,17 +758,21 @@ class App : Form {
             var checkedKeys=new List<string>();
             foreach(var kv in chkItems) if(kv.Value.Checked) checkedKeys.Add(kv.Key);
             foreach(var sl in cfg.Slots) if(sl.Type=="lab") sl.LabItems=checkedKeys;
-            // Save capture hotkey
+            // Save capture + paste hotkeys
             cfg.CaptureMod=capModCombo.Text;
             cfg.CaptureKey=capKeyBox.Text.Trim();
-            if(cfg.CaptureKey=="") cfg.CaptureKey="`";
+            if(cfg.CaptureKey=="") cfg.CaptureKey="1";
+            cfg.PasteMod=pasteModCombo.Text;
+            cfg.PasteKey=pasteKeyBox.Text.Trim();
+            if(cfg.PasteKey=="") cfg.PasteKey="2";
             cfg.Save();
             RegisterCaptureHotkey();
+            RegisterPasteHotkey();
             SetTray(Color.LimeGreen,"\u2713 \u5df2\u5132\u5b58");DelayYellow();
         };
 
         // JSON row
-        int jy=chy+28;
+        int jy=phy+28;
         var jlbl=new Label{Text="JSON:",Left=10,Top=jy+2,Width=38,ForeColor=Color.Gray};
         var pe=new TextBox{Left=50,Top=jy,Width=fw-200,ReadOnly=true,Text=Config.JsonPath,
             BackColor=Color.WhiteSmoke,Font=new Font("Consolas",8)};
@@ -879,7 +932,7 @@ static class Splash {
         f.Region=new Region(path);
 
         // Title
-        var lbl1=new Label{Text="\u9580\u8a3a\u5c0f\u5e6b\u624b",
+        var lbl1=new Label{Text="\u75c5\u6b77\u5c0f\u5e6b\u624b",
             ForeColor=Color.FromArgb(74,222,128),
             Font=new Font("Microsoft JhengHei UI",28,FontStyle.Bold),
             AutoSize=false,Width=420,Height=70,Top=30,
