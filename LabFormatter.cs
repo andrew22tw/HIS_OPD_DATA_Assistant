@@ -841,17 +841,14 @@ class App : Form {
             ForeColor=Color.Gray,Font=new Font("Microsoft JhengHei UI",8)});
 
 
-        // Alt warning
-        var capAltWarn=new Label{Text="⚠ Alt 不穩定，容易與其他程式衝突，建議使用 Ctrl",
-            Left=142,Top=chy+24,Width=350,AutoSize=false,Visible=cfg.CaptureMod=="Alt",
-            ForeColor=Color.OrangeRed,Font=new Font("Microsoft JhengHei UI",8)};
-        f.Controls.Add(capAltWarn);
-        capModCombo.SelectedIndexChanged+=(ss,ee)=>{capAltWarn.Visible=capModCombo.Text=="Alt";};
-        var pasteAltWarn=new Label{Text="⚠ Alt 不穩定，容易與其他程式衝突，建議使用 Ctrl",
-            Left=142,Top=phy+24,Width=350,AutoSize=false,Visible=cfg.PasteMod=="Alt",
-            ForeColor=Color.OrangeRed,Font=new Font("Microsoft JhengHei UI",8)};
-        f.Controls.Add(pasteAltWarn);
-        pasteModCombo.SelectedIndexChanged+=(ss,ee)=>{pasteAltWarn.Visible=pasteModCombo.Text=="Alt";};
+        // Alt warning (single label, shown when either uses Alt)
+        var altWarn=new Label{Text="⚠ Alt 會不穩定，請小心使用",
+            Left=420,Top=chy+4,Width=200,AutoSize=false,
+            Visible=cfg.CaptureMod=="Alt"||cfg.PasteMod=="Alt",
+            ForeColor=Color.OrangeRed,Font=new Font("Microsoft JhengHei UI",9)};
+        f.Controls.Add(altWarn);
+        capModCombo.SelectedIndexChanged+=(ss,ee)=>{altWarn.Visible=capModCombo.Text=="Alt"||pasteModCombo.Text=="Alt";};
+        pasteModCombo.SelectedIndexChanged+=(ss,ee)=>{altWarn.Visible=capModCombo.Text=="Alt"||pasteModCombo.Text=="Alt";};
 
         saveBtn.Click+=(s,e)=>{
             for(int i=0;i<4;i++) slots[i].SaveTo(cfg.Slots[i]);
