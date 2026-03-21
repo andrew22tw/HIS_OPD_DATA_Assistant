@@ -1,4 +1,4 @@
-// Lab Data Formatter v1.4.2
+// Lab Data Formatter v1.5.0
 // Author: \u5433\u5cb3\u9716\u91ab\u5e2b (DAL93@tpech.gov.tw)
 // Compile: build.bat (auto-finds csc.exe)
 // Hotkeys: Alt+1=Capture, Alt+2=Paste, Ctrl+0=Settings, Ctrl+1~4=Custom slots
@@ -264,10 +264,10 @@ static class VK {
 }
 class Config {
     public List<Slot> Slots = new List<Slot>();
-    public string CaptureMod = "Alt";
-    public string CaptureKey = "1";
-    public string PasteMod = "Alt";
-    public string PasteKey = "2";
+    public string CaptureMod = "Ctrl";
+    public string CaptureKey = "E";
+    public string PasteMod = "Ctrl";
+    public string PasteKey = "R";
     static string _path;
     static string _dir;
     static string ConfigDir {
@@ -366,10 +366,10 @@ class Config {
             if(s.Type=="lab") d["lab_items"]=s.LabItems.Cast<object>().ToList();
             arr.Add(d);}
         doc["slots"]=arr;
-        doc["capture_mod"]="Alt";
-        doc["capture_key"]="1";
-        doc["paste_mod"]="Alt";
-        doc["paste_key"]="2";
+        doc["capture_mod"]="Ctrl";
+        doc["capture_key"]="E";
+        doc["paste_mod"]="Ctrl";
+        doc["paste_key"]="R";
         try{File.WriteAllText(Path, Json.Encode(doc,0), System.Text.Encoding.UTF8);}catch{}
     }
     public HashSet<string> GetLabItems() {
@@ -411,7 +411,7 @@ struct INPUT {
 }
 
 class App : Form {
-    const string VER="v1.4.2";
+    const string VER="v1.5.0";
     // ── Win32 APIs ──
     [DllImport("user32")] static extern bool RegisterHotKey(IntPtr h,int id,uint mod,uint vk);
     [DllImport("user32")] static extern bool UnregisterHotKey(IntPtr h,int id);
@@ -650,16 +650,19 @@ class App : Form {
     }
 
     void SimCtrlV(){
+
         ThreadPool.QueueUserWorkItem(delegate{
-            Thread.Sleep(50);
-            ReleaseAllModifiers(); Thread.Sleep(30);
+            Thread.Sleep(150);
+            ReleaseAllModifiers(); Thread.Sleep(50);
+            ReleaseAllModifiers(); Thread.Sleep(50);
             SendKeys(0x11, 0x56); // Ctrl+V
         });
     }
     void SimCtrlAC(){
         ThreadPool.QueueUserWorkItem(delegate{
-            Thread.Sleep(50);
-            ReleaseAllModifiers(); Thread.Sleep(30);
+            Thread.Sleep(150);
+            ReleaseAllModifiers(); Thread.Sleep(50);
+            ReleaseAllModifiers(); Thread.Sleep(50);
             SendKeys(0x11, 0x41); // Ctrl+A
             Thread.Sleep(80);
             SendKeys(0x11, 0x43); // Ctrl+C
@@ -724,6 +727,7 @@ class App : Form {
                     else{SetTray(Color.Red,"\u8acb\u5148 Ctrl+C \u8907\u88fd\u5831\u544a");DelayYellow();}}
                 else if(s.Type=="template"&&s.Text!=""){
                     var clip=SafeGetClip();WriteClip(s.Text.Replace("{clipboard}",clip));SimCtrlV();}
+                else if(s.Type=="capture"){SimCtrlAC();}
             }catch{}}
         base.WndProc(ref m);
     }
@@ -751,7 +755,7 @@ class App : Form {
         settingsForm=f;
         int fw=f.ClientSize.Width;
 
-        var lbl=new Label{Text=cfg.CaptureMod+"+"+cfg.CaptureKey+" \u64f7\u53d6 | "+cfg.PasteMod+"+"+cfg.PasteKey+" \u8cbc\u4e0a | Ctrl+0 \u8a2d\u5b9a",
+        var lbl=new Label{Text="Ctrl+1~4 \u81ea\u8a02 | "+cfg.CaptureMod+"+"+cfg.CaptureKey+" \u64f7\u53d6 | "+cfg.PasteMod+"+"+cfg.PasteKey+" \u8cbc\u4e0a | Ctrl+0 \u8a2d\u5b9a",
             Left=0,Top=0,Width=fw,Height=22,TextAlign=ContentAlignment.MiddleCenter,ForeColor=Color.Gray};
         f.Controls.Add(lbl);
 
@@ -800,7 +804,7 @@ class App : Form {
 
         // ── Capture hotkey row ──
         int chy=iy+itemGb.Height+6;
-        f.Controls.Add(new Label{Text="\u64f7\u53d6\u9375\uff08\u5168\u9078+\u8907\u88fd\uff09:",
+        f.Controls.Add(new Label{Text="\u71b1\u93755 \u64f7\u53d6\uff08\u5168\u9078+\u8907\u88fd\uff09:",
             Left=10,Top=chy+3,Width=130,AutoSize=false,
             Font=new Font("Microsoft JhengHei UI",9)});
         var capModCombo=new ComboBox{Left=142,Top=chy,Width=65,DropDownStyle=ComboBoxStyle.DropDownList,
@@ -819,7 +823,7 @@ class App : Form {
 
         // ── Paste hotkey row ──
         int phy=chy+26;
-        f.Controls.Add(new Label{Text="\u8cbc\u4e0a\u9375\uff08\u8cbc\u4e0a\u7d50\u679c\uff09:",
+        f.Controls.Add(new Label{Text="\u71b1\u93756 \u8cbc\u4e0a\uff08\u8cbc\u4e0a\u7d50\u679c\uff09:",
             Left=10,Top=phy+3,Width=130,AutoSize=false,
             Font=new Font("Microsoft JhengHei UI",9)});
         var pasteModCombo=new ComboBox{Left=142,Top=phy,Width=65,DropDownStyle=ComboBoxStyle.DropDownList,
@@ -835,6 +839,19 @@ class App : Form {
         f.Controls.Add(new Label{Text="\u76ee\u524d: "+cfg.PasteMod+"+"+cfg.PasteKey+" \u2192 \u8cbc\u4e0a\u6574\u7406\u7d50\u679c",
             Left=286,Top=phy+3,Width=280,AutoSize=false,
             ForeColor=Color.Gray,Font=new Font("Microsoft JhengHei UI",8)});
+
+        // Alt warning labels
+        var capAltWarn=new Label{Text="⚠ Alt 不穩定，不建議使用",
+            Left=142,Top=chy+22,Width=200,AutoSize=false,Visible=cfg.CaptureMod=="Alt",
+            ForeColor=Color.OrangeRed,Font=new Font("Microsoft JhengHei UI",8)};
+        f.Controls.Add(capAltWarn);
+        capModCombo.SelectedIndexChanged+=(ss,ee)=>{capAltWarn.Visible=capModCombo.Text=="Alt";};
+
+        var pasteAltWarn=new Label{Text="⚠ Alt 不穩定，不建議使用",
+            Left=142,Top=phy+22,Width=200,AutoSize=false,Visible=cfg.PasteMod=="Alt",
+            ForeColor=Color.OrangeRed,Font=new Font("Microsoft JhengHei UI",8)};
+        f.Controls.Add(pasteAltWarn);
+        pasteModCombo.SelectedIndexChanged+=(ss,ee)=>{pasteAltWarn.Visible=pasteModCombo.Text=="Alt";};
 
         saveBtn.Click+=(s,e)=>{
             for(int i=0;i<4;i++) slots[i].SaveTo(cfg.Slots[i]);
@@ -891,14 +908,14 @@ class App : Form {
     // ── Inline slot editor (one row per slot) ──
     class InlineSlot {
         ComboBox combo; TextBox nameBox, txtBox;
-        string[] types={"none","paste","lab","template"};
-        string[] tnames={"\u672a\u8a2d\u5b9a","\u5feb\u8cbc","\u5831\u544a","\u7bc4\u672c"};
+        string[] types={"none","paste","lab","template","capture"};
+        string[] tnames={"\u672a\u8a2d\u5b9a","\u5feb\u8cbc","\u5831\u544a","\u7bc4\u672c","\u64f7\u53d6"};
         GroupBox gb;
         public int Height { get { return gb.Height; } }
 
         public InlineSlot(Form f, Slot s, int idx, int top, int width) {
-            bool isLab=(s.Type=="lab");
-            int h=isLab?48:80;
+            bool isLabOrCapture=(s.Type=="lab"||s.Type=="capture");
+            int h=isLabOrCapture?48:80;
             gb=new GroupBox{Text="Ctrl+"+(idx+1),Left=10,Top=top,Width=width,Height=h,
                 Font=new Font("Microsoft JhengHei UI",9)};
             f.Controls.Add(gb);
@@ -914,20 +931,21 @@ class App : Form {
             gb.Controls.Add(combo);
 
             // Row 2: content (only for paste/template)
-            if(!isLab){
+            if(!isLabOrCapture){
                 txtBox=new TextBox{Left=50,Top=42,Width=width-70,Height=30,
                     Multiline=true,ScrollBars=ScrollBars.Vertical,
                     Text=s.Text,Font=new Font("Consolas",9)};
                 gb.Controls.Add(new Label{Text="\u5167\u5bb9:",Left=8,Top=45,Width=40,AutoSize=false});
                 gb.Controls.Add(txtBox);
             } else {
-                gb.Controls.Add(new Label{Text="Ctrl+C \u8907\u88fd\u5831\u544a \u2192 Ctrl+"+(idx+1)+" \u8cbc\u4e0a\u6fc3\u7e2e\u5831\u544a",
+                string descText=s.Type=="capture"?"\u6309\u4e0b\u6b64\u71b1\u9375 \u2192 \u81ea\u52d5\u5168\u9078+\u8907\u88fd":"Ctrl+C \u8907\u88fd\u5831\u544a \u2192 Ctrl+"+(idx+1)+" \u8cbc\u4e0a\u6fc3\u7e2e\u5831\u544a";
+                gb.Controls.Add(new Label{Text=descText,
                     Left=360,Top=19,Width=240,ForeColor=Color.Gray,AutoSize=false});
             }
 
             combo.SelectedIndexChanged+=(x,y)=>{
                 int ti=combo.SelectedIndex;
-                bool nowLab=(ti==2);
+                bool nowLab=(ti==2||ti==4);
                 if(nowLab&&txtBox!=null){txtBox.Visible=false;gb.Height=48;}
                 else if(!nowLab){
                     if(txtBox==null){
