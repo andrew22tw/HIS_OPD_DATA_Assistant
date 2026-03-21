@@ -749,13 +749,13 @@ class App : Form {
     void ShowSettings() {
         if(settingsForm!=null&&!settingsForm.IsDisposed){settingsForm.BringToFront();return;}
         cfg.Load();
-        var f=new Form{Text="Lab Formatter "+VER+" \u8a2d\u5b9a",Size=new Size(620,660),
+        var f=new Form{Text="Lab Formatter "+VER+" \u8a2d\u5b9a",Size=new Size(806,858),
             StartPosition=FormStartPosition.CenterScreen,TopMost=true,
-            MaximizeBox=false,Font=new Font("Microsoft JhengHei UI",9)};
+            MaximizeBox=false,Font=new Font("Microsoft JhengHei UI",10)};
         settingsForm=f;
         int fw=f.ClientSize.Width;
 
-        var lbl=new Label{Text="Ctrl+1~4 \u81ea\u8a02 | "+cfg.CaptureMod+"+"+cfg.CaptureKey+" \u64f7\u53d6 | "+cfg.PasteMod+"+"+cfg.PasteKey+" \u8cbc\u4e0a | Ctrl+0 \u8a2d\u5b9a",
+        var lbl=new Label{Text="Ctrl+1~4 \u81ea\u8a02 | Ctrl+0 \u8a2d\u5b9a",
             Left=0,Top=0,Width=fw,Height=22,TextAlign=ContentAlignment.MiddleCenter,ForeColor=Color.Gray};
         f.Controls.Add(lbl);
 
@@ -840,15 +840,15 @@ class App : Form {
             Left=286,Top=phy+3,Width=280,AutoSize=false,
             ForeColor=Color.Gray,Font=new Font("Microsoft JhengHei UI",8)});
 
-        // Alt warning labels
-        var capAltWarn=new Label{Text="⚠ Alt 不穩定，不建議使用",
-            Left=142,Top=chy+22,Width=200,AutoSize=false,Visible=cfg.CaptureMod=="Alt",
+
+        // Alt warning
+        var capAltWarn=new Label{Text="⚠ Alt 不穩定，容易與其他程式衝突，建議使用 Ctrl",
+            Left=142,Top=chy+24,Width=350,AutoSize=false,Visible=cfg.CaptureMod=="Alt",
             ForeColor=Color.OrangeRed,Font=new Font("Microsoft JhengHei UI",8)};
         f.Controls.Add(capAltWarn);
         capModCombo.SelectedIndexChanged+=(ss,ee)=>{capAltWarn.Visible=capModCombo.Text=="Alt";};
-
-        var pasteAltWarn=new Label{Text="⚠ Alt 不穩定，不建議使用",
-            Left=142,Top=phy+22,Width=200,AutoSize=false,Visible=cfg.PasteMod=="Alt",
+        var pasteAltWarn=new Label{Text="⚠ Alt 不穩定，容易與其他程式衝突，建議使用 Ctrl",
+            Left=142,Top=phy+24,Width=350,AutoSize=false,Visible=cfg.PasteMod=="Alt",
             ForeColor=Color.OrangeRed,Font=new Font("Microsoft JhengHei UI",8)};
         f.Controls.Add(pasteAltWarn);
         pasteModCombo.SelectedIndexChanged+=(ss,ee)=>{pasteAltWarn.Visible=pasteModCombo.Text=="Alt";};
@@ -899,6 +899,11 @@ class App : Form {
             ForeColor=Color.FromArgb(160,160,160),Font=new Font("Microsoft JhengHei UI",8),
             Padding=new Padding(0,0,10,0)};
         f.Controls.Add(feedback);
+        var readmeLink=new LinkLabel{Text="\u4f7f\u7528\u8aaa\u660e\u7db2\u9801: andrew22tw.github.io/HIS_OPD_DATA_Assistant",
+            Left=10,Top=fy,Width=300,Height=18,
+            Font=new Font("Microsoft JhengHei UI",8),LinkColor=Color.FromArgb(33,150,243)};
+        readmeLink.Click+=(s,e)=>{try{System.Diagnostics.Process.Start("https://andrew22tw.github.io/HIS_OPD_DATA_Assistant/");}catch{}};
+        f.Controls.Add(readmeLink);
 
         f.ClientSize=new Size(fw,fy+20);
         f.ShowDialog();
@@ -908,34 +913,34 @@ class App : Form {
     // ── Inline slot editor (one row per slot) ──
     class InlineSlot {
         ComboBox combo; TextBox nameBox, txtBox;
-        string[] types={"none","paste","lab","template","capture"};
-        string[] tnames={"\u672a\u8a2d\u5b9a","\u5feb\u8cbc","\u5831\u544a","\u7bc4\u672c","\u64f7\u53d6"};
+        string[] types={"none","paste","lab","capture"};
+        string[] tnames={"\u672a\u8a2d\u5b9a","\u5feb\u8cbc","\u5831\u544a","\u64f7\u53d6"};
         GroupBox gb;
         public int Height { get { return gb.Height; } }
 
         public InlineSlot(Form f, Slot s, int idx, int top, int width) {
             bool isLabOrCapture=(s.Type=="lab"||s.Type=="capture");
-            int h=isLabOrCapture?48:80;
+            int h=isLabOrCapture?58:100;
             gb=new GroupBox{Text="Ctrl+"+(idx+1),Left=10,Top=top,Width=width,Height=h,
                 Font=new Font("Microsoft JhengHei UI",9)};
             f.Controls.Add(gb);
 
             // Row 1: name + type
-            nameBox=new TextBox{Left=50,Top=16,Width=150,Text=s.Name,Font=new Font("Microsoft JhengHei UI",9)};
+            nameBox=new TextBox{Left=50,Top=16,Width=200,Text=s.Name,Font=new Font("Microsoft JhengHei UI",9)};
             gb.Controls.Add(new Label{Text="\u540d\u7a31:",Left=8,Top=19,Width=40,AutoSize=false});
             gb.Controls.Add(nameBox);
-            combo=new ComboBox{Left=260,Top=16,Width=80,DropDownStyle=ComboBoxStyle.DropDownList,
+            combo=new ComboBox{Left=320,Top=16,Width=80,DropDownStyle=ComboBoxStyle.DropDownList,
                 Font=new Font("Microsoft JhengHei UI",9)};
             combo.Items.AddRange(tnames);combo.SelectedIndex=Array.IndexOf(types,s.Type);
-            gb.Controls.Add(new Label{Text="\u985e\u578b:",Left=218,Top=19,Width=40,AutoSize=false});
+            gb.Controls.Add(new Label{Text="\u985e\u578b:",Left=278,Top=19,Width=40,AutoSize=false});
             gb.Controls.Add(combo);
 
             // Row 2: content (only for paste/template)
             if(!isLabOrCapture){
-                txtBox=new TextBox{Left=50,Top=42,Width=width-70,Height=30,
+                txtBox=new TextBox{Left=50,Top=48,Width=width-70,Height=42,
                     Multiline=true,ScrollBars=ScrollBars.Vertical,
                     Text=s.Text,Font=new Font("Consolas",9)};
-                gb.Controls.Add(new Label{Text="\u5167\u5bb9:",Left=8,Top=45,Width=40,AutoSize=false});
+                gb.Controls.Add(new Label{Text="\u5167\u5bb9:",Left=8,Top=51,Width=40,AutoSize=false});
                 gb.Controls.Add(txtBox);
             } else {
                 string descText=s.Type=="capture"?"\u6309\u4e0b\u6b64\u71b1\u9375 \u2192 \u81ea\u52d5\u5168\u9078+\u8907\u88fd":"Ctrl+C \u8907\u88fd\u5831\u544a \u2192 Ctrl+"+(idx+1)+" \u8cbc\u4e0a\u6fc3\u7e2e\u5831\u544a";
@@ -945,16 +950,16 @@ class App : Form {
 
             combo.SelectedIndexChanged+=(x,y)=>{
                 int ti=combo.SelectedIndex;
-                bool nowLab=(ti==2||ti==4);
-                if(nowLab&&txtBox!=null){txtBox.Visible=false;gb.Height=48;}
+                bool nowLab=(ti==2||ti==3);
+                if(nowLab&&txtBox!=null){txtBox.Visible=false;gb.Height=58;}
                 else if(!nowLab){
                     if(txtBox==null){
-                        txtBox=new TextBox{Left=50,Top=42,Width=width-70,Height=30,
+                        txtBox=new TextBox{Left=50,Top=48,Width=width-70,Height=42,
                             Multiline=true,ScrollBars=ScrollBars.Vertical,Font=new Font("Consolas",9)};
-                        gb.Controls.Add(new Label{Text="\u5167\u5bb9:",Left=8,Top=45,Width=40,AutoSize=false});
+                        gb.Controls.Add(new Label{Text="\u5167\u5bb9:",Left=8,Top=51,Width=40,AutoSize=false});
                         gb.Controls.Add(txtBox);
                     }
-                    txtBox.Visible=true;gb.Height=80;
+                    txtBox.Visible=true;gb.Height=100;
                 }
             };
         }
