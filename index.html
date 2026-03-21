@@ -1,6 +1,6 @@
 <!DOCTYPE html>
 <!-- Lab Data Formatter Website -->
-<!-- Version: v1.5.0 -->
+<!-- Version: v1.6.0 -->
 <html lang="zh-TW">
 <head>
 <meta charset="UTF-8">
@@ -352,7 +352,7 @@ tbody tr:hover { background: var(--surface2); }
 .code-hl { color:var(--gold);font-family:'JetBrains Mono',monospace; }
 </style>
 <script type="application/ld+json">
-{"@context":"https://schema.org","@type":"SoftwareApplication","name":"Lab Data Formatter","operatingSystem":"Windows","applicationCategory":"MedicalApplication","offers":{"@type":"Offer","price":"0","priceCurrency":"TWD"},"downloadUrl":"https://github.com/andrew22tw/HIS_OPD_DATA_Assistant/releases/latest/download/LabFormatter.exe","softwareVersion":"1.5.0","author":{"@type":"Person","name":"吳岳霖"}}
+{"@context":"https://schema.org","@type":"SoftwareApplication","name":"Lab Data Formatter","operatingSystem":"Windows","applicationCategory":"MedicalApplication","offers":{"@type":"Offer","price":"0","priceCurrency":"TWD"},"downloadUrl":"https://github.com/andrew22tw/HIS_OPD_DATA_Assistant/releases/latest/download/LabFormatter.exe","softwareVersion":"1.6.0","author":{"@type":"Person","name":"吳岳霖"}}
 </script>
 </head>
 <body>
@@ -553,9 +553,24 @@ tbody tr:hover { background: var(--surface2); }
   <h2 class="section-title">更新紀錄</h2>
   <div class="changelog-item">
     <div class="cl-header">
+      <span class="cl-ver">v1.6.0</span>
+      <span class="cl-date">2026-03-22</span>
+      <span class="cl-tag">Latest</span>
+    </div>
+    <ul class="cl-list">
+      <li>修復 GDI Region 洩漏（splash 動畫）</li>
+      <li>修復 Lab 分組 bug（停用 BUN 不再隱藏 Cr）</li>
+      <li>日期格式改為 YYYMMDD（含日期）</li>
+      <li>Config 讀取失敗時顯示錯誤訊息</li>
+      <li>網站全面優化：OG/SEO 標籤、WCAG AA 無障礙、語意 HTML、JSON-LD</li>
+      <li>Readme 全面改寫：新增手動轉換、預覽視窗、右鍵選單說明</li>
+      <li>設定視窗放大 30%、移除範本類型、Alt 警告優化</li>
+    </ul>
+  </div>
+  <div class="changelog-item">
+    <div class="cl-header">
       <span class="cl-ver">v1.5.0</span>
       <span class="cl-date">2026-03-21</span>
-      <span class="cl-tag">Latest</span>
     </div>
     <ul class="cl-list">
       <li>新增一鍵擷取功能（全選+複製），預設 Ctrl+E，取代 Ctrl+A → Ctrl+C</li>
@@ -688,7 +703,7 @@ function setLocalDl(n){ try{localStorage.setItem(_dlLocalKey,n.toString());}catc
       if(ghTotal > local) setLocalDl(ghTotal);
     })
     .catch(function(){
-      verEl.textContent = "v1.5.0";
+      verEl.textContent = "v1.6.0";
       dateEl.textContent = "2026-03-21";
       dlCountEl.textContent = local > 0 ? local.toLocaleString() : "0";
     });
