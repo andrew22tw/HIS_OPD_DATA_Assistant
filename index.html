@@ -9,13 +9,22 @@
 <meta name="description" content="Lab Data Formatter - 醫院檢驗報告快速整理工具，一鍵擷取、自動整理、濃縮貼上。免安裝，下載即用。">
 <meta property="og:title" content="Lab Data Formatter - 檢驗報告快速整理工具">
 <meta property="og:description" content="一鍵擷取醫院檢驗報告，自動整理成濃縮格式。6組可自訂熱鍵，免安裝下載即用。">
-<meta property="og:image" content="app-icon.png">
+<meta property="og:image" content="https://andrew22tw.github.io/HIS_OPD_DATA_Assistant/app-icon.png">
+<meta property="og:image:width" content="512">
+<meta property="og:image:height" content="512">
+<meta property="og:url" content="https://andrew22tw.github.io/HIS_OPD_DATA_Assistant/">
 <meta property="og:type" content="website">
+<meta property="og:locale" content="zh_TW">
 <meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Lab Data Formatter">
+<meta name="twitter:description" content="醫院檢驗報告快速整理工具">
+<meta name="twitter:image" content="https://andrew22tw.github.io/HIS_OPD_DATA_Assistant/app-icon.png">
 <meta name="theme-color" content="#0a0e17">
+<link rel="canonical" href="https://andrew22tw.github.io/HIS_OPD_DATA_Assistant/">
 <link rel="icon" type="image/png" href="app-icon.png">
 <link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@300;400;500;700;900&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;500;700&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
 <style>
 html { color-scheme: dark; }
 :root {
@@ -28,10 +37,15 @@ html { color-scheme: dark; }
   --accent-dim: rgba(34,197,94,0.12);
   --text: #e2e8f0;
   --text2: #94a3b8;
-  --text3: #7a8ba0;
+  --text3: #8d9db2;
   --gold: #fbbf24;
   --red: #ef4444;
   --blue: #3b82f6;
+  --radius-sm: 5px;
+  --radius-md: 10px;
+  --radius-lg: 12px;
+  --radius-xl: 24px;
+  --radius-full: 100px;
 }
 * { margin:0; padding:0; box-sizing:border-box; }
 body {
@@ -71,7 +85,7 @@ body {
   0%,100%{transform:translateY(0)} 50%{transform:translateY(-10px)}
 }
 .hero h1 {
-  font-size:2.8rem; font-weight:900; letter-spacing:-1px;
+  font-size:2.8rem; font-weight:800; letter-spacing:-1px;
   color: var(--accent);
   background:linear-gradient(135deg, var(--accent), var(--accent2), var(--gold));
   -webkit-background-clip:text; -webkit-text-fill-color:transparent;
@@ -86,7 +100,7 @@ body {
 }
 .badge {
   display:inline-flex; align-items:center; gap:8px;
-  padding:7px 18px; border-radius:100px;
+  padding:7px 18px; border-radius:var(--radius-full);
   font-family:'JetBrains Mono',monospace; font-size:0.9rem;
 }
 .badge-version { background:var(--accent-dim); border:1px solid rgba(34,197,94,0.3); color:var(--accent2); }
@@ -113,7 +127,7 @@ body {
 .demo {
   background:var(--surface);
   border:1px solid var(--border);
-  border-radius:12px;
+  border-radius:var(--radius-lg);
   padding:28px 32px;
   margin:30px 0;
 }
@@ -150,7 +164,7 @@ body {
 @media(max-width:640px){ .features{grid-template-columns:1fr;} }
 .feat {
   background:var(--surface); border:1px solid var(--border);
-  border-radius:10px; padding:20px 22px;
+  border-radius:var(--radius-md); padding:20px 22px;
   transition:border-color 0.3s;
 }
 .feat:hover { border-color:rgba(34,197,94,0.4); }
@@ -175,7 +189,7 @@ td {
 .kbd {
   font-family:'JetBrains Mono',monospace;
   background:var(--surface2); border:1px solid var(--border);
-  padding:3px 10px; border-radius:5px; font-size:0.85rem;
+  padding:3px 10px; border-radius:var(--radius-sm); font-size:0.85rem;
   font-weight:600; color:var(--accent2);
 }
 
@@ -183,7 +197,7 @@ td {
 .changelog-item {
   background:var(--surface);
   border:1px solid var(--border);
-  border-radius:10px;
+  border-radius:var(--radius-md);
   padding:20px 24px;
   margin-bottom:12px;
 }
@@ -223,7 +237,7 @@ td {
 }
 .dl-btn {
   display:inline-flex; align-items:center; gap:8px;
-  padding:12px 28px; border-radius:10px;
+  padding:12px 28px; border-radius:var(--radius-md);
   font-family:'Noto Sans TC',sans-serif; font-size:1rem; font-weight:700;
   text-decoration:none; transition:all 0.3s; cursor:pointer; border:none;
 }
@@ -235,20 +249,20 @@ td {
 .dl-btn-sub {
   background:var(--surface2); border:1px solid var(--border); color:var(--text2);
 }
-.dl-btn-sub:hover { border-color:var(--accent); color:var(--accent2); }
+.dl-btn-sub:hover { border-color:var(--accent); color:var(--accent2); transform:translateY(-2px); }
 .dl-icon { font-size:1.2rem; }
 
 /* ── Preview mockup ── */
 .preview-mock {
-  background:#2d2d2d;border-radius:10px;overflow:hidden;
+  background:var(--surface);border-radius:10px;overflow:hidden;
   max-width:520px;box-shadow:0 6px 28px rgba(0,0,0,0.5);margin:12px auto 0;
 }
 .preview-mock-bar {
-  background:#4caf50;padding:8px 14px;color:white;font-size:0.85rem;font-weight:bold;
+  background:var(--accent);padding:8px 14px;color:white;font-size:0.85rem;font-weight:bold;
   display:flex;justify-content:space-between;align-items:center;
 }
 .preview-mock-body {
-  padding:12px 16px;color:#c8ffc8;
+  padding:12px 16px;color:var(--accent2);
   font-family:'JetBrains Mono',Consolas,monospace;font-size:0.88rem;line-height:1.7;
 }
 
@@ -290,6 +304,24 @@ td {
 .footer-email { color:var(--blue); font-size:0.9rem; margin-top:4px; }
 .footer-copy { color:var(--text3); font-size:0.8rem; margin-top:12px; }
 a { color: var(--blue); }
+a:focus-visible, .dl-btn:focus-visible, button:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 3px;
+  border-radius: 4px;
+}
+.skip-link {
+  position: absolute; left: -9999px; top: auto;
+  width: 1px; height: 1px; overflow: hidden;
+  z-index: 9999;
+}
+.skip-link:focus {
+  position: fixed; top: 10px; left: 10px;
+  width: auto; height: auto; overflow: visible;
+  padding: 12px 24px; background: var(--accent); color: var(--bg);
+  font-weight: 700; border-radius: var(--radius-md);
+  text-decoration: none; z-index: 9999;
+}
+tbody tr:hover { background: var(--surface2); }
 ::selection { background: var(--accent); color: var(--bg); }
 @media(prefers-reduced-motion: reduce) {
   .badge-dot, .hero-icon, .hero::before { animation: none !important; }
@@ -301,20 +333,24 @@ a { color: var(--blue); }
   .hero { padding:40px 24px 30px; }
 }
 </style>
+<script type="application/ld+json">
+{"@context":"https://schema.org","@type":"SoftwareApplication","name":"Lab Data Formatter","operatingSystem":"Windows","applicationCategory":"MedicalApplication","offers":{"@type":"Offer","price":"0","priceCurrency":"TWD"},"downloadUrl":"https://github.com/andrew22tw/HIS_OPD_DATA_Assistant/releases/latest/download/LabFormatter.exe","softwareVersion":"1.5.0","author":{"@type":"Person","name":"吳岳霖"}}
+</script>
 </head>
 <body>
+<a href="#main" class="skip-link">跳至主要內容</a>
 
 <!-- ══════ Hero ══════ -->
 <header class="hero">
   <div class="hero-content">
-    <img src="app-icon.png" alt="Lab Data Formatter 應用程式圖示 - 聽診器與文件" class="hero-icon">
+    <img src="app-icon.png" alt="Lab Data Formatter 應用程式圖示 - 聽診器與文件" class="hero-icon" width="200" height="200" loading="eager">
     <h1>Lab Data Formatter</h1>
     <p class="subtitle">一鍵擷取檢驗報告，自動整理成濃縮格式</p>
     <p class="subtitle" style="margin-top:4px;">按下 <b>Ctrl+E</b> 取代 Ctrl+A + Ctrl+C，再按 <b>Ctrl+3</b> 貼上結果</p>
     <div class="version-bar">
-      <span class="badge badge-version"><span class="badge-dot"></span>最新版本 <span id="latestVer">載入中...</span></span>
+      <span class="badge badge-version"><span class="badge-dot"></span>最新版本 <span id="latestVer" aria-live="polite">載入中...</span></span>
       <span class="badge badge-date">更新日期 <span id="latestDate">...</span></span>
-      <span class="badge badge-dl">下載次數 <span id="dlCount">...</span></span>
+      <span class="badge badge-dl">下載次數 <span id="dlCount" aria-live="polite">...</span></span>
     </div>
     <div class="download-bar">
       <a class="dl-btn dl-btn-main" id="dlExe" href="https://github.com/andrew22tw/HIS_OPD_DATA_Assistant/releases/latest/download/LabFormatter.exe" onclick="incrementDl(event)">
@@ -327,7 +363,7 @@ a { color: var(--blue); }
   </div>
 </header>
 
-<main class="container">
+<main id="main" class="container">
 
 <!-- ══════ 使用流程 ══════ -->
 <section class="section">
@@ -338,13 +374,13 @@ a { color: var(--blue); }
       <div class="flow-key">Ctrl+E 擷取</div>
       <div class="flow-desc">滑鼠移到 ORD 檢驗報告區<br>按 <b>Ctrl+E</b> 一鍵全選+複製<br><span style="color:var(--text3);">（取代 Ctrl+A → Ctrl+C）</span></div>
     </div>
-    <div class="flow-arrow">→</div>
+    <div class="flow-arrow" aria-hidden="true">→</div>
     <div class="flow-step">
       <div class="flow-num">2</div>
       <div class="flow-key">自動整理</div>
       <div class="flow-desc">程式自動辨識檢驗數值<br>右下角彈出綠色預覽視窗<br>15 秒內多份報告自動合併</div>
     </div>
-    <div class="flow-arrow">→</div>
+    <div class="flow-arrow" aria-hidden="true">→</div>
     <div class="flow-step">
       <div class="flow-num">3</div>
       <div class="flow-key">Ctrl+3 貼上</div>
@@ -359,7 +395,7 @@ a { color: var(--blue); }
   <p style="color:var(--text2);margin-bottom:12px;">擷取成功後，右下角會自動彈出綠色浮動視窗顯示結果：</p>
   <div class="preview-mock">
     <div class="preview-mock-bar">
-      <span>✓ 報告已轉換，按 Ctrl+3 貼上</span><span>✕</span>
+      <span>✓ 報告已轉換，按 Ctrl+3 貼上</span><span aria-hidden="true">✕</span>
     </div>
     <div class="preview-mock-body">
       1150321 AC:122(7.2),BUN/Cr:21/1.40,Na/K:139/3.5,<br>
@@ -378,7 +414,7 @@ a { color: var(--blue); }
   Na                         140         mEq/L        135 - 148
   K                          3.6         mEq/L        3.5 - 5.1
   ALT                        25           U/L           7 - 42</div>
-  <div class="demo-arrow">▼ ▼ ▼</div>
+  <div class="demo-arrow"><span aria-hidden="true">▼ ▼ ▼</span></div>
   <div class="demo-output">11503 AC:122(6.8),BUN/Cr:27/1.71,Na/K:140/3.6,ALT:25</div>
 </div>
 
@@ -389,7 +425,8 @@ a { color: var(--blue); }
   <div class="note-box">⚠ 建議使用 Ctrl 作為修飾鍵。Alt 容易與其他程式（如 NVIDIA、瀏覽器）衝突，造成熱鍵不穩定。</div>
   <div style="overflow-x:auto">
   <table style="margin-top:20px;">
-    <thead><tr><th>預設熱鍵</th><th>預設功能</th><th>說明</th></tr></thead>
+    <caption class="sr-only" style="position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0,0,0,0)">熱鍵說明表</caption>
+    <thead><tr><th scope="col">預設熱鍵</th><th scope="col">預設功能</th><th scope="col">說明</th></tr></thead>
     <tbody>
     <tr><td><span class="kbd">Ctrl+E</span></td><td>擷取（全選+複製）</td><td>一鍵完成 Ctrl+A → Ctrl+C，程式自動辨識並整理報告</td></tr>
     <tr><td><span class="kbd">Ctrl+R</span></td><td>貼上結果</td><td>將整理後的報告寫入剪貼簿並貼上</td></tr>
@@ -413,7 +450,8 @@ a { color: var(--blue); }
   <p style="color:var(--text2);margin-top:6px;">Ctrl+1~4 每個 slot 可在設定中切換為以下類型：</p>
   <div style="overflow-x:auto">
   <table style="margin-top:8px;">
-    <thead><tr><th>類型</th><th>功能</th></tr></thead>
+    <caption class="sr-only" style="position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0,0,0,0)">Slot 類型說明表</caption>
+    <thead><tr><th scope="col">類型</th><th scope="col">功能</th></tr></thead>
     <tbody>
     <tr><td>快貼</td><td>按熱鍵自動貼上預設的文字</td></tr>
     <tr><td>報告</td><td>貼上整理後的檢驗報告結果</td></tr>
@@ -457,7 +495,8 @@ a { color: var(--blue); }
   <h2 class="section-title">輸出格式</h2>
   <div style="overflow-x:auto">
   <table>
-    <thead><tr><th>順序</th><th>項目</th><th>範例</th></tr></thead>
+    <caption class="sr-only" style="position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0,0,0,0)">輸出格式說明表</caption>
+    <thead><tr><th scope="col">順序</th><th scope="col">項目</th><th scope="col">範例</th></tr></thead>
     <tbody>
     <tr><td>1</td><td>AC（HbA1c）</td><td>AC:122(6.5)</td></tr>
     <tr><td>2</td><td>BUN / Cr</td><td>BUN/Cr:27/1.71</td></tr>
@@ -564,6 +603,15 @@ a { color: var(--blue); }
   </div>
 </section>
 
+<section style="text-align:center;padding:40px 24px;">
+  <p style="color:#8d9db2;margin-bottom:16px;font-size:1.1rem;">準備好試試看了嗎？</p>
+  <div class="download-bar">
+    <a class="dl-btn dl-btn-main" href="https://github.com/andrew22tw/HIS_OPD_DATA_Assistant/releases/latest/download/LabFormatter.exe">
+      <span class="dl-icon" aria-hidden="true">⬇</span>下載 LabFormatter.exe
+    </a>
+  </div>
+</section>
+
 </main><!-- /container -->
 
 <!-- ══════ Footer ══════ -->
@@ -574,64 +622,58 @@ a { color: var(--blue); }
 </footer>
 
 <script>
-// ── Auto-fetch latest release from GitHub ──
-(function(){
-  var repo = "andrew22tw/HIS_OPD_DATA_Assistant";
-  var apiLatest = "https://api.github.com/repos/" + repo + "/releases/latest";
-  var verEl = document.getElementById("latestVer");
-  var dateEl = document.getElementById("latestDate");
-  var dlExe = document.getElementById("dlExe");
-  var dlReadme = document.getElementById("dlReadme");
-
-  dlExe.href = "https://github.com/" + repo + "/releases/latest/download/LabFormatter.exe";
-  dlReadme.href = "https://github.com/" + repo + "/releases/latest/download/readme.txt";
-
-  fetch(apiLatest).then(function(r){
-    if(!r.ok) throw new Error("API "+r.status);
-    return r.json();
-  }).then(function(data){
-    if(data.tag_name){
-      verEl.textContent = data.tag_name;
-      var d = new Date(data.published_at);
-      dateEl.textContent = d.getFullYear()+"-"+String(d.getMonth()+1).padStart(2,"0")+"-"+String(d.getDate()).padStart(2,"0");
-      var assets = data.assets || [];
-      for(var i=0;i<assets.length;i++){
-        var name = assets[i].name.toLowerCase();
-        if(name.indexOf(".exe")>=0) dlExe.href = assets[i].browser_download_url;
-        if(name.indexOf("readme")>=0) dlReadme.href = assets[i].browser_download_url;
-      }
-    }
-  }).catch(function(){
-    verEl.textContent = "v1.5.0";
-    dateEl.textContent = "2026-03-21";
-  });
-})();
-
-// ── Download counter ──
+// ── Auto-fetch releases from GitHub (single API call) ──
 var _dlLocalKey = "ldf_dl_count";
 function getLocalDl(){ try{return parseInt(localStorage.getItem(_dlLocalKey)||"0",10)||0;}catch(e){return 0;} }
 function setLocalDl(n){ try{localStorage.setItem(_dlLocalKey,n.toString());}catch(e){} }
 
 (function(){
-  var el = document.getElementById("dlCount");
-  var local = getLocalDl();
-  el.textContent = local > 0 ? local.toLocaleString() : "...";
-
   var repo = "andrew22tw/HIS_OPD_DATA_Assistant";
+  var verEl = document.getElementById("latestVer");
+  var dateEl = document.getElementById("latestDate");
+  var dlExe = document.getElementById("dlExe");
+  var dlReadme = document.getElementById("dlReadme");
+  var dlCountEl = document.getElementById("dlCount");
+  var local = getLocalDl();
+
+  dlExe.href = "https://github.com/" + repo + "/releases/latest/download/LabFormatter.exe";
+  dlReadme.href = "https://github.com/" + repo + "/releases/latest/download/readme.txt";
+  dlCountEl.textContent = local > 0 ? local.toLocaleString() : "...";
+
   fetch("https://api.github.com/repos/" + repo + "/releases")
-    .then(function(r){ if(!r.ok) throw new Error(r.status); return r.json(); })
+    .then(function(r){ if(!r.ok) throw new Error("API "+r.status); return r.json(); })
     .then(function(releases){
-      if(!Array.isArray(releases)) return;
+      if(!Array.isArray(releases) || releases.length === 0) return;
+
+      // Use first release as latest (for version, date, download URLs)
+      var latest = releases[0];
+      if(latest.tag_name){
+        verEl.textContent = latest.tag_name;
+        var d = new Date(latest.published_at);
+        dateEl.textContent = d.getFullYear()+"-"+String(d.getMonth()+1).padStart(2,"0")+"-"+String(d.getDate()).padStart(2,"0");
+        var latestAssets = latest.assets || [];
+        for(var i=0;i<latestAssets.length;i++){
+          var name = latestAssets[i].name.toLowerCase();
+          if(name.indexOf(".exe")>=0) dlExe.href = latestAssets[i].browser_download_url;
+          if(name.indexOf("readme")>=0) dlReadme.href = latestAssets[i].browser_download_url;
+        }
+      }
+
+      // Sum download counts across ALL releases
       var ghTotal = 0;
       for(var ri=0;ri<releases.length;ri++){
         var assets = releases[ri].assets||[];
         for(var ai=0;ai<assets.length;ai++) ghTotal += assets[ai].download_count||0;
       }
       var display = Math.max(ghTotal, local);
-      el.textContent = display.toLocaleString();
+      dlCountEl.textContent = display.toLocaleString();
       if(ghTotal > local) setLocalDl(ghTotal);
     })
-    .catch(function(){ el.textContent = local > 0 ? local.toLocaleString() : "0"; });
+    .catch(function(){
+      verEl.textContent = "v1.5.0";
+      dateEl.textContent = "2026-03-21";
+      dlCountEl.textContent = local > 0 ? local.toLocaleString() : "0";
+    });
 })();
 
 function incrementDl(evt){
@@ -650,5 +692,6 @@ function incrementDl(evt){
   if(e) e.textContent="DAL93"+String.fromCharCode(64)+"tpech.gov.tw";
 })();
 </script>
+<noscript><div style="text-align:center;padding:20px;color:#94a3b8;">請啟用 JavaScript 以顯示最新版本資訊。<br>下載連結：<a href="https://github.com/andrew22tw/HIS_OPD_DATA_Assistant/releases" style="color:#3b82f6;">GitHub Releases</a></div></noscript>
 </body>
 </html>
