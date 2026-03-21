@@ -1,7 +1,7 @@
 // Lab Data Formatter v1.5.0
 // Author: \u5433\u5cb3\u9716\u91ab\u5e2b (DAL93@tpech.gov.tw)
 // Compile: build.bat (auto-finds csc.exe)
-// Hotkeys: Alt+1=Capture, Alt+2=Paste, Ctrl+0=Settings, Ctrl+1~4=Custom slots
+// Hotkeys: Ctrl+E=Capture, Ctrl+R=Paste, Ctrl+0=Settings, Ctrl+1~4=Custom slots
 // Architecture: Event-driven clipboard (WM_CLIPBOARDUPDATE), SendInput
 
 using System;
@@ -133,7 +133,7 @@ static class Lab {
     static readonly Regex RxDate = new Regex("\u63a1\u6aa2\u6642\u9593[\uff1a:]?\\s*(\\d{2,3})/(\\d{2})/(\\d{2})", RegexOptions.Compiled);
     public static string ExtractDate(string text) {
         var m = RxDate.Match(text);
-        return m.Success ? m.Groups[1].Value + m.Groups[2].Value : "";
+        return m.Success ? m.Groups[1].Value + m.Groups[2].Value + m.Groups[3].Value : "";
     }
     public static bool IsLabData(string text) {
         var kws = new[]{"BUN","mg/dl","mg/dL","mEq/L","U/L","mg/L","Glu","Cholesterol",
@@ -199,7 +199,7 @@ static class Lab {
                         parts.Add(label+":"+v); foreach(var k in active)used.Add(k); grouped=true;
                     } break;
                 } else if (g.Contains(it.Key)) {
-                    if (enabled.Contains(g[0])&&vals.ContainsKey(g[0])) grouped=true; break;
+                    if (enabled.Contains(g[0])) grouped=true; break;
                 }
             }
             if (!grouped&&!used.Contains(it.Key)){parts.Add(it.Disp+":"+vals[it.Key]);used.Add(it.Key);}
@@ -312,7 +312,9 @@ class Config {
             if(d.ContainsKey("capture_key")) CaptureKey=d["capture_key"].ToString();
             if(d.ContainsKey("paste_mod")) PasteMod=d["paste_mod"].ToString();
             if(d.ContainsKey("paste_key")) PasteKey=d["paste_key"].ToString();
-        } catch { }
+        } catch(Exception ex) {
+            try { System.Windows.Forms.MessageBox.Show("設定檔讀取失敗: "+ex.Message, "Lab Formatter", System.Windows.Forms.MessageBoxButtons.OK, System.Windows.Forms.MessageBoxIcon.Warning); } catch {}
+        }
         while(Slots.Count<4) {
             var i=Slots.Count;
             if(i==2) Slots.Add(new Slot{Name="\u6fc3\u7e2e\u5831\u544a",Type="lab",
@@ -910,6 +912,7 @@ class App : Form {
     // ── Inline slot editor (one row per slot) ──
     class InlineSlot {
         ComboBox combo; TextBox nameBox, txtBox;
+        Label contentLabel;
         string[] types={"none","paste","lab","capture"};
         string[] tnames={"\u672a\u8a2d\u5b9a","\u5feb\u8cbc","\u5831\u544a","\u64f7\u53d6"};
         GroupBox gb;
@@ -937,7 +940,8 @@ class App : Form {
                 txtBox=new TextBox{Left=50,Top=48,Width=width-70,Height=42,
                     Multiline=true,ScrollBars=ScrollBars.Vertical,
                     Text=s.Text,Font=new Font("Consolas",9)};
-                gb.Controls.Add(new Label{Text="\u5167\u5bb9:",Left=8,Top=51,Width=40,AutoSize=false});
+                contentLabel=new Label{Text="\u5167\u5bb9:",Left=8,Top=51,Width=40,AutoSize=false};
+                gb.Controls.Add(contentLabel);
                 gb.Controls.Add(txtBox);
             } else {
                 string descText=s.Type=="capture"?"\u6309\u4e0b\u6b64\u71b1\u9375 \u2192 \u81ea\u52d5\u5168\u9078+\u8907\u88fd":"Ctrl+C \u8907\u88fd\u5831\u544a \u2192 Ctrl+"+(idx+1)+" \u8cbc\u4e0a\u6fc3\u7e2e\u5831\u544a";
@@ -948,15 +952,16 @@ class App : Form {
             combo.SelectedIndexChanged+=(x,y)=>{
                 int ti=combo.SelectedIndex;
                 bool nowLab=(ti==2||ti==3);
-                if(nowLab&&txtBox!=null){txtBox.Visible=false;gb.Height=58;}
+                if(nowLab&&txtBox!=null){txtBox.Visible=false;if(contentLabel!=null)contentLabel.Visible=false;gb.Height=58;}
                 else if(!nowLab){
                     if(txtBox==null){
                         txtBox=new TextBox{Left=50,Top=48,Width=width-70,Height=42,
                             Multiline=true,ScrollBars=ScrollBars.Vertical,Font=new Font("Consolas",9)};
-                        gb.Controls.Add(new Label{Text="\u5167\u5bb9:",Left=8,Top=51,Width=40,AutoSize=false});
+                        contentLabel=new Label{Text="\u5167\u5bb9:",Left=8,Top=51,Width=40,AutoSize=false};
+                        gb.Controls.Add(contentLabel);
                         gb.Controls.Add(txtBox);
                     }
-                    txtBox.Visible=true;gb.Height=100;
+                    txtBox.Visible=true;if(contentLabel!=null)contentLabel.Visible=true;gb.Height=100;
                 }
             };
         }
@@ -1034,6 +1039,7 @@ static class Splash {
         path.AddArc(f.Width-20,f.Height-20,20,20,0,90); path.AddArc(0,f.Height-20,20,20,90,90);
         path.CloseFigure();
         f.Region=new Region(path);
+        path.Dispose();
 
         // Title
         var lbl1=new Label{Text="\u75c5\u6b77\u5c0f\u5e6b\u624b",
@@ -1086,7 +1092,10 @@ static class Splash {
                 rp.AddArc(0,0,r2*2,r2*2,180,90); rp.AddArc(w-r2*2,0,r2*2,r2*2,270,90);
                 rp.AddArc(w-r2*2,h-r2*2,r2*2,r2*2,0,90); rp.AddArc(0,h-r2*2,r2*2,r2*2,90,90);
                 rp.CloseFigure();
+                var oldRegion = f.Region;
                 f.Region=new Region(rp);
+                if(oldRegion != null) oldRegion.Dispose();
+                rp.Dispose();
                 if(tick>=20){timer.Stop();f.Close();}
             }
         };

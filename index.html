@@ -6,10 +6,18 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Lab Data Formatter - 檢驗報告快速整理工具</title>
+<meta name="description" content="Lab Data Formatter - 醫院檢驗報告快速整理工具，一鍵擷取、自動整理、濃縮貼上。免安裝，下載即用。">
+<meta property="og:title" content="Lab Data Formatter - 檢驗報告快速整理工具">
+<meta property="og:description" content="一鍵擷取醫院檢驗報告，自動整理成濃縮格式。6組可自訂熱鍵，免安裝下載即用。">
+<meta property="og:image" content="app-icon.png">
+<meta property="og:type" content="website">
+<meta name="twitter:card" content="summary">
+<meta name="theme-color" content="#0a0e17">
 <link rel="icon" type="image/png" href="app-icon.png">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@300;400;500;700;900&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
 <style>
+html { color-scheme: dark; }
 :root {
   --bg: #0a0e17;
   --surface: #111827;
@@ -20,7 +28,7 @@
   --accent-dim: rgba(34,197,94,0.12);
   --text: #e2e8f0;
   --text2: #94a3b8;
-  --text3: #64748b;
+  --text3: #7a8ba0;
   --gold: #fbbf24;
   --red: #ef4444;
   --blue: #3b82f6;
@@ -64,6 +72,7 @@ body {
 }
 .hero h1 {
   font-size:2.8rem; font-weight:900; letter-spacing:-1px;
+  color: var(--accent);
   background:linear-gradient(135deg, var(--accent), var(--accent2), var(--gold));
   -webkit-background-clip:text; -webkit-text-fill-color:transparent;
   background-clip:text;
@@ -280,14 +289,25 @@ td {
 .footer-name { font-weight:700; font-size:1rem; }
 .footer-email { color:var(--blue); font-size:0.9rem; margin-top:4px; }
 .footer-copy { color:var(--text3); font-size:0.8rem; margin-top:12px; }
+a { color: var(--blue); }
+::selection { background: var(--accent); color: var(--bg); }
+@media(prefers-reduced-motion: reduce) {
+  .badge-dot, .hero-icon, .hero::before { animation: none !important; }
+  .hero-icon { transform: none; }
+}
+@media(max-width:480px){
+  .hero h1 { font-size:1.8rem; }
+  .hero-icon { width:120px; height:120px; border-radius:24px; }
+  .hero { padding:40px 24px 30px; }
+}
 </style>
 </head>
 <body>
 
 <!-- ══════ Hero ══════ -->
-<div class="hero">
+<header class="hero">
   <div class="hero-content">
-    <img src="app-icon.png" alt="Lab Data Formatter" class="hero-icon">
+    <img src="app-icon.png" alt="Lab Data Formatter 應用程式圖示 - 聽診器與文件" class="hero-icon">
     <h1>Lab Data Formatter</h1>
     <p class="subtitle">一鍵擷取檢驗報告，自動整理成濃縮格式</p>
     <p class="subtitle" style="margin-top:4px;">按下 <b>Ctrl+E</b> 取代 Ctrl+A + Ctrl+C，再按 <b>Ctrl+3</b> 貼上結果</p>
@@ -298,19 +318,19 @@ td {
     </div>
     <div class="download-bar">
       <a class="dl-btn dl-btn-main" id="dlExe" href="https://github.com/andrew22tw/HIS_OPD_DATA_Assistant/releases/latest/download/LabFormatter.exe" onclick="incrementDl(event)">
-        <span class="dl-icon">⬇</span>下載 LabFormatter.exe
+        <span class="dl-icon" aria-hidden="true">⬇</span>下載 LabFormatter.exe
       </a>
       <a class="dl-btn dl-btn-sub" id="dlReadme" href="https://github.com/andrew22tw/HIS_OPD_DATA_Assistant/releases/latest/download/readme.txt">
-        <span class="dl-icon">📄</span>下載 readme.txt
+        <span class="dl-icon" aria-hidden="true">📄</span>下載 readme.txt
       </a>
     </div>
   </div>
-</div>
+</header>
 
-<div class="container">
+<main class="container">
 
 <!-- ══════ 使用流程 ══════ -->
-<div class="section">
+<section class="section">
   <h2 class="section-title">三步驟完成</h2>
   <div class="flow">
     <div class="flow-step">
@@ -331,10 +351,10 @@ td {
       <div class="flow-desc">切到病歷或筆記<br>按 <b>Ctrl+3</b> 貼上結果<br>一行濃縮格式，直接可用</div>
     </div>
   </div>
-</div>
+</section>
 
 <!-- ══════ 擷取成功提示 ══════ -->
-<div class="section" style="padding-top:0;">
+<section class="section" style="padding-top:0;">
   <h2 class="section-title">擷取成功畫面</h2>
   <p style="color:var(--text2);margin-bottom:12px;">擷取成功後，右下角會自動彈出綠色浮動視窗顯示結果：</p>
   <div class="preview-mock">
@@ -346,7 +366,7 @@ td {
       &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;HCO3:24,ALT/AST:14/22,Alb:4.2,TC/TG/L/H:165/121/81/53
     </div>
   </div>
-</div>
+</section>
 
 <!-- ══════ Demo ══════ -->
 <div class="demo">
@@ -363,12 +383,14 @@ td {
 </div>
 
 <!-- ══════ 熱鍵說明 ══════ -->
-<div class="section">
+<section class="section">
   <h2 class="section-title">6 組可自訂熱鍵</h2>
   <p style="color:var(--text2);margin-bottom:8px;">所有熱鍵皆可在設定視窗（Ctrl+0）中修改。修飾鍵可選 Ctrl 或 Alt。</p>
   <div class="note-box">⚠ 建議使用 Ctrl 作為修飾鍵。Alt 容易與其他程式（如 NVIDIA、瀏覽器）衝突，造成熱鍵不穩定。</div>
+  <div style="overflow-x:auto">
   <table style="margin-top:20px;">
-    <tr><th>預設熱鍵</th><th>預設功能</th><th>說明</th></tr>
+    <thead><tr><th>預設熱鍵</th><th>預設功能</th><th>說明</th></tr></thead>
+    <tbody>
     <tr><td><span class="kbd">Ctrl+E</span></td><td>擷取（全選+複製）</td><td>一鍵完成 Ctrl+A → Ctrl+C，程式自動辨識並整理報告</td></tr>
     <tr><td><span class="kbd">Ctrl+R</span></td><td>貼上結果</td><td>將整理後的報告寫入剪貼簿並貼上</td></tr>
     <tr><td><span class="kbd">Ctrl+1</span></td><td>快貼 1</td><td>貼上自訂文字片段</td></tr>
@@ -376,7 +398,9 @@ td {
     <tr><td><span class="kbd">Ctrl+3</span></td><td>濃縮報告</td><td>貼上整理後的檢驗報告（預設報告 slot）</td></tr>
     <tr><td><span class="kbd">Ctrl+4</span></td><td>快貼 3</td><td>貼上自訂文字片段</td></tr>
     <tr style="border-top:2px solid var(--border);"><td><span class="kbd">Ctrl+0</span></td><td>設定</td><td>開啟設定視窗（固定，不可更改）</td></tr>
+    </tbody>
   </table>
+  </div>
 
   <h3 style="margin-top:28px;font-size:1.1rem;font-weight:600;">什麼是「擷取」？</h3>
   <p style="color:var(--text2);margin-top:6px;">
@@ -387,17 +411,21 @@ td {
 
   <h3 style="margin-top:28px;font-size:1.1rem;font-weight:600;">Slot 類型</h3>
   <p style="color:var(--text2);margin-top:6px;">Ctrl+1~4 每個 slot 可在設定中切換為以下類型：</p>
+  <div style="overflow-x:auto">
   <table style="margin-top:8px;">
-    <tr><th>類型</th><th>功能</th></tr>
+    <thead><tr><th>類型</th><th>功能</th></tr></thead>
+    <tbody>
     <tr><td>快貼</td><td>按熱鍵自動貼上預設的文字</td></tr>
     <tr><td>報告</td><td>貼上整理後的檢驗報告結果</td></tr>
     <tr><td>擷取</td><td>一鍵全選+複製（同 Ctrl+E 功能）</td></tr>
     <tr><td>未設定</td><td>此熱鍵不動作</td></tr>
+    </tbody>
   </table>
-</div>
+  </div>
+</section>
 
 <!-- ══════ 系統匣燈泡 ══════ -->
-<div class="section">
+<section class="section">
   <h2 class="section-title">系統匣狀態指示</h2>
   <p style="color:var(--text2);margin-bottom:12px;">程式啟動後會常駐在右下角系統匣，醫生圖示的十字會變色表示目前狀態：</p>
   <div class="tray-colors">
@@ -405,10 +433,10 @@ td {
     <div class="tray-item"><div class="tray-dot green"></div><span>擷取成功 — 報告已整理，可貼上</span></div>
     <div class="tray-item"><div class="tray-dot red"></div><span>錯誤 — 請先擷取報告</span></div>
   </div>
-</div>
+</section>
 
 <!-- ══════ 多份合併 ══════ -->
-<div class="section">
+<section class="section">
   <h2 class="section-title">多份報告自動合併</h2>
   <p style="color:var(--text2);">
     同一位病人有多份報告（生化、CBC、尿液）？只要在 <b>15 秒內</b>連續擷取，程式會自動合併成一行。
@@ -422,13 +450,15 @@ td {
   <p style="color:var(--text3);font-size:0.85rem;margin-top:10px;">
     血液項目（BUN、Cr、Na 等）只從血液檢體擷取；尿液項目（ACR、PCR）只從尿液檢體擷取，不會混淆。
   </p>
-</div>
+</section>
 
 <!-- ══════ 輸出格式 ══════ -->
-<div class="section">
+<section class="section">
   <h2 class="section-title">輸出格式</h2>
+  <div style="overflow-x:auto">
   <table>
-    <tr><th>順序</th><th>項目</th><th>範例</th></tr>
+    <thead><tr><th>順序</th><th>項目</th><th>範例</th></tr></thead>
+    <tbody>
     <tr><td>1</td><td>AC（HbA1c）</td><td>AC:122(6.5)</td></tr>
     <tr><td>2</td><td>BUN / Cr</td><td>BUN/Cr:27/1.71</td></tr>
     <tr><td>3</td><td>Na / K</td><td>Na/K:139/3.5</td></tr>
@@ -442,14 +472,16 @@ td {
     <tr><td>11</td><td>Hb / WBC / PLT</td><td>Hb:10.2</td></tr>
     <tr><td>12</td><td>ACR（尿液）</td><td>UAC:45.2</td></tr>
     <tr><td>13</td><td>PCR（尿液）</td><td>UPC:0.35</td></tr>
+    </tbody>
   </table>
+  </div>
   <p style="color:var(--text3);font-size:0.85rem;margin-top:10px;">
     日期格式：民國年月日（如 1150321 = 115年3月21日）。BUN、HCO3、Iron、TIBC、Ferritin 自動取整數。
   </p>
-</div>
+</section>
 
 <!-- ══════ 安裝說明 ══════ -->
-<div class="section">
+<section class="section">
   <h2 class="section-title">安裝方式</h2>
   <div style="background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:20px 24px;font-size:0.95rem;color:var(--text2);line-height:2;">
     1. 下載 <b style="color:var(--accent2);">LabFormatter.exe</b>（約 60KB，免安裝）<br>
@@ -457,10 +489,10 @@ td {
     3. 醫生圖示出現在右下角系統匣，程式開始常駐<br>
     4. 設定檔自動建立於 <code style="color:var(--gold);font-family:'JetBrains Mono',monospace;">我的文件\EMR_Report\</code>
   </div>
-</div>
+</section>
 
 <!-- ══════ Changelog ══════ -->
-<div class="section">
+<section class="section">
   <h2 class="section-title">更新紀錄</h2>
   <div class="changelog-item">
     <div class="cl-header">
@@ -530,16 +562,16 @@ td {
       <li>首次發佈</li>
     </ul>
   </div>
-</div>
+</section>
 
-</div><!-- /container -->
+</main><!-- /container -->
 
 <!-- ══════ Footer ══════ -->
-<div class="footer">
+<footer class="footer">
   <div class="footer-name">吳岳霖醫師</div>
   <div class="footer-email" id="footerEmail"></div>
   <div class="footer-copy">Lab Data Formatter &copy; 2026</div>
-</div>
+</footer>
 
 <script>
 // ── Auto-fetch latest release from GitHub ──
