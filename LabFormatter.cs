@@ -671,13 +671,17 @@ class App : Form {
         UnregisterHotKey(Handle,HKID_CAPTURE);
         uint mod=VK.ModFlag(cfg.CaptureMod);
         uint vk=VK.Code(cfg.CaptureKey);
-        RegisterHotKey(Handle,HKID_CAPTURE,mod,vk);
+        if(!RegisterHotKey(Handle,HKID_CAPTURE,mod,vk))
+            tray.ShowBalloonTip(3000,"\u64f7\u53d6\u9375\u8a3b\u518a\u5931\u6557",
+                cfg.CaptureMod+"+"+cfg.CaptureKey+" \u88ab\u5176\u4ed6\u7a0b\u5f0f\u4f54\u7528\uff0c\u8acb\u5728\u8a2d\u5b9a\u4e2d\u66f4\u63db\u71b1\u9375",ToolTipIcon.Warning);
     }
     void RegisterPasteHotkey(){
         UnregisterHotKey(Handle,HKID_PASTE);
         uint mod=VK.ModFlag(cfg.PasteMod);
         uint vk=VK.Code(cfg.PasteKey);
-        RegisterHotKey(Handle,HKID_PASTE,mod,vk);
+        if(!RegisterHotKey(Handle,HKID_PASTE,mod,vk))
+            tray.ShowBalloonTip(3000,"\u8cbc\u4e0a\u9375\u8a3b\u518a\u5931\u6557",
+                cfg.PasteMod+"+"+cfg.PasteKey+" \u88ab\u5176\u4ed6\u7a0b\u5f0f\u4f54\u7528\uff0c\u8acb\u5728\u8a2d\u5b9a\u4e2d\u66f4\u63db\u71b1\u9375",ToolTipIcon.Warning);
     }
 
     protected override void WndProc(ref Message m) {
