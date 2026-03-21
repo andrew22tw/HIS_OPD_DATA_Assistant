@@ -26,7 +26,7 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;500;700&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
 <style>
-html { color-scheme: dark; }
+html { color-scheme: dark; scroll-behavior: smooth; }
 :root {
   --bg: #0a0e17;
   --surface: #111827;
@@ -137,7 +137,7 @@ body {
 }
 .demo-input {
   font-family:'JetBrains Mono',monospace;
-  font-size:0.82rem; color:var(--text3); line-height:1.6;
+  font-size:0.82rem; color:var(--text2); line-height:1.6;
   white-space:pre-wrap; margin-bottom:20px;
   max-height:160px; overflow-y:auto;
   padding:12px; background:var(--surface2); border-radius:8px;
@@ -246,6 +246,8 @@ td {
   color:#fff; box-shadow:0 4px 20px rgba(34,197,94,0.3);
 }
 .dl-btn-main:hover { transform:translateY(-2px); box-shadow:0 6px 28px rgba(34,197,94,0.45); }
+.dl-btn-main:active { transform:translateY(0); box-shadow:0 2px 10px rgba(34,197,94,0.2); }
+.dl-btn-sub:active { transform:translateY(0); }
 .dl-btn-sub {
   background:var(--surface2); border:1px solid var(--border); color:var(--text2);
 }
@@ -332,6 +334,22 @@ tbody tr:hover { background: var(--surface2); }
   .hero-icon { width:120px; height:120px; border-radius:24px; }
   .hero { padding:40px 24px 30px; }
 }
+
+/* ── Utility classes ── */
+.mt-0 { margin-top:0; }
+.mt-sm { margin-top:4px; }
+.mt-md { margin-top:8px; }
+.mt-lg { margin-top:28px; }
+.pt-0 { padding-top:0; }
+.text-muted { color:var(--text2); }
+.text-dim { color:var(--text3); }
+.text-sm { font-size:0.85rem; }
+.text-center { text-align:center; }
+.section-flush { padding-top:0; }
+.h3-inline { font-size:1.1rem; font-weight:600; }
+.flow-box { background:var(--surface);border:1px solid var(--border);border-radius:var(--radius-lg);padding:18px 22px;margin-top:14px;font-size:0.9rem;color:var(--text2);line-height:2; }
+.install-box { background:var(--surface);border:1px solid var(--border);border-radius:var(--radius-md);padding:20px 24px;font-size:0.95rem;color:var(--text2);line-height:2; }
+.code-hl { color:var(--gold);font-family:'JetBrains Mono',monospace; }
 </style>
 <script type="application/ld+json">
 {"@context":"https://schema.org","@type":"SoftwareApplication","name":"Lab Data Formatter","operatingSystem":"Windows","applicationCategory":"MedicalApplication","offers":{"@type":"Offer","price":"0","priceCurrency":"TWD"},"downloadUrl":"https://github.com/andrew22tw/HIS_OPD_DATA_Assistant/releases/latest/download/LabFormatter.exe","softwareVersion":"1.5.0","author":{"@type":"Person","name":"吳岳霖"}}
@@ -390,9 +408,9 @@ tbody tr:hover { background: var(--surface2); }
 </section>
 
 <!-- ══════ 擷取成功提示 ══════ -->
-<section class="section" style="padding-top:0;">
+<section class="section section-flush">
   <h2 class="section-title">擷取成功畫面</h2>
-  <p style="color:var(--text2);margin-bottom:12px;">擷取成功後，右下角會自動彈出綠色浮動視窗顯示結果：</p>
+  <p class="text-muted" style="margin-bottom:12px;">擷取成功後，右下角會自動彈出綠色浮動視窗顯示結果：</p>
   <div class="preview-mock">
     <div class="preview-mock-bar">
       <span>✓ 報告已轉換，按 Ctrl+3 貼上</span><span aria-hidden="true">✕</span>
@@ -439,15 +457,15 @@ tbody tr:hover { background: var(--surface2); }
   </table>
   </div>
 
-  <h3 style="margin-top:28px;font-size:1.1rem;font-weight:600;">什麼是「擷取」？</h3>
-  <p style="color:var(--text2);margin-top:6px;">
+  <h3 class="mt-lg h3-inline">什麼是「擷取」？</h3>
+  <p class="text-muted mt-sm">
     「擷取」= <b>全選 + 複製</b>，一鍵完成兩個動作。<br>
     原本需要 Ctrl+A（全選）→ Ctrl+C（複製）兩步驟，<br>
     設定擷取熱鍵後只需按一次（預設 Ctrl+E）即可完成。
   </p>
 
-  <h3 style="margin-top:28px;font-size:1.1rem;font-weight:600;">Slot 類型</h3>
-  <p style="color:var(--text2);margin-top:6px;">Ctrl+1~4 每個 slot 可在設定中切換為以下類型：</p>
+  <h3 class="mt-lg h3-inline">Slot 類型</h3>
+  <p class="text-muted mt-sm">Ctrl+1~4 每個 slot 可在設定中切換為以下類型：</p>
   <div style="overflow-x:auto">
   <table style="margin-top:8px;">
     <caption class="sr-only" style="position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0,0,0,0)">Slot 類型說明表</caption>
@@ -465,7 +483,7 @@ tbody tr:hover { background: var(--surface2); }
 <!-- ══════ 系統匣燈泡 ══════ -->
 <section class="section">
   <h2 class="section-title">系統匣狀態指示</h2>
-  <p style="color:var(--text2);margin-bottom:12px;">程式啟動後會常駐在右下角系統匣，醫生圖示的十字會變色表示目前狀態：</p>
+  <p class="text-muted" style="margin-bottom:12px;">程式啟動後會常駐在右下角系統匣，醫生圖示的十字會變色表示目前狀態：</p>
   <div class="tray-colors">
     <div class="tray-item"><div class="tray-dot yellow"></div><span>待機中 — 等待擷取報告</span></div>
     <div class="tray-item"><div class="tray-dot green"></div><span>擷取成功 — 報告已整理，可貼上</span></div>
@@ -476,7 +494,7 @@ tbody tr:hover { background: var(--surface2); }
 <!-- ══════ 多份合併 ══════ -->
 <section class="section">
   <h2 class="section-title">多份報告自動合併</h2>
-  <p style="color:var(--text2);">
+  <p class="text-muted">
     同一位病人有多份報告（生化、CBC、尿液）？只要在 <b>15 秒內</b>連續擷取，程式會自動合併成一行。
   </p>
   <div style="background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:18px 22px;margin-top:14px;font-size:0.9rem;color:var(--text2);line-height:2;">
@@ -485,7 +503,7 @@ tbody tr:hover { background: var(--surface2); }
     切換報告 → Ctrl+E → 擷取尿液 → 自動合併，顯示 <span style="color:var(--accent);">[3筆]</span><br>
     按 <b style="color:var(--accent2);">Ctrl+3</b> → 一次貼上全部結果
   </div>
-  <p style="color:var(--text3);font-size:0.85rem;margin-top:10px;">
+  <p class="text-dim text-sm" style="margin-top:10px;">
     血液項目（BUN、Cr、Na 等）只從血液檢體擷取；尿液項目（ACR、PCR）只從尿液檢體擷取，不會混淆。
   </p>
 </section>
@@ -514,7 +532,7 @@ tbody tr:hover { background: var(--surface2); }
     </tbody>
   </table>
   </div>
-  <p style="color:var(--text3);font-size:0.85rem;margin-top:10px;">
+  <p class="text-dim text-sm" style="margin-top:10px;">
     日期格式：民國年月日（如 1150321 = 115年3月21日）。BUN、HCO3、Iron、TIBC、Ferritin 自動取整數。
   </p>
 </section>
@@ -526,7 +544,7 @@ tbody tr:hover { background: var(--surface2); }
     1. 下載 <b style="color:var(--accent2);">LabFormatter.exe</b>（約 60KB，免安裝）<br>
     2. 放在任何位置（桌面即可），雙擊執行<br>
     3. 醫生圖示出現在右下角系統匣，程式開始常駐<br>
-    4. 設定檔自動建立於 <code style="color:var(--gold);font-family:'JetBrains Mono',monospace;">我的文件\EMR_Report\</code>
+    4. 設定檔自動建立於 <code class="code-hl">我的文件\EMR_Report\</code>
   </div>
 </section>
 
