@@ -1,8 +1,8 @@
-// Lab Data Formatter v1.4.1
+// Lab Data Formatter v1.4.2
 // Author: \u5433\u5cb3\u9716\u91ab\u5e2b (DAL93@tpech.gov.tw)
 // Compile: build.bat (auto-finds csc.exe)
 // Hotkeys: Alt+1=Capture, Alt+2=Paste, Ctrl+0=Settings, Ctrl+1~4=Custom slots
-// Architecture: Event-driven clipboard (WM_CLIPBOARDUPDATE), SendInput, window-aware capture
+// Architecture: Event-driven clipboard (WM_CLIPBOARDUPDATE), SendInput
 
 using System;
 using System.Collections.Generic;
@@ -411,7 +411,7 @@ struct INPUT {
 }
 
 class App : Form {
-    const string VER="v1.4.1";
+    const string VER="v1.4.2";
     // ── Win32 APIs ──
     [DllImport("user32")] static extern bool RegisterHotKey(IntPtr h,int id,uint mod,uint vk);
     [DllImport("user32")] static extern bool UnregisterHotKey(IntPtr h,int id);
@@ -421,11 +421,6 @@ class App : Form {
     [DllImport("user32")] static extern bool AddClipboardFormatListener(IntPtr hwnd);
     [DllImport("user32")] static extern bool RemoveClipboardFormatListener(IntPtr hwnd);
     const int WM_CLIPBOARDUPDATE = 0x031D;
-    // Window-aware capture
-    [DllImport("user32")] static extern IntPtr GetForegroundWindow();
-    [DllImport("user32",CharSet=CharSet.Auto)] static extern int GetWindowText(IntPtr h, System.Text.StringBuilder sb, int max);
-    // Capture window title keywords (configurable in JSON)
-    List<string> captureWindowKeywords = new List<string>{"ORD","\u6aa2\u9a57","\u5831\u544a","HIS","EMR"};
 
     NotifyIcon tray; Config cfg = new Config();
     string labResult; string lastClip; DateTime ignoreUntil;
@@ -671,18 +666,7 @@ class App : Form {
         });
     }
 
-    // ── Window-aware capture: only trigger in ORD/HIS windows ──
-    bool IsCaptureAllowed(){
-        var hwnd=GetForegroundWindow();
-        if(hwnd==IntPtr.Zero) return false;
-        var sb=new System.Text.StringBuilder(512);
-        GetWindowText(hwnd,sb,512);
-        var title=sb.ToString();
-        if(title=="") return true; // Unknown window, allow (fallback)
-        foreach(var kw in captureWindowKeywords)
-            if(title.IndexOf(kw,StringComparison.OrdinalIgnoreCase)>=0) return true;
-        return false;
-    }
+    bool IsCaptureAllowed(){ return true; }
     void RegisterCaptureHotkey(){
         UnregisterHotKey(Handle,HKID_CAPTURE);
         uint mod=VK.ModFlag(cfg.CaptureMod);

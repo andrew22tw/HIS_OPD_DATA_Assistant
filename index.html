@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <!-- Lab Data Formatter Website -->
 <!-- Last Modified: 2026-03-20 01:00 (UTC+8) -->
-<!-- Version: v1.4.1 -->
+<!-- Version: v1.4.2 -->
 <html lang="zh-TW">
 <head>
 <meta charset="UTF-8">
@@ -301,7 +301,7 @@ td {
       <span class="badge badge-dl">下載次數 <span id="dlCount">...</span></span>
     </div>
     <div class="download-bar">
-      <a class="dl-btn dl-btn-main" id="dlExe" href="https://github.com/andrew22tw/HIS_OPD_DATA_Assistant/releases/latest/download/LabFormatter.exe" onclick="incrementDl()">
+      <a class="dl-btn dl-btn-main" id="dlExe" href="https://github.com/andrew22tw/HIS_OPD_DATA_Assistant/releases/latest/download/LabFormatter.exe" onclick="incrementDl(event)">
         <span class="dl-icon">⬇</span>下載 LabFormatter.exe
       </a>
       <a class="dl-btn dl-btn-sub" id="dlReadme" href="https://github.com/andrew22tw/HIS_OPD_DATA_Assistant/releases/latest/download/readme.txt">
@@ -437,9 +437,19 @@ td {
   <h2 class="section-title">更新紀錄</h2>
   <div class="changelog-item">
     <div class="cl-header">
+      <span class="cl-ver">v1.4.2</span>
+      <span class="cl-date">2026-03-21</span>
+      <span class="cl-tag">Latest</span>
+    </div>
+    <ul class="cl-list">
+      <li>Alt+1 擷取功能移除視窗限制，現在可在任何視窗使用</li>
+      <li>移除視窗標題檢查相關程式碼，簡化架構</li>
+    </ul>
+  </div>
+  <div class="changelog-item">
+    <div class="cl-header">
       <span class="cl-ver">v1.4.1</span>
       <span class="cl-date">2026-03-20</span>
-      <span class="cl-tag">Latest</span>
     </div>
     <ul class="cl-list">
       <li>所有正則表達式預編譯（RegexOptions.Compiled），降低解析時 CPU 運算負擔</li>
@@ -529,7 +539,7 @@ td {
 <script>
 var readmeText = [
 "================================================================",
-"  Lab Data Formatter v1.4.1 使用說明",
+"  Lab Data Formatter v1.4.2 使用說明",
 "  作者：吳岳霖醫師  DAL93"+String.fromCharCode(64)+"tpech.gov.tw",
 "================================================================",
 "",
@@ -620,10 +630,8 @@ function copyReadme() {
 (function(){
   var repo = "andrew22tw/HIS_OPD_DATA_Assistant";
   var apiLatest = "https://api.github.com/repos/" + repo + "/releases/latest";
-  var apiAll = "https://api.github.com/repos/" + repo + "/releases";
   var verEl = document.getElementById("latestVer");
   var dateEl = document.getElementById("latestDate");
-  var dlCountEl = document.getElementById("dlCount");
   var dlExe = document.getElementById("dlExe");
   var dlReadme = document.getElementById("dlReadme");
 
@@ -647,45 +655,54 @@ function copyReadme() {
       }
     }
   }).catch(function(){
-    verEl.textContent = "v1.4.1";
+    verEl.textContent = "v1.4.2";
     dateEl.textContent = "2026-03-20";
-  });
-
-  // Fetch total download count across ALL releases + local tracking
-  var localCount = 0;
-  try { localCount = parseInt(localStorage.getItem("ldf_dl_count")||"0",10)||0; } catch(ex){}
-  dlCountEl.textContent = localCount > 0 ? localCount.toLocaleString() : "...";
-
-  fetch(apiAll).then(function(r){
-    if(!r.ok) throw new Error("API "+r.status);
-    return r.json();
-  }).then(function(releases){
-    if(!Array.isArray(releases)) return;
-    var ghTotal=0;
-    for(var ri=0;ri<releases.length;ri++){
-      var assets=releases[ri].assets||[];
-      for(var ai=0;ai<assets.length;ai++) ghTotal+=assets[ai].download_count||0;
-    }
-    // Show whichever is higher (local tracks faster than GitHub API cache)
-    var display = Math.max(ghTotal, localCount);
-    dlCountEl.textContent = display.toLocaleString();
-    // Sync: if GitHub caught up, update local to match
-    if(ghTotal > localCount){
-      try { localStorage.setItem("ldf_dl_count", ghTotal.toString()); } catch(ex){}
-    }
-  }).catch(function(){
-    dlCountEl.textContent = localCount > 0 ? localCount.toLocaleString() : "-";
   });
 })();
 
-// Download counter: +1 on click, persist in localStorage
-function incrementDl(){
+// ── Download counter: GitHub API + localStorage hybrid ──
+var _dlLocalKey = "ldf_dl_count";
+function getLocalDl(){ try{return parseInt(localStorage.getItem(_dlLocalKey)||"0",10)||0;}catch(e){return 0;} }
+function setLocalDl(n){ try{localStorage.setItem(_dlLocalKey,n.toString());}catch(e){} }
+
+(function(){
   var el = document.getElementById("dlCount");
-  var cur = 0;
-  try { cur = parseInt(localStorage.getItem("ldf_dl_count")||"0",10)||0; } catch(ex){}
-  cur++;
-  try { localStorage.setItem("ldf_dl_count", cur.toString()); } catch(ex){}
-  if(el) el.textContent = cur.toLocaleString();
+  var local = getLocalDl();
+  // Show local count immediately while GitHub API loads
+  el.textContent = local > 0 ? local.toLocaleString() : "...";
+
+  // Fetch GitHub API download counts (all releases combined)
+  var repo = "andrew22tw/HIS_OPD_DATA_Assistant";
+  fetch("https://api.github.com/repos/" + repo + "/releases")
+    .then(function(r){ if(!r.ok) throw new Error(r.status); return r.json(); })
+    .then(function(releases){
+      if(!Array.isArray(releases)) return;
+      var ghTotal = 0;
+      for(var ri=0;ri<releases.length;ri++){
+        var assets = releases[ri].assets||[];
+        for(var ai=0;ai<assets.length;ai++) ghTotal += assets[ai].download_count||0;
+      }
+      // Display whichever is higher
+      var display = Math.max(ghTotal, local);
+      el.textContent = display.toLocaleString();
+      // Sync local if GitHub caught up
+      if(ghTotal > local) setLocalDl(ghTotal);
+    })
+    .catch(function(){ el.textContent = local > 0 ? local.toLocaleString() : "0"; });
+})();
+
+// Click download: +1 instantly, then navigate to download
+function incrementDl(evt){
+  if(evt) evt.preventDefault();
+  var el = document.getElementById("dlCount");
+  var btn = document.getElementById("dlExe");
+  var url = btn.href;
+  // +1 and persist
+  var cur = getLocalDl() + 1;
+  setLocalDl(cur);
+  el.textContent = cur.toLocaleString();
+  // Start download after brief delay
+  setTimeout(function(){ window.location.href = url; }, 150);
 }
 
 // Render footer email dynamically (prevents Cloudflare email obfuscation)
