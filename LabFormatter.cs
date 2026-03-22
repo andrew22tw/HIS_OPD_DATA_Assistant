@@ -1,4 +1,4 @@
-// Lab Data Formatter v1.6.0
+// Lab Data Formatter v1.6.1
 // Author: \u5433\u5cb3\u9716\u91ab\u5e2b (DAL93@tpech.gov.tw)
 // Compile: build.bat (auto-finds csc.exe)
 // Hotkeys: Ctrl+E=Capture, Ctrl+R=Paste, Ctrl+0=Settings, Ctrl+1~4=Custom slots
@@ -412,12 +412,19 @@ struct INPUT {
     public uint type; public INPUTUNION u;
 }
 
+[StructLayout(LayoutKind.Sequential)]
+struct POINT { public int X, Y; }
+
 class App : Form {
-    const string VER="v1.6.0";
+    const string VER="v1.6.1";
     // ── Win32 APIs ──
     [DllImport("user32")] static extern bool RegisterHotKey(IntPtr h,int id,uint mod,uint vk);
     [DllImport("user32")] static extern bool UnregisterHotKey(IntPtr h,int id);
     [DllImport("user32")] static extern bool DestroyIcon(IntPtr handle);
+    [DllImport("user32")] static extern bool GetCursorPos(out POINT pt);
+    [DllImport("user32")] static extern IntPtr WindowFromPoint(POINT pt);
+    [DllImport("user32")] static extern bool SetForegroundWindow(IntPtr hWnd);
+    [DllImport("user32")] static extern IntPtr GetAncestor(IntPtr hwnd, uint gaFlags);
     [DllImport("user32")] static extern uint SendInput(uint n, INPUT[] inputs, int size);
     // Event-driven clipboard (replaces Timer polling)
     [DllImport("user32")] static extern bool AddClipboardFormatListener(IntPtr hwnd);
@@ -661,8 +668,16 @@ class App : Form {
         });
     }
     void SimCtrlAC(){
+        // Focus the window under the mouse cursor (no click needed)
+        POINT pt; GetCursorPos(out pt);
+        var hwnd = WindowFromPoint(pt);
+        if(hwnd != IntPtr.Zero){
+            var root = GetAncestor(hwnd, 2); // GA_ROOT=2
+            if(root != IntPtr.Zero) hwnd = root;
+            SetForegroundWindow(hwnd);
+        }
         ThreadPool.QueueUserWorkItem(delegate{
-            Thread.Sleep(150);
+            Thread.Sleep(200);
             ReleaseAllModifiers(); Thread.Sleep(50);
             ReleaseAllModifiers(); Thread.Sleep(50);
             SendKeys(0x11, 0x41); // Ctrl+A

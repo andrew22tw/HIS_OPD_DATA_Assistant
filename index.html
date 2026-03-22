@@ -1,6 +1,6 @@
 <!DOCTYPE html>
 <!-- Lab Data Formatter Website -->
-<!-- Version: v1.6.0 -->
+<!-- Version: v1.6.1 -->
 <html lang="zh-TW">
 <head>
 <meta charset="UTF-8">
@@ -352,7 +352,7 @@ tbody tr:hover { background: var(--surface2); }
 .code-hl { color:var(--gold);font-family:'JetBrains Mono',monospace; }
 </style>
 <script type="application/ld+json">
-{"@context":"https://schema.org","@type":"SoftwareApplication","name":"Lab Data Formatter","operatingSystem":"Windows","applicationCategory":"MedicalApplication","offers":{"@type":"Offer","price":"0","priceCurrency":"TWD"},"downloadUrl":"https://github.com/andrew22tw/HIS_OPD_DATA_Assistant/releases/latest/download/LabFormatter.exe","softwareVersion":"1.6.0","author":{"@type":"Person","name":"吳岳霖"}}
+{"@context":"https://schema.org","@type":"SoftwareApplication","name":"Lab Data Formatter","operatingSystem":"Windows","applicationCategory":"MedicalApplication","offers":{"@type":"Offer","price":"0","priceCurrency":"TWD"},"downloadUrl":"https://github.com/andrew22tw/HIS_OPD_DATA_Assistant/releases/latest/download/LabFormatter.exe","softwareVersion":"1.6.1","author":{"@type":"Person","name":"吳岳霖"}}
 </script>
 </head>
 <body>
@@ -363,7 +363,7 @@ tbody tr:hover { background: var(--surface2); }
   <div class="hero-content">
     <img src="app-icon.png" alt="Lab Data Formatter 應用程式圖示 - 聽診器與文件" class="hero-icon" width="200" height="200" loading="eager">
     <h1>Lab Data Formatter</h1>
-    <p class="subtitle">一鍵擷取檢驗報告，自動整理成濃縮格式</p>
+    <p class="subtitle">滑鼠移過去，一鍵擷取檢驗報告</p>
     <p class="subtitle" style="margin-top:4px;">按下 <b>Ctrl+E</b> 取代 Ctrl+A + Ctrl+C，再按 <b>Ctrl+3</b> 貼上結果</p>
     <div class="version-bar">
       <span class="badge badge-version"><span class="badge-dot"></span>最新版本 <span id="latestVer" aria-live="polite">載入中...</span></span>
@@ -390,7 +390,7 @@ tbody tr:hover { background: var(--surface2); }
     <div class="flow-step">
       <div class="flow-num">1</div>
       <div class="flow-key">Ctrl+E 擷取</div>
-      <div class="flow-desc">滑鼠移到 ORD 檢驗報告區<br>按 <b>Ctrl+E</b> 一鍵全選+複製<br><span style="color:var(--text3);">（取代 Ctrl+A → Ctrl+C）</span></div>
+      <div class="flow-desc">滑鼠移到報告區<br>按 <b>Ctrl+E</b> 一鍵擷取<br><b style="color:var(--gold);">不需先點擊視窗</b></div>
     </div>
     <div class="flow-arrow" aria-hidden="true">→</div>
     <div class="flow-step">
@@ -446,7 +446,7 @@ tbody tr:hover { background: var(--surface2); }
     <caption class="sr-only" style="position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0,0,0,0)">熱鍵說明表</caption>
     <thead><tr><th scope="col">預設熱鍵</th><th scope="col">預設功能</th><th scope="col">說明</th></tr></thead>
     <tbody>
-    <tr><td><span class="kbd">Ctrl+E</span></td><td>擷取（全選+複製）</td><td>一鍵完成 Ctrl+A → Ctrl+C，程式自動辨識並整理報告</td></tr>
+    <tr><td><span class="kbd">Ctrl+E</span></td><td>擷取（全選+複製）</td><td>滑鼠移到目標視窗，一鍵全選+複製，不需先點擊視窗</td></tr>
     <tr><td><span class="kbd">Ctrl+R</span></td><td>貼上結果</td><td>將整理後的報告寫入剪貼簿並貼上</td></tr>
     <tr><td><span class="kbd">Ctrl+1</span></td><td>快貼 1</td><td>貼上自訂文字片段</td></tr>
     <tr><td><span class="kbd">Ctrl+2</span></td><td>快貼 2</td><td>貼上自訂文字片段</td></tr>
@@ -553,9 +553,18 @@ tbody tr:hover { background: var(--surface2); }
   <h2 class="section-title">更新紀錄</h2>
   <div class="changelog-item">
     <div class="cl-header">
-      <span class="cl-ver">v1.6.0</span>
+      <span class="cl-ver">v1.6.1</span>
       <span class="cl-date">2026-03-22</span>
       <span class="cl-tag">Latest</span>
+    </div>
+    <ul class="cl-list">
+      <li>擷取功能升級：滑鼠移到目標視窗即可擷取，不需先點擊視窗</li>
+    </ul>
+  </div>
+  <div class="changelog-item">
+    <div class="cl-header">
+      <span class="cl-ver">v1.6.0</span>
+      <span class="cl-date">2026-03-22</span>
     </div>
     <ul class="cl-list">
       <li>修復 GDI Region 洩漏（splash 動畫）</li>
@@ -703,7 +712,7 @@ function setLocalDl(n){ try{localStorage.setItem(_dlLocalKey,n.toString());}catc
       if(ghTotal > local) setLocalDl(ghTotal);
     })
     .catch(function(){
-      verEl.textContent = "v1.6.0";
+      verEl.textContent = "v1.6.1";
       dateEl.textContent = "2026-03-21";
       dlCountEl.textContent = local > 0 ? local.toLocaleString() : "0";
     });

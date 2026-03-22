@@ -1,4 +1,4 @@
-# Lab Data Formatter v1.6.0
+# Lab Data Formatter v1.6.1
 
 HIS OPD 協助熱鍵 / 整理報告
 
