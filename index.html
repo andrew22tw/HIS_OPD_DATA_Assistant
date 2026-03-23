@@ -1,6 +1,6 @@
 <!DOCTYPE html>
 <!-- Lab Data Formatter Website -->
-<!-- Version: v1.6.1 -->
+<!-- Version: v1.6.2 -->
 <html lang="zh-TW">
 <head>
 <meta charset="UTF-8">
@@ -390,7 +390,7 @@ tbody tr:hover { background: var(--surface2); }
     <div class="flow-step">
       <div class="flow-num">1</div>
       <div class="flow-key">Ctrl+E 擷取</div>
-      <div class="flow-desc">滑鼠移到報告區<br>按 <b>Ctrl+E</b> 一鍵擷取<br><b style="color:var(--gold);">不需先點擊視窗</b></div>
+      <div class="flow-desc">滑鼠移到報告區<br>按 <b>Ctrl+E</b> 一鍵擷取<br><b style="color:var(--gold);">自動點擊確認焦點，不需手動點擊</b></div>
     </div>
     <div class="flow-arrow" aria-hidden="true">→</div>
     <div class="flow-step">
@@ -553,12 +553,13 @@ tbody tr:hover { background: var(--surface2); }
   <h2 class="section-title">更新紀錄</h2>
   <div class="changelog-item">
     <div class="cl-header">
-      <span class="cl-ver">v1.6.1</span>
+      <span class="cl-ver">v1.6.2</span>
       <span class="cl-date">2026-03-22</span>
       <span class="cl-tag">Latest</span>
     </div>
     <ul class="cl-list">
-      <li>擷取功能升級：滑鼠移到目標視窗即可擷取，不需先點擊視窗</li>
+      <li>擷取功能升級：滑鼠移到目標視窗按熱鍵，自動點擊確認焦點後全選+複製</li>
+      <li>無論是否先手動點擊視窗，擷取都能正常運作</li>
     </ul>
   </div>
   <div class="changelog-item">
@@ -712,7 +713,7 @@ function setLocalDl(n){ try{localStorage.setItem(_dlLocalKey,n.toString());}catc
       if(ghTotal > local) setLocalDl(ghTotal);
     })
     .catch(function(){
-      verEl.textContent = "v1.6.1";
+      verEl.textContent = "v1.6.2";
       dateEl.textContent = "2026-03-21";
       dlCountEl.textContent = local > 0 ? local.toLocaleString() : "0";
     });

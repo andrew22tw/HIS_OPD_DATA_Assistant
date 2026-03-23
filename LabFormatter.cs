@@ -416,7 +416,7 @@ struct INPUT {
 struct POINT { public int X, Y; }
 
 class App : Form {
-    const string VER="v1.6.1";
+    const string VER="v1.6.2";
     // ── Win32 APIs ──
     [DllImport("user32")] static extern bool RegisterHotKey(IntPtr h,int id,uint mod,uint vk);
     [DllImport("user32")] static extern bool UnregisterHotKey(IntPtr h,int id);
@@ -667,8 +667,20 @@ class App : Form {
             SendKeys(0x11, 0x56); // Ctrl+V
         });
     }
+    static void SimClick(int x, int y){
+        // Simulate left mouse click at screen coordinates
+        var inputs=new INPUT[2];
+        inputs[0]=new INPUT(); inputs[0].type=0; // INPUT_MOUSE
+        inputs[0].u.mi.dx=(int)(x*65535.0/System.Windows.Forms.Screen.PrimaryScreen.Bounds.Width);
+        inputs[0].u.mi.dy=(int)(y*65535.0/System.Windows.Forms.Screen.PrimaryScreen.Bounds.Height);
+        inputs[0].u.mi.dwFlags=0x8000|0x0002|0x0001; // ABSOLUTE|MOVE|LEFTDOWN
+        inputs[1]=new INPUT(); inputs[1].type=0;
+        inputs[1].u.mi.dx=inputs[0].u.mi.dx; inputs[1].u.mi.dy=inputs[0].u.mi.dy;
+        inputs[1].u.mi.dwFlags=0x8000|0x0004; // ABSOLUTE|LEFTUP
+        SendInput(2, inputs, Marshal.SizeOf(typeof(INPUT)));
+    }
     void SimCtrlAC(){
-        // Focus the window under the mouse cursor (no click needed)
+        // Click the window under cursor to ensure focus, then select all + copy
         POINT pt; GetCursorPos(out pt);
         var hwnd = WindowFromPoint(pt);
         if(hwnd != IntPtr.Zero){
@@ -677,9 +689,11 @@ class App : Form {
             SetForegroundWindow(hwnd);
         }
         ThreadPool.QueueUserWorkItem(delegate{
-            Thread.Sleep(200);
-            ReleaseAllModifiers(); Thread.Sleep(50);
-            ReleaseAllModifiers(); Thread.Sleep(50);
+            Thread.Sleep(100);
+            ReleaseAllModifiers(); Thread.Sleep(30);
+            SimClick(pt.X, pt.Y); // Left click to confirm focus
+            Thread.Sleep(150);
+            ReleaseAllModifiers(); Thread.Sleep(30);
             SendKeys(0x11, 0x41); // Ctrl+A
             Thread.Sleep(80);
             SendKeys(0x11, 0x43); // Ctrl+C
