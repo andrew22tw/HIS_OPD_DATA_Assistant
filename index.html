@@ -428,7 +428,7 @@ tbody tr:hover { background: var(--surface2); }
       <span class="badge badge-dl">下載次數 <span id="dlCount" aria-live="polite">...</span></span>
     </div>
     <div class="download-bar">
-      <a class="dl-btn dl-btn-main" id="dlExe" href="https://github.com/andrew22tw/HIS_OPD_DATA_Assistant/releases/latest/download/LabFormatter.exe" onclick="incrementDl(event)">
+      <a class="dl-btn dl-btn-main" id="dlExe" href="https://github.com/andrew22tw/HIS_OPD_DATA_Assistant/releases/latest/download/LabFormatter.exe" >
         <span class="dl-icon" aria-hidden="true">⬇</span>下載 LabFormatter.exe
       </a>
       <a class="dl-btn dl-btn-sub" id="dlReadme" href="https://github.com/andrew22tw/HIS_OPD_DATA_Assistant/releases/latest/download/readme.txt">
@@ -766,10 +766,6 @@ tbody tr:hover { background: var(--surface2); }
 
 <script>
 // ── Auto-fetch releases from GitHub (single API call) ──
-var _dlLocalKey = "ldf_dl_count";
-function getLocalDl(){ try{return parseInt(localStorage.getItem(_dlLocalKey)||"0",10)||0;}catch(e){return 0;} }
-function setLocalDl(n){ try{localStorage.setItem(_dlLocalKey,n.toString());}catch(e){} }
-
 (function(){
   var repo = "andrew22tw/HIS_OPD_DATA_Assistant";
   var verEl = document.getElementById("latestVer");
@@ -777,11 +773,9 @@ function setLocalDl(n){ try{localStorage.setItem(_dlLocalKey,n.toString());}catc
   var dlExe = document.getElementById("dlExe");
   var dlReadme = document.getElementById("dlReadme");
   var dlCountEl = document.getElementById("dlCount");
-  var local = getLocalDl();
 
   dlExe.href = "https://github.com/" + repo + "/releases/latest/download/LabFormatter.exe";
   dlReadme.href = "https://github.com/" + repo + "/releases/latest/download/readme.txt";
-  dlCountEl.textContent = local > 0 ? local.toLocaleString() : "...";
 
   fetch("https://api.github.com/repos/" + repo + "/releases")
     .then(function(r){ if(!r.ok) throw new Error("API "+r.status); return r.json(); })
@@ -802,33 +796,20 @@ function setLocalDl(n){ try{localStorage.setItem(_dlLocalKey,n.toString());}catc
         }
       }
 
-      // Sum download counts across ALL releases
+      // Sum download counts across ALL releases (GitHub API is the single source of truth)
       var ghTotal = 0;
       for(var ri=0;ri<releases.length;ri++){
         var assets = releases[ri].assets||[];
         for(var ai=0;ai<assets.length;ai++) ghTotal += assets[ai].download_count||0;
       }
-      var display = Math.max(ghTotal, local);
-      dlCountEl.textContent = display.toLocaleString();
-      if(ghTotal > local) setLocalDl(ghTotal);
+      dlCountEl.textContent = ghTotal.toLocaleString();
     })
     .catch(function(){
       verEl.textContent = "v1.6.2";
-      dateEl.textContent = "2026-03-21";
-      dlCountEl.textContent = local > 0 ? local.toLocaleString() : "0";
+      dateEl.textContent = "2026-03-24";
+      dlCountEl.textContent = "—";
     });
 })();
-
-function incrementDl(evt){
-  if(evt) evt.preventDefault();
-  var el = document.getElementById("dlCount");
-  var btn = document.getElementById("dlExe");
-  var url = btn.href;
-  var cur = getLocalDl() + 1;
-  setLocalDl(cur);
-  el.textContent = cur.toLocaleString();
-  setTimeout(function(){ window.location.href = url; }, 150);
-}
 
 (function(){
   var e=document.getElementById("footerEmail");
