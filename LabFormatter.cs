@@ -717,13 +717,13 @@ class App : Form {
             SetForegroundWindow(hwnd);
         }
         ThreadPool.QueueUserWorkItem(delegate{
-            Thread.Sleep(100);
-            ReleaseAllModifiers(); Thread.Sleep(30);
+            Thread.Sleep(30);
+            ReleaseAllModifiers(); Thread.Sleep(10);
             SimClick(pt.X, pt.Y); // Left click to confirm focus
-            Thread.Sleep(150);
-            ReleaseAllModifiers(); Thread.Sleep(30);
+            Thread.Sleep(50);
+            ReleaseAllModifiers(); Thread.Sleep(10);
             SendKeys(0x11, 0x41); // Ctrl+A
-            Thread.Sleep(80);
+            Thread.Sleep(30);
             SendKeys(0x11, 0x43); // Ctrl+C
         });
     }
