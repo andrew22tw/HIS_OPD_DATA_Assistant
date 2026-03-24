@@ -110,6 +110,8 @@ static class Lab {
         new Item{Key="TBil", Pattern=@"\bT-Bil\b",       Disp="TBil", On=true},
         new Item{Key="Mg",   Pattern=@"\bMg\b",          Disp="Mg",   On=true},
         new Item{Key="Hb",   Pattern=@"\bHb\b(?!A)",     Disp="Hb",   On=true},
+        new Item{Key="TSH",  Pattern=@"\bTSH\b",         Disp="TSH",  On=true},
+        new Item{Key="FT4",  Pattern=@"\bFree\s*T4\b",  Disp="FT4",  On=true},
         new Item{Key="UAC",  Pattern=@"\bUACR\b|\bACR\b|\bA/C\b",Disp="ACR",On=true},
         new Item{Key="UPC",  Pattern=@"\bUPCR\b|\bPCR\b|\bP/C\b",Disp="PCR",On=true},
     };
@@ -118,7 +120,8 @@ static class Lab {
     static string[][] Groups = {
         new[]{"BUN","Cr"}, new[]{"Na","K"}, new[]{"ALT","AST"},
         new[]{"Chol","TG","LDL","HDL"}, new[]{"Ca","P"},
-        new[]{"Iron","TIBC","Ferritin"}
+        new[]{"Iron","TIBC","Ferritin"},
+        new[]{"TSH","FT4"}
     };
 
     public static string ExtractVal(string line, Regex rx) {
@@ -168,6 +171,11 @@ static class Lab {
         var roundKeys = new[]{"BUN","HCO3","Iron","TIBC","Ferritin"};
         foreach(var rk in roundKeys) {
             if(vals.ContainsKey(rk)){double d;if(double.TryParse(vals[rk],out d))vals[rk]=((int)Math.Round(d)).ToString();}
+        }
+        // Round to 1 decimal: TSH, FT4
+        var round1Keys = new[]{"TSH","FT4"};
+        foreach(var rk in round1Keys) {
+            if(vals.ContainsKey(rk)){double d;if(double.TryParse(vals[rk],out d))vals[rk]=Math.Round(d,1).ToString("F1");}
         }
         var parts = new List<string>();
         var used = new HashSet<string>();
