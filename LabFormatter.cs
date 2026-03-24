@@ -187,7 +187,7 @@ static class Lab {
                 var ac=vals["GluAC"];
                 if (enabled.Contains("HbA1c")&&vals.ContainsKey("HbA1c")) {
                     parts.Add("AC:"+ac+"("+vals["HbA1c"]+")");
-                    used.Add("GluAC"); used.Add("HbA1c"); if(vals.ContainsKey("GA"))used.Add("GA");
+                    used.Add("GluAC"); used.Add("HbA1c");
                 } else if (enabled.Contains("GA")&&vals.ContainsKey("GA")) {
                     double ga;string gaStr=vals["GA"];
                     if(double.TryParse(gaStr,out ga)) gaStr=((int)Math.Round(ga)).ToString();
