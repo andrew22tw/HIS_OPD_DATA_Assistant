@@ -452,7 +452,7 @@ struct INPUT {
 struct POINT { public int X, Y; }
 
 class App : Form {
-    const string VER="v1.6.2";
+    const string VER="v1.6.3";
     // ── Win32 APIs ──
     [DllImport("user32")] static extern bool RegisterHotKey(IntPtr h,int id,uint mod,uint vk);
     [DllImport("user32")] static extern bool UnregisterHotKey(IntPtr h,int id);
