@@ -810,7 +810,7 @@ tbody tr:hover { background: var(--surface2); }
       }
 
       // Sum download counts across ALL releases (GitHub API is the single source of truth)
-      var ghTotal = 0;
+      var ghTotal = 30; // baseline from pre-release downloads
       for(var ri=0;ri<releases.length;ri++){
         var assets = releases[ri].assets||[];
         for(var ai=0;ai<assets.length;ai++) ghTotal += assets[ai].download_count||0;
