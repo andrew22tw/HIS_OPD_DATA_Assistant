@@ -235,16 +235,16 @@ static class Lab {
         if (parts.Count==0) return null;
         var r = string.Join(",", parts);
         if (date!="") r = date+" "+r;
-        // Word-wrap at 80 chars, break at comma, indent continuation with 6 spaces
-        if (r.Length>80) {
+        // Word-wrap at 70 chars, break at comma, indent continuation with 7 spaces
+        if (r.Length>70) {
             var sb = new System.Text.StringBuilder();
             int col=0;
             var tokens=r.Split(',');
             for(int ti=0;ti<tokens.Length;ti++){
                 var tok=tokens[ti]+(ti<tokens.Length-1?",":"");
                 if(col==0){sb.Append(tok);col=tok.Length;}
-                else if(col+tok.Length>80){
-                    sb.Append("\n      ");col=6;sb.Append(tok);col+=tok.Length;}
+                else if(col+tok.Length>70){
+                    sb.Append("\n       ");col=7;sb.Append(tok);col+=tok.Length;}
                 else{sb.Append(tok);col+=tok.Length;}
             }
             r=sb.ToString();
