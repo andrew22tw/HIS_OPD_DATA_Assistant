@@ -1,4 +1,4 @@
-// Lab Data Formatter v1.6.1
+// Lab Data Formatter v1.6.4
 // Author: \u5433\u5cb3\u9716\u91ab\u5e2b (DAL93@tpech.gov.tw)
 // Compile: build.bat (auto-finds csc.exe)
 // Hotkeys: Ctrl+E=Capture, Ctrl+R=Paste, Ctrl+0=Settings, Ctrl+1~4=Custom slots
@@ -467,7 +467,7 @@ struct INPUT {
 struct POINT { public int X, Y; }
 
 class App : Form {
-    const string VER="v1.6.3";
+    const string VER="v1.6.4";
     // ── Win32 APIs ──
     [DllImport("user32")] static extern bool RegisterHotKey(IntPtr h,int id,uint mod,uint vk);
     [DllImport("user32")] static extern bool UnregisterHotKey(IntPtr h,int id);

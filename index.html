@@ -1,6 +1,6 @@
 <!DOCTYPE html>
 <!-- Lab Data Formatter Website -->
-<!-- Version: v1.6.3 -->
+<!-- Version: v1.6.4 -->
 <html lang="zh-TW">
 <head>
 <meta charset="UTF-8">
@@ -440,7 +440,7 @@ tbody tr:hover { background: var(--surface2); }
 
 <div style="padding:0 24px;">
 <div class="killer-banner">
-  <div class="killer-banner-tag">v1.6.3 新功能</div>
+  <div class="killer-banner-tag">v1.6.4 新功能</div>
   <div class="killer-banner-text">
     滑鼠移到目標視窗，按下熱鍵 <b>自動點擊 → 全選 → 複製</b>，不需手動點擊視窗<br>
     無論有沒有事先點擊視窗，擷取都能正確運作 — <b>真正的一鍵操作</b>
@@ -509,7 +509,7 @@ tbody tr:hover { background: var(--surface2); }
   <div class="features">
     <div class="feat feat-highlight">
       <div class="feat-icon">🖱️⚡</div>
-      <div class="feat-title">v1.6.3 自動點擊 — 滑鼠移過去就能擷取</div>
+      <div class="feat-title">v1.6.4 新增 TSH/FT4、GA 檢驗項目</div>
       <div class="feat-desc">按下擷取熱鍵時，程式自動模擬滑鼠左鍵點擊，確認目標視窗取得焦點後再執行全選＋複製。不需要先手動點擊視窗，滑鼠移過去按熱鍵就完成。即使你已經手動點擊過視窗，擷取也同樣正常運作。</div>
     </div>
     <div class="feat">
@@ -560,7 +560,7 @@ tbody tr:hover { background: var(--surface2); }
   <p class="text-muted mt-sm">
     「擷取」= <b>自動點擊 + 全選 + 複製</b>，一鍵完成三個動作。<br>
     原本需要點擊視窗 → Ctrl+A（全選）→ Ctrl+C（複製）三步驟，<br>
-    v1.6.3 起只需將滑鼠移到目標視窗，按一次熱鍵（預設 Ctrl+E）即可全部完成。
+    v1.6.4 起只需將滑鼠移到目標視窗，按一次熱鍵（預設 Ctrl+E）即可全部完成。
   </p>
 
   <h3 class="mt-lg h3-inline">Slot 類型</h3>
@@ -652,12 +652,25 @@ tbody tr:hover { background: var(--surface2); }
   <h2 class="section-title">更新紀錄</h2>
   <div class="changelog-item" style="border-color:rgba(34,197,94,0.4);background:linear-gradient(135deg, var(--surface), rgba(34,197,94,0.05));">
     <div class="cl-header">
-      <span class="cl-ver" style="font-size:1.15rem;">v1.6.3</span>
-      <span class="cl-date">2026-03-22</span>
+      <span class="cl-ver" style="font-size:1.15rem;">v1.6.4</span>
+      <span class="cl-date">2026-03-24</span>
       <span class="cl-tag" style="background:var(--accent);color:var(--bg);font-size:0.75rem;">LATEST — 重點更新</span>
     </div>
     <ul class="cl-list">
-      <li style="color:var(--accent2);font-weight:600;">擷取熱鍵自動模擬左鍵點擊：滑鼠移到目標視窗，按熱鍵自動點擊確認焦點 → 全選 → 複製，不需手動點擊視窗</li>
+      <li style="color:var(--accent2);font-weight:600;">新增 TSH/FT4 檢驗項目支援</li>
+      <li>新增 Glycated Albumin (GA) 檢驗項目</li>
+      <li>GA 輸出邏輯：有 HbA1c 時 GA 獨立顯示，無 HbA1c 時 GA 放在 AC 括號中</li>
+      <li>日期格式改回年月5碼</li>
+      <li>同時有 HbA1c 和 GA 時顯示為 AC:91(6.5),GA:54</li>
+    </ul>
+  </div>
+  <div class="changelog-item">
+    <div class="cl-header">
+      <span class="cl-ver">v1.6.3</span>
+      <span class="cl-date">2026-03-22</span>
+    </div>
+    <ul class="cl-list">
+      <li>擷取熱鍵自動模擬左鍵點擊：滑鼠移到目標視窗，按熱鍵自動點擊確認焦點 → 全選 → 複製，不需手動點擊視窗</li>
       <li>無論是否先手動點擊視窗，擷取都能正常運作（向下相容）</li>
       <li>操作步驟從「點擊視窗 → Ctrl+A → Ctrl+C」簡化為「滑鼠移過去 → Ctrl+E」</li>
     </ul>
@@ -805,7 +818,7 @@ tbody tr:hover { background: var(--surface2); }
       dlCountEl.textContent = ghTotal.toLocaleString();
     })
     .catch(function(){
-      verEl.textContent = "v1.6.3";
+      verEl.textContent = "v1.6.4";
       dateEl.textContent = "2026-03-24";
       dlCountEl.textContent = "—";
     });
