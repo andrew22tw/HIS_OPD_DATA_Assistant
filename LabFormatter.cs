@@ -258,15 +258,15 @@ static class Lab {
         if (parts.Count==0) return null;
         var r = string.Join(",", parts);
         if (date!="") r = date+" "+r;
-        // Word-wrap at 70 chars, break at comma, indent continuation with 7 spaces
-        if (r.Length>70) {
+        // Word-wrap at 69 chars, break at comma, indent continuation with 7 spaces
+        if (r.Length>69) {
             var sb = new System.Text.StringBuilder();
             int col=0;
             var tokens=r.Split(',');
             for(int ti=0;ti<tokens.Length;ti++){
                 var tok=tokens[ti]+(ti<tokens.Length-1?",":"");
                 if(col==0){sb.Append(tok);col=tok.Length;}
-                else if(col+tok.Length>70){
+                else if(col+tok.Length>69){
                     sb.Append("\n       ");col=7;sb.Append(tok);col+=tok.Length;}
                 else{sb.Append(tok);col+=tok.Length;}
             }
@@ -975,7 +975,7 @@ class App : Form {
         int fy=ry+28;
         var feedback=new Label{Text="\u610f\u898b\u56de\u994b: \u5433\u5cb3\u9716\u91ab\u5e2b  DAL93@tpech.gov.tw    "+VER,
             Left=0,Top=fy,Width=fw,Height=18,TextAlign=ContentAlignment.MiddleRight,
-            ForeColor=Color.FromArgb(160,160,160),Font=new Font("Microsoft JhengHei UI",8),
+            ForeColor=Color.FromArgb(80,80,80),Font=new Font("Microsoft JhengHei UI",8),
             Padding=new Padding(0,0,10,0)};
         f.Controls.Add(feedback);
         var readmeLink=new LinkLabel{Text="\u4f7f\u7528\u8aaa\u660e\u7db2\u9801: andrew22tw.github.io/HIS_OPD_DATA_Assistant",
@@ -1096,14 +1096,14 @@ class App : Form {
     [STAThread] static void Main() {
         Application.EnableVisualStyles();
         Application.SetCompatibleTextRenderingDefault(false);
-        Splash.Show();
+        Splash.Show(VER);
         Application.Run(new App());
     }
 }
 
 // ══════════ Splash Screen ══════════
 static class Splash {
-    public static void Show() {
+    public static void Show(string ver="") {
         var f=new Form{
             FormBorderStyle=FormBorderStyle.None,
             StartPosition=FormStartPosition.CenterScreen,
@@ -1134,7 +1134,7 @@ static class Splash {
             AutoSize=false,Width=420,Height=40,Top=100,
             TextAlign=ContentAlignment.MiddleCenter};
         // Version
-        var lbl3=new Label{Text="Lab Data Formatter",
+        var lbl3=new Label{Text="Lab Data Formatter "+ver,
             ForeColor=Color.FromArgb(100,116,139),
             Font=new Font("Consolas",10),
             AutoSize=false,Width=420,Height=25,Top=150,
