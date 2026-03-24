@@ -87,7 +87,7 @@ static class Lab {
         new Item{Key="HbA1c",Pattern=@"\bHbA1[Cc]\b",    Disp="HbA1c",On=true},
         new Item{Key="BUN",  Pattern=@"\bBUN\b",         Disp="BUN",  On=true},
         new Item{Key="Cr",   Pattern=@"\bCr\b(?!P|E)",   Disp="Cr",   On=true},
-        new Item{Key="eGFR", Pattern=@"eGFR",            Disp="eGFR", On=false},
+        new Item{Key="eGFR", Pattern=@"eGFR",            Disp="eGFR", On=true},
         new Item{Key="Na",   Pattern=@"\bNa\b(?!m)",     Disp="Na",   On=true},
         new Item{Key="K",    Pattern=@"(?<![A-Za-z])K(?=\s)",Disp="K",On=true},
         new Item{Key="HCO3", Pattern=@"\bHCO3\b",        Disp="HCO3", On=true},
@@ -189,17 +189,45 @@ static class Lab {
                 if (!used.Contains("HbA1c")) { parts.Add("HbA1c:"+vals["HbA1c"]); used.Add("HbA1c"); }
                 continue;
             }
+            // Special: Cr with eGFR in parentheses (eGFR truncated to 1 decimal)
+            if (it.Key=="Cr") {
+                var cr=vals["Cr"];
+                if (enabled.Contains("eGFR")&&vals.ContainsKey("eGFR")) {
+                    double egfr; string egfrStr=vals["eGFR"];
+                    if(double.TryParse(egfrStr,out egfr)) egfrStr=(Math.Floor(egfr*10.0)/10.0).ToString("F1");
+                    parts.Add("Cr:"+cr+"("+egfrStr+")");
+                    used.Add("Cr"); used.Add("eGFR");
+                } else {
+                    parts.Add("Cr:"+cr); used.Add("Cr");
+                }
+                continue;
+            }
+            // eGFR alone (only if Cr didn't already consume it)
+            if (it.Key=="eGFR") {
+                if (!used.Contains("eGFR")) {
+                    double egfr; string egfrStr=vals["eGFR"];
+                    if(double.TryParse(egfrStr,out egfr)) egfrStr=(Math.Floor(egfr*10.0)/10.0).ToString("F1");
+                    parts.Add("eGFR:"+egfrStr); used.Add("eGFR");
+                }
+                continue;
+            }
             bool grouped = false;
             foreach (var g in Groups) {
-                if (it.Key == g[0]) {
+                if (g.Contains(it.Key)) {
+                    // Only the first active (enabled+has value) member triggers group output
                     var active = g.Where(k=>enabled.Contains(k)&&vals.ContainsKey(k)).ToArray();
-                    if (active.Length > 1) {
-                        var label = string.Join("/", active.Select(k=>Items.First(x=>x.Key==k).Disp));
-                        var v = string.Join("/", active.Select(k=>vals[k]));
-                        parts.Add(label+":"+v); foreach(var k in active)used.Add(k); grouped=true;
-                    } break;
-                } else if (g.Contains(it.Key)) {
-                    if (enabled.Contains(g[0])) grouped=true; break;
+                    if (active.Length > 0 && it.Key == active[0]) {
+                        if (active.Length > 1) {
+                            var label = string.Join("/", active.Select(k=>Items.First(x=>x.Key==k).Disp));
+                            var v = string.Join("/", active.Select(k=>vals[k]));
+                            parts.Add(label+":"+v); foreach(var k in active)used.Add(k); grouped=true;
+                        }
+                        // active.Length==1: not grouped, falls through to individual output
+                    } else {
+                        // Not the first active member, skip (will be output by the first one)
+                        grouped = active.Contains(it.Key);
+                    }
+                    break;
                 }
             }
             if (!grouped&&!used.Contains(it.Key)){parts.Add(it.Disp+":"+vals[it.Key]);used.Add(it.Key);}
