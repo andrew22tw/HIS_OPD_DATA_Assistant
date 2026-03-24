@@ -133,7 +133,7 @@ static class Lab {
     static readonly Regex RxDate = new Regex("\u63a1\u6aa2\u6642\u9593[\uff1a:]?\\s*(\\d{2,3})/(\\d{2})/(\\d{2})", RegexOptions.Compiled);
     public static string ExtractDate(string text) {
         var m = RxDate.Match(text);
-        return m.Success ? m.Groups[1].Value + m.Groups[2].Value + m.Groups[3].Value : "";
+        return m.Success ? m.Groups[1].Value + m.Groups[2].Value : "";
     }
     public static bool IsLabData(string text) {
         var kws = new[]{"BUN","mg/dl","mg/dL","mEq/L","U/L","mg/L","Glu","Cholesterol",
