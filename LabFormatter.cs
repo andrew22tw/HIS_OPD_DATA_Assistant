@@ -194,7 +194,7 @@ static class Lab {
                 var cr=vals["Cr"];
                 if (enabled.Contains("eGFR")&&vals.ContainsKey("eGFR")) {
                     double egfr; string egfrStr=vals["eGFR"];
-                    if(double.TryParse(egfrStr,out egfr)) egfrStr=(Math.Floor(egfr*10.0)/10.0).ToString("F1");
+                    if(double.TryParse(egfrStr,out egfr)) egfrStr=Math.Round(egfr,0).ToString("F0");
                     parts.Add("Cr:"+cr+"("+egfrStr+")");
                     used.Add("Cr"); used.Add("eGFR");
                 } else {
@@ -206,7 +206,7 @@ static class Lab {
             if (it.Key=="eGFR") {
                 if (!used.Contains("eGFR")) {
                     double egfr; string egfrStr=vals["eGFR"];
-                    if(double.TryParse(egfrStr,out egfr)) egfrStr=(Math.Floor(egfr*10.0)/10.0).ToString("F1");
+                    if(double.TryParse(egfrStr,out egfr)) egfrStr=Math.Round(egfr,0).ToString("F0");
                     parts.Add("eGFR:"+egfrStr); used.Add("eGFR");
                 }
                 continue;
