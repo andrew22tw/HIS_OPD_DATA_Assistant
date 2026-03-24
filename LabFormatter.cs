@@ -85,6 +85,7 @@ static class Lab {
         // ── Order: AC,HbA1c,BUN/Cr,Na/K,HCO3,ALT/AST,Alb,TC/TG/L/H,UA,Ca/IP,Iron/TIBC/Ferritin,Hb,ACR,PCR ──
         new Item{Key="GluAC",Pattern=@"\bGlu",           Disp="AC",   On=true},
         new Item{Key="HbA1c",Pattern=@"\bHbA1[Cc]\b",    Disp="HbA1c",On=true},
+        new Item{Key="GA",   Pattern=@"\bGlycated\s+albumin\b",Disp="GA",On=true},
         new Item{Key="BUN",  Pattern=@"\bBUN\b",         Disp="BUN",  On=true},
         new Item{Key="Cr",   Pattern=@"\bCr\b(?!P|E)",   Disp="Cr",   On=true},
         new Item{Key="eGFR", Pattern=@"eGFR",            Disp="eGFR", On=true},
@@ -181,14 +182,28 @@ static class Lab {
         var used = new HashSet<string>();
         foreach (var it in Items) {
             if (used.Contains(it.Key)||!enabled.Contains(it.Key)||!vals.ContainsKey(it.Key)) continue;
-            // Special: AC with HbA1c in parentheses
+            // Special: AC with HbA1c or GA in parentheses
             if (it.Key=="GluAC") {
                 var ac=vals["GluAC"];
                 if (enabled.Contains("HbA1c")&&vals.ContainsKey("HbA1c")) {
                     parts.Add("AC:"+ac+"("+vals["HbA1c"]+")");
-                    used.Add("GluAC"); used.Add("HbA1c");
+                    used.Add("GluAC"); used.Add("HbA1c"); if(vals.ContainsKey("GA"))used.Add("GA");
+                } else if (enabled.Contains("GA")&&vals.ContainsKey("GA")) {
+                    double ga;string gaStr=vals["GA"];
+                    if(double.TryParse(gaStr,out ga)) gaStr=((int)Math.Round(ga)).ToString();
+                    parts.Add("AC:"+ac+"(GA"+gaStr+")");
+                    used.Add("GluAC"); used.Add("GA");
                 } else {
                     parts.Add("AC:"+ac); used.Add("GluAC");
+                }
+                continue;
+            }
+            // GA alone (only if AC didn't already consume it)
+            if (it.Key=="GA") {
+                if (!used.Contains("GA")) {
+                    double ga;string gaStr=vals["GA"];
+                    if(double.TryParse(gaStr,out ga)) gaStr=((int)Math.Round(ga)).ToString();
+                    parts.Add("GA:"+gaStr); used.Add("GA");
                 }
                 continue;
             }
