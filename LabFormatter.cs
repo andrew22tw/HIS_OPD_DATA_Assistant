@@ -224,6 +224,8 @@ static class Lab {
         return m.Success ? m.Groups[1].Value + m.Groups[2].Value : "";
     }
     public static bool IsLabData(string text) {
+        // Must NOT be a medication page (check first to avoid false positives)
+        if (text.Contains("藥品名稱") || text.Contains("用法用量") || text.Contains("給藥日數")) return false;
         var kws = new[]{"BUN","mg/dl","mg/dL","mEq/L","U/L","mg/L","Glu","Cholesterol",
             "LDL","HDL","ALT","AST","Hemolysis","Lipemia","Icterus","Cr ",
             "採檢時間","檢驗科","結果值","參考值","檢體","報告者"};
@@ -540,21 +542,18 @@ static class CloudMed {
     }
 
     public static bool IsCloudMedData(string text) {
-        // Tab-separated format
-        if (text.Contains("\t")) {
-            var headers = new[]{"就醫日期","藥品名稱","用法用量","給藥日數"};
-            if (headers.Count(h => text.Contains(h)) >= 3) return true;
-        }
-        // Continuous text format: has header keywords + ROC dates + drug-like patterns
-        if (text.Contains("藥品名稱") && text.Contains("就醫日期") && text.Contains("用法用量")) {
-            if (RxRocDate.IsMatch(text)) return true;
-        }
+        // Broad detection: any text containing medication-related keywords + ROC dates
+        var medKws = new[]{"藥品名稱","用法用量","給藥日數","就醫日期","成分名稱","藥品用量"};
+        int kwCount = medKws.Count(k => text.Contains(k));
+        if (kwCount >= 2 && RxRocDate.IsMatch(text)) return true;
+        // Also detect by drug name patterns even without headers
+        if (kwCount >= 1 && text.Contains("MG") && RxRocDate.IsMatch(text)) return true;
         return false;
     }
 
     public static string Convert(string text) {
-        // Try tab-separated first
-        if (text.Contains("\t") && text.Contains("藥品名稱")) {
+        // Try tab-separated first (browser Ctrl+C often includes tabs)
+        if (text.Contains("\t")) {
             var r = ConvertTabSeparated(text);
             if (r != null) return r;
         }
@@ -1259,9 +1258,12 @@ class App : Form {
             var r=CloudMed.Convert(combined);
             if(r!=null){
                 medResult=r;
-                SetTray(Theme.Blue,"✓ [藥歷] "+r.Split('\n')[0]);
+                SetTray(Theme.Blue,"✓ [藥歷] "+r.Split('\n')[0].Substring(0,Math.Min(50,r.Split('\n')[0].Length)));
                 ShowPreview(labResult, r, 0);
                 ResetMergeTimer();
+            } else {
+                // Detection matched but parsing failed — show feedback
+                SetTray(Theme.Gold,"偵測到藥歷但解析失敗，請用手動轉換");
             }
         }
     }
