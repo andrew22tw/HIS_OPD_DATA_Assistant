@@ -514,10 +514,10 @@ static class CloudMed {
 
     // ROC date pattern: 3-digit year / 2-digit month / 2-digit day
     static readonly Regex RxRocDate = new Regex(@"(\d{3}/\d{2}/\d{2})", RegexOptions.Compiled);
-    // Row splitter: item number followed by ROC date
-    static readonly Regex RxRowStart = new Regex(@"(?:^|\D)(\d{1,3})(\d{3}/\d{2}/\d{2})", RegexOptions.Compiled);
-    // Frequency patterns at end of drug line (before route+numbers)
-    static readonly string FreqPattern = @"(?:STAT|QDPC|BIDPC|TIDPC|QIDPC|QDP|QAM|QPM|QD|BID|TID|QID|Q\d+H|HSPC|HSP|HS|QN|QOD|TIW|BIW|QW|DAILY|PRN)";
+    // Row splitter: use date as primary anchor (works even when rows are concatenated with no delimiter)
+    static readonly Regex RxRowDate = new Regex(@"(\d{3}/\d{2}/\d{2})", RegexOptions.Compiled);
+    // Frequency patterns (order matters: longer patterns first to avoid partial matches)
+    static readonly string FreqPattern = @"(?:STAT|ASORDER|HSPRN|QDPC|BIDPC|TIDPC|QIDPC|QDAM|QDP|QAM|QPM|QD|BID|TID|QID|Q\d+H|HSPC|HSP|HS|QN|QOD|TIW|BIW|QW|DAILY|PRN)";
     // Route patterns
     static readonly string RoutePattern = @"(?:PO|EXT|IV|IM|SC|IH|TOP|SL|RECT|INH|SKIN|OPH|NASAL|OTIC)";
     // Tail pattern: frequency + optional route + numbers + optional Y
@@ -618,22 +618,24 @@ static class CloudMed {
 
     // ── Continuous text parser (no tab delimiters) ──
     static string ConvertContinuous(string text) {
-        // Split into individual medicine rows using ROC date as anchor
-        // Pattern: (itemNumber)(ROC date)(rest of row until next item or end)
-        var allMatches = RxRowStart.Matches(text);
-        if (allMatches.Count == 0) return null;
+        // Use ROC date as primary anchor to split rows
+        var dateMatches = RxRowDate.Matches(text);
+        if (dateMatches.Count == 0) return null;
 
         var groups = new Dictionary<string, MedGroup>();
         var seen = new HashSet<string>();
 
-        for (int mi = 0; mi < allMatches.Count; mi++) {
-            var m = allMatches[mi];
-            var date = m.Groups[2].Value;  // e.g., "115/03/06"
+        for (int mi = 0; mi < dateMatches.Count; mi++) {
+            var m = dateMatches[mi];
+            var date = m.Groups[1].Value;  // e.g., "115/03/06"
 
-            // Extract the rest of the row (until next row start or end of text)
+            // Row = text from after this date to before next date
             int rowStart = m.Index + m.Length;
-            int rowEnd = (mi + 1 < allMatches.Count) ? allMatches[mi + 1].Index : text.Length;
-            var rowText = text.Substring(rowStart, rowEnd - rowStart).Trim();
+            int rowEnd = (mi + 1 < dateMatches.Count) ? dateMatches[mi + 1].Index : text.Length;
+            // Trim item number digits from the end (they belong to next row's 項次)
+            var rawRow = text.Substring(rowStart, rowEnd - rowStart);
+            // Remove trailing digits that are next row's item number
+            var rowText = Regex.Replace(rawRow, @"\d{1,3}$", "").Trim();
 
             // Skip pagination text like "Showing 1 to 50"
             if (rowText.Contains("Showing") || rowText.Contains("Previous") || rowText.Contains("Next")) continue;
@@ -643,25 +645,41 @@ static class CloudMed {
             // Source typically ends before a diagnosis pattern (Chinese + ICD code)
             string source = "", diagText = "", diagCode = "", drugName = "", usage = "", days = "", ingredientName = "", totalQty = "";
 
-            // Find ICD code in the row - it separates source+diagnosis from ATC+drug
-            var icdMatch = Regex.Match(rowText, @"([A-Z]\d{2,3}(?:\.\d{1,2})?)");
-            if (icdMatch.Success) {
-                // Everything before ICD code area = source + diagnosis
-                // Find the diagnosis: Chinese text before ICD code
-                var beforeIcd = rowText.Substring(0, icdMatch.Index + icdMatch.Length);
+            // Find ICD code(s) in the row - separates source+diagnosis from ATC+drug
+            // Handle repeated ICD codes like "F312 F312" and codes like "E1143"
+            // Strategy: find ALL ICD codes, use the LAST one before ATC/drug section starts
+            var icdMatches = Regex.Matches(rowText, @"([A-Z]\d{2,4}(?:\.\d{1,2})?)");
+            if (icdMatches.Count > 0) {
+                // Use the last ICD code that's followed by Chinese or English ATC text
+                Match bestIcd = null;
+                for (int ii = icdMatches.Count - 1; ii >= 0; ii--) {
+                    var im = icdMatches[ii];
+                    int afterPos = im.Index + im.Length;
+                    if (afterPos < rowText.Length) {
+                        // Check if what follows looks like ATC/drug content (Chinese or English text)
+                        var afterChar = rowText[afterPos];
+                        bool isAtcStart = (afterChar >= '\u4e00' && afterChar <= '\u9fff') ||
+                                         (afterChar >= 'A' && afterChar <= 'Z') ||
+                                         afterChar == 'β' || afterChar == '(' || afterChar == '（';
+                        if (isAtcStart) { bestIcd = im; break; }
+                    }
+                }
+                if (bestIcd == null) bestIcd = icdMatches[0]; // fallback to first
 
-                // Source is at the beginning (hospital name, may include 門診/急診/藥局 + numbers)
-                // Diagnosis is Chinese text right before ICD code
-                // Include Chinese commas, spaces, punctuation in diagnosis text
-                var diagIcdMatch = Regex.Match(beforeIcd, @"([\u4e00-\u9fff（）\(\)，、\s]+)\s*([A-Z]\d{2,3}(?:\.\d{1,2})?)$");
+                var beforeIcd = rowText.Substring(0, bestIcd.Index + bestIcd.Length);
+                diagCode = bestIcd.Groups[1].Value;
+
+                // Extract diagnosis text: Chinese text right before the ICD code
+                var diagIcdMatch = Regex.Match(beforeIcd, @"([\u4e00-\u9fff（）\(\)，、\s]+)\s*" + Regex.Escape(diagCode) + @"$");
                 if (diagIcdMatch.Success) {
-                    diagCode = diagIcdMatch.Groups[2].Value;
-                    diagText = diagIcdMatch.Groups[1].Value;
+                    diagText = diagIcdMatch.Groups[1].Value.Trim();
                     source = beforeIcd.Substring(0, diagIcdMatch.Index).Trim();
+                } else {
+                    source = beforeIcd.Substring(0, bestIcd.Index).Trim();
                 }
 
-                // Everything after ICD code = ATC3 name + ingredient + drug name + usage + numbers
-                var afterIcd = rowText.Substring(icdMatch.Index + icdMatch.Length);
+                // Everything after last ICD = ATC3 name + ingredient + drug name + usage + numbers
+                var afterIcd = rowText.Substring(bestIcd.Index + bestIcd.Length);
 
                 // Parse tail: find frequency pattern + numbers from the end
                 var parsed = ParseTail(afterIcd);
@@ -709,9 +727,11 @@ static class CloudMed {
         // Everything before the frequency is ATC3 + ingredient + drug name
         var beforeFreq = s.Substring(0, freqMatch.Index);
 
+        // Strip packaging info before extraction (e.g., (鋁箔) interferes with Chinese char scan)
+        var cleanBeforeFreq = Regex.Replace(beforeFreq, @"\([^)]*箔[^)]*\)", "");
         // Extract drug name and ingredient
         string drugName, ingredient;
-        ExtractDrugAndIngredient(beforeFreq, out ingredient, out drugName);
+        ExtractDrugAndIngredient(cleanBeforeFreq, out ingredient, out drugName);
 
         // Parse numbers: extract totalQty and days
         string totalQty, days;
@@ -726,7 +746,7 @@ static class CloudMed {
         totalQty = "0"; days = "0";
         if (string.IsNullOrEmpty(numStr)) return;
 
-        var commonDays = new[] { 90, 60, 30, 28, 14, 7, 3, 2, 1 };
+        var commonDays = new[] { 90, 63, 60, 56, 42, 30, 28, 21, 16, 14, 10, 7, 5, 3, 2, 1 };
         foreach (var cd in commonDays) {
             var cdStr = cd.ToString();
             for (int pos = 1; pos <= numStr.Length - cdStr.Length; pos++) {
@@ -757,17 +777,19 @@ static class CloudMed {
         //           "口腔病藥物（Stomatological preparations）Triamcinolone..."
         string englishPart = text;
 
-        // A) Find last Chinese char or full-width paren → strip everything up to it
+        // A) Find last Chinese/CJK/special char → strip ATC name
         int lastCnPos = -1;
         for (int i = text.Length - 1; i >= 0; i--) {
             char c = text[i];
-            if (c >= '\u4e00' && c <= '\u9fff' || c == '）') { lastCnPos = i; break; }
+            if (c >= '\u4e00' && c <= '\u9fff' || c == '）' || c == '）'
+                || (c >= '\u0370' && c <= '\u03FF')  // Greek letters (β, α, etc.)
+                ) { lastCnPos = i; break; }
         }
         if (lastCnPos >= 0 && lastCnPos < text.Length - 3) {
             englishPart = text.Substring(lastCnPos + 1).Trim();
         }
-        // B) If still starts with "(English ATC name)", strip it
-        var atcParen = Regex.Match(englishPart, @"^\([^)]+\)\s*");
+        // B) If still starts with "(English ATC name)" or "（...）", strip it
+        var atcParen = Regex.Match(englishPart, @"^[（\(][^)）]+[)）]\s*");
         if (atcParen.Success) {
             englishPart = englishPart.Substring(atcParen.Length);
         }
@@ -859,10 +881,12 @@ static class CloudMed {
         return string.Join(", ", medParts);
     }
 
-    // Strip PC/AC/HS suffixes: QDPC→QD, BIDPC→BID, HSPC→HS
+    // Simplify usage codes: QDPC→QD, HSPRN→HS PRN, ASORDER→醫囑
     static string CleanUsage(string u) {
         if (string.IsNullOrEmpty(u)) return u;
-        return Regex.Replace(u, @"(QD|BID|TID|QID|HS)(PC|AC|EXT|PO)$", "$1");
+        if (u == "ASORDER") return "醫囑";
+        if (u == "HSPRN") return "HS PRN";
+        return Regex.Replace(u, @"(QD|BID|TID|QID|HS)(PC|AC|EXT|PO|AM)$", "$1");
     }
 
     // Format a single medicine: Ingredient(dose) with optional N# for multi-tablet
@@ -901,13 +925,11 @@ static class CloudMed {
             return "";
 
         var freq = (usage ?? "").ToUpper();
+        if (freq.Contains("ASORDER") || freq.Contains("PRN") || freq.Contains("STAT")) return "";
         int mult = 1;
-        if (freq.Contains("BID")) mult = 2;
-        else if (freq.Contains("TID")) mult = 3;
-        else if (freq.Contains("QID")) mult = 4;
-        else if (freq.Contains("Q6H")) mult = 4;
-        else if (freq.Contains("Q8H")) mult = 3;
-        else if (freq.Contains("Q12H")) mult = 2;
+        if (freq.Contains("BID") || freq.Contains("Q12H")) mult = 2;
+        else if (freq.Contains("TID") || freq.Contains("Q8H")) mult = 3;
+        else if (freq.Contains("QID") || freq.Contains("Q6H")) mult = 4;
         else if (freq.Contains("Q4H")) mult = 6;
         else if (freq.Contains("Q2H")) mult = 12;
         // QD, HS, QN, etc. = 1
@@ -1386,17 +1408,17 @@ class App : Form {
     }
     void SimCtrlV(){
         ThreadPool.QueueUserWorkItem(delegate{
-            Thread.Sleep(50);
-            ReleaseAllModifiers(); Thread.Sleep(30);
+            Thread.Sleep(15);
+            ReleaseAllModifiers(); Thread.Sleep(10);
             SendKeys(0x11, 0x56);
         });
     }
     void SimCtrlAC(){
         ThreadPool.QueueUserWorkItem(delegate{
-            Thread.Sleep(50);
-            ReleaseAllModifiers(); Thread.Sleep(30);
+            Thread.Sleep(15);
+            ReleaseAllModifiers(); Thread.Sleep(10);
             SendKeys(0x11, 0x41);
-            Thread.Sleep(80);
+            Thread.Sleep(30);
             SendKeys(0x11, 0x43);
         });
     }
