@@ -231,7 +231,7 @@ static class Lab {
     }
 
     // Format values dict into condensed string (reusable by CloudLab)
-    public static string Format(string date, Dictionary<string,string> vals, HashSet<string> enabled, string dateSuffix="") {
+    public static string Format(string date, Dictionary<string,string> vals, HashSet<string> enabled, string dateSuffix=" ") {
         var roundKeys = new[]{"BUN","HCO3","Iron","TIBC","Ferritin"};
         foreach(var rk in roundKeys) {
             if(vals.ContainsKey(rk)){double d;if(double.TryParse(vals[rk],out d))vals[rk]=((int)Math.Round(d)).ToString();}
@@ -271,9 +271,11 @@ static class Lab {
         }
         if (parts.Count==0) return null;
         var r = string.Join(",", parts);
-        if (date!="") r = date+dateSuffix+r;
-        // Word-wrap at 80 chars
+        int indent = 0;
+        if (date!="") { var prefix=date+dateSuffix; r=prefix+r; indent=prefix.Length; }
+        // Word-wrap at 80 chars, indent continuation to align under first data char
         if (r.Length>80) {
+            var pad = new string(' ', indent);
             var sb = new StringBuilder();
             int col=0;
             var tokens=r.Split(',');
@@ -281,7 +283,7 @@ static class Lab {
                 var tok=tokens[ti]+(ti<tokens.Length-1?",":"");
                 if(col==0){sb.Append(tok);col=tok.Length;}
                 else if(col+tok.Length>80){
-                    sb.Append("\n     ");col=5;sb.Append(tok);col+=tok.Length;}
+                    sb.Append("\n").Append(pad);col=indent;sb.Append(tok);col+=tok.Length;}
                 else{sb.Append(tok);col+=tok.Length;}
             }
             r=sb.ToString();
