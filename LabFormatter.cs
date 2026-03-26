@@ -1253,17 +1253,21 @@ class App : Form {
             }
         }
         else if (CloudMed.IsCloudMedData(t)) {
+            // Immediate green feedback — data detected, processing
+            SetTray(Color.LimeGreen,"✓ 藥歷擷取中...");
+            ShowPreview("藥歷資料處理中...", null, 1);
             cloudMedBuffer.Add(t);
             var combined=string.Join("\n",cloudMedBuffer);
             var r=CloudMed.Convert(combined);
             if(r!=null){
                 medResult=r;
-                SetTray(Theme.Blue,"✓ [藥歷] "+r.Split('\n')[0].Substring(0,Math.Min(50,r.Split('\n')[0].Length)));
+                var first=r.Split('\n')[0];
+                SetTray(Color.LimeGreen,"✓ [藥歷] "+first.Substring(0,Math.Min(50,first.Length)));
                 ShowPreview(labResult, r, 0);
                 ResetMergeTimer();
             } else {
-                // Detection matched but parsing failed — show feedback
-                SetTray(Theme.Gold,"偵測到藥歷但解析失敗，請用手動轉換");
+                SetTray(Color.LimeGreen,"✓ 偵測到藥歷但解析失敗");
+                DelayYellow();
             }
         }
     }
