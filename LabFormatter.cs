@@ -231,7 +231,7 @@ static class Lab {
     }
 
     // Format values dict into condensed string (reusable by CloudLab)
-    public static string Format(string date, Dictionary<string,string> vals, HashSet<string> enabled) {
+    public static string Format(string date, Dictionary<string,string> vals, HashSet<string> enabled, string dateSuffix="") {
         var roundKeys = new[]{"BUN","HCO3","Iron","TIBC","Ferritin"};
         foreach(var rk in roundKeys) {
             if(vals.ContainsKey(rk)){double d;if(double.TryParse(vals[rk],out d))vals[rk]=((int)Math.Round(d)).ToString();}
@@ -271,7 +271,7 @@ static class Lab {
         }
         if (parts.Count==0) return null;
         var r = string.Join(",", parts);
-        if (date!="") r = date+" "+r;
+        if (date!="") r = date+dateSuffix+r;
         // Word-wrap at 80 chars
         if (r.Length>80) {
             var sb = new StringBuilder();
@@ -458,7 +458,7 @@ static class CloudLab {
         var results = new List<string>();
         foreach (var kv in byDate.OrderByDescending(x => x.Key)) {
             var dateStr = FormatCloudDate(kv.Key);
-            var r = Lab.Format(dateStr, kv.Value, enabled);
+            var r = Lab.Format(dateStr, kv.Value, enabled, "(其他)");
             if (r != null) results.Add(r);
         }
 
