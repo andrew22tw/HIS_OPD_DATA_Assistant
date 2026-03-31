@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <!-- Lab Data Formatter Website -->
-<!-- Last Modified: 2026-03-26 01:00 (UTC+8) -->
-<!-- Version: v2.0 -->
+<!-- Last Modified: 2026-03-31 09:30 (UTC+8) -->
+<!-- Version: v2.0.1 -->
 <html lang="zh-TW">
 <head>
 <meta charset="UTF-8">
@@ -460,7 +460,8 @@ td {
   <table>
     <tr><th>熱鍵</th><th>功能</th><th>說明</th></tr>
     <tr><td><span class="kbd">Ctrl+A → Ctrl+C</span></td><td>擷取</td><td>全選+複製報告，程式自動整理</td></tr>
-    <tr><td><span class="kbd">Ctrl+3</span></td><td>貼上報告</td><td>貼上整理後的結果（檢驗+藥歷）</td></tr>
+    <tr><td><span class="kbd">擷取鍵（可自訂）</span></td><td>快速擷取</td><td>無延遲快速 Ctrl+A+C，預設 Alt+`，可在設定改為 Ctrl+E 等</td></tr>
+    <tr><td><span class="kbd">Ctrl+3</span></td><td>貼上報告</td><td>自動對焦目標視窗後貼上整理結果（檢驗+藥歷）</td></tr>
     <tr><td><span class="kbd">Ctrl+0</span></td><td>開啟設定</td><td>編輯熱鍵、檢視結果</td></tr>
     <tr><td><span class="kbd">Ctrl+1</span></td><td>自訂快貼 1</td><td>可設定常用文字片段</td></tr>
     <tr><td><span class="kbd">Ctrl+2</span></td><td>自訂快貼 2</td><td>可設定常用文字片段</td></tr>
@@ -509,7 +510,7 @@ td {
   <div class="changelog-item">
     <div class="cl-header">
       <span class="cl-ver">v2.0</span>
-      <span class="cl-date">2026-03-26</span>
+      <span class="cl-date">2026-03-31</span>
       <span class="cl-tag">Latest</span>
       <span class="cl-tag-major">Major</span>
     </div>
@@ -520,6 +521,8 @@ td {
       <li>三種資料來源自動判斷（ORD 檢驗 / 雲端檢驗 / 雲端藥歷）</li>
       <li>70+ 筆雲端檢驗項目名稱對照（涵蓋各院不同上傳名稱如 GOT/AST(GOT)/SGOT）</li>
       <li>Apple-style 暗色 UI：毛玻璃效果、Pill 按鈕、圓角卡片（Win11 Mica 支援）</li>
+      <li>Ctrl+3 貼上前自動模擬滑鼠左鍵點擊，確保目標視窗對焦後再貼上</li>
+      <li>快速擷取鍵速度大幅提升，移除冗余延遲，按下即觸發</li>
     </ul>
   </div>
   <div class="changelog-item">
@@ -632,7 +635,9 @@ var readmeText = [
 "【熱鍵說明】",
 "",
 "  Ctrl+A → Ctrl+C  全選+複製報告（程式自動整理）",
-"  Ctrl+3    貼上整理後的報告",
+"  擷取鍵（可自訂）  無延遲快速擷取，預設 Alt+`",
+"              可在設定視窗改為 Ctrl+E 等",
+"  Ctrl+3    貼上整理結果（自動對焦目標視窗後貼上）",
 "  Ctrl+0    開啟設定視窗",
 "  Ctrl+1    自訂快貼 1（可設定常用文字片段）",
 "  Ctrl+2    自訂快貼 2",
@@ -710,7 +715,7 @@ function copyReadme() {
     }
   }).catch(function(){
     verEl.textContent = "v2.0";
-    dateEl.textContent = "2026-03-26";
+    dateEl.textContent = "2026-03-31";
   });
 })();
 
