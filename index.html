@@ -389,7 +389,7 @@ td {
       <div style="text-align:center;flex:1;min-width:180px;">
         <div style="font-size:2rem;margin-bottom:6px;">1</div>
         <div style="font-size:1.1rem;font-weight:700;color:var(--accent2);">Ctrl+A → Ctrl+C</div>
-        <div style="font-size:0.85rem;color:var(--text2);margin-top:4px;">在 ORD 報告或健保雲端<br>按 Ctrl+A 全選再 Ctrl+C 複製<br>程式自動辨識資料類型</div>
+        <div style="font-size:0.85rem;color:var(--text2);margin-top:4px;">在 ORD 報告或健保雲端<br>按 Ctrl+A 全選再 Ctrl+C 複製<br>程式自動辨識資料類型<br><span style="color:var(--red);font-size:0.8rem;">※ 雲端資料請注意去除姓名及證號</span></div>
       </div>
       <div style="font-size:1.5rem;color:var(--accent);">→</div>
       <div style="text-align:center;flex:1;min-width:180px;">
@@ -424,7 +424,7 @@ td {
     <div class="feat">
       <div class="feat-icon">💊</div>
       <div class="feat-title">雲端藥歷整理 <span class="feat-new">New</span></div>
-      <div class="feat-desc">自動解析雲端藥歷，以學名顯示、超過2顆標示N#、橫式一行輸出</div>
+      <div class="feat-desc">自動解析雲端藥歷，以學名顯示、橫式輸出。所有處理在本機完成，不傳送資料</div>
     </div>
     <div class="feat">
       <div class="feat-icon">📋</div>
@@ -499,8 +499,14 @@ td {
   <h3 style="font-size:1.05rem;font-weight:600;margin-top:28px;margin-bottom:12px;">藥歷（橫式學名格式）<span class="feat-new">New</span></h3>
   <div style="background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:16px 20px;font-size:0.9rem;color:var(--text2);">
     <p>自動提取學名：Amlodipine(5)QD, Pitavastatin(2)QD</p>
+    <p style="margin-top:4px;">複方藥以 / 連接：Telmisartan/Amlodipine(80/5)QD</p>
     <p style="margin-top:4px;">每次超過 1 顆自動標示：Amlodipine(5) 2# QD</p>
     <p style="margin-top:4px;">過濾急診 STAT 注射，只保留一般處方藥物</p>
+    <p style="margin-top:4px;">跨日期自動去重，只保留最新一筆處方</p>
+  </div>
+  <div style="background:rgba(239,68,68,0.08);border:1px solid rgba(239,68,68,0.25);border-radius:10px;padding:14px 20px;margin-top:12px;">
+    <p style="color:var(--red);font-weight:700;font-size:0.95rem;">⚠ 隱私提醒：使用雲端藥歷功能前</p>
+    <p style="color:var(--text2);font-size:0.88rem;margin-top:4px;">複製雲端頁面資料時，剪貼簿內容可能包含病人姓名及身分證號。本程式<strong style="color:var(--text);">不會儲存或傳送任何資料</strong>，所有處理皆在本機記憶體中完成。但建議操作前先確認畫面上的個資已適當遮蔽或去識別化。</p>
   </div>
 </div>
 
