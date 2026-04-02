@@ -1,6 +1,6 @@
 <!DOCTYPE html>
 <!-- Lab Data Formatter Website -->
-<!-- Last Modified: 2026-04-01 (UTC+8) -->
+<!-- Last Modified: 2026-04-02 (UTC+8) -->
 <!-- Version: v2.2 -->
 <html lang="zh-TW">
 <head>
@@ -523,7 +523,7 @@ td {
   <div class="changelog-item">
     <div class="cl-header">
       <span class="cl-ver">v2.2</span>
-      <span class="cl-date">2026-04-01</span>
+      <span class="cl-date">2026-04-02</span>
       <span class="cl-tag">Latest</span>
       <span class="cl-tag-major">Major</span>
     </div>
@@ -531,11 +531,13 @@ td {
       <li>雲端檢驗報告輸出全部項目（已對應+未對應項目如 ammonia、PCO2、Lipase 等全部顯示）</li>
       <li>雲端報告日期細到年月日（YYYMMDD），如 1150330(其他)；ORD 報告維持 YYYMM</li>
       <li>雲端藥歷/雲端報告：新複製直接覆蓋舊資料，不再累積合併</li>
+      <li>雲端藥歷 60 秒自動過期，不再輸出已整理的藥物格式</li>
       <li>自動過濾 QC 項（Hemolysis/Lipemia/Icterus）及 BEecf/BEb</li>
       <li>eGFR 四捨五入整數，附加在 Cr 後面顯示：BUN/Cr:61/2.42(24)</li>
       <li>複方藥以 / 連接顯示：Telmisartan/Amlodipine(80/5)QD</li>
       <li>雲端藥歷多行儲存格修正、跨日期去重</li>
       <li>Ctrl+3 自動對焦目標視窗後再貼上</li>
+      <li>設定視窗加大，儲存按鈕放大高對比（綠底白字），一眼可見</li>
       <li>Apple-style 暗色 UI：毛玻璃效果、Pill 按鈕、圓角卡片（Win11 Mica 支援）</li>
     </ul>
   </div>
@@ -729,7 +731,7 @@ function copyReadme() {
     }
   }).catch(function(){
     verEl.textContent = "v2.2";
-    dateEl.textContent = "2026-04-01";
+    dateEl.textContent = "2026-04-02";
   });
 })();
 
