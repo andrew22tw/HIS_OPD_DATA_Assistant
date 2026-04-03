@@ -137,8 +137,8 @@ body {
 
 /* ── Features Grid ── */
 .features {
-  display:grid; grid-template-columns:1fr 1fr; gap:16px;
-  margin-top:20px;
+  display:grid; grid-template-columns:1fr 1fr; gap:20px;
+  margin-top:24px;
 }
 @media(max-width:640px){ .features{grid-template-columns:1fr;} }
 .feat {
@@ -183,7 +183,11 @@ body {
   font-size:0.82rem; line-height:1.8;
   color:var(--text2);
   white-space:pre-wrap;
-  max-height:500px; overflow-y:auto;
+  max-height:0; overflow:hidden;
+  transition:max-height 0.4s ease;
+}
+.readme-content.expanded {
+  max-height:600px; overflow-y:auto;
 }
 .readme-content::-webkit-scrollbar { width:6px; }
 .readme-content::-webkit-scrollbar-track { background:var(--surface); }
@@ -304,6 +308,7 @@ td {
 .dl-btn-main {
   background:linear-gradient(135deg, var(--accent), #16a34a);
   color:#fff; box-shadow:0 4px 20px rgba(34,197,94,0.3);
+  font-size:1.1rem; padding:14px 36px;
 }
 .dl-btn-main:hover { transform:translateY(-2px); box-shadow:0 6px 28px rgba(34,197,94,0.45); }
 .dl-btn-sub {
@@ -369,16 +374,27 @@ td {
   <div class="demo-output">11503 AC:122(6.8),BUN/Cr:27/1.71,Na/K:140/3.6,ALT:25</div>
 </div>
 
+<!-- ══════ Demo: Cloud Lab ══════ -->
+<div class="demo">
+  <div class="demo-label">健保雲端檢驗報告 <span style="font-size:0.7rem;color:var(--accent);font-weight:600;">NEW</span></div>
+  <div class="demo-input" style="font-size:0.8rem;">115/03/30  HCO3  19.9 mmol/L
+115/03/30  Mg    2.40 mg/dL
+115/03/30  ammonia  58 ug/dl
+115/03/30  Lipase  16 U/L
+115/03/30  NT-proBNP  36 pg/ml</div>
+  <div class="demo-arrow">▼ ▼ ▼</div>
+  <div class="demo-output">1150330(其他)HCO3:20,Mg:2.40,ammonia:58,Lipase:16,NT-proBNP:36</div>
+</div>
+
 <!-- ══════ Demo: Medication ══════ -->
 <div class="demo">
-  <div class="demo-label">健保雲端藥歷整理 <span style="font-size:0.7rem;color:var(--purple);font-weight:600;">NEW</span></div>
-  <div class="demo-input" style="font-size:0.8rem;">桐心藥局 藥局 - 本態性(原發性)高血壓 I10
-  Aspirin → BOKEY 100MG  QD×30
-  Zolpidem → STILNOX 10MG  HS×30
-  Amlodipine → NORVASC 5MG  QD×30
-  Pitavastatin → LIVALO 2MG  QD×30</div>
+  <div class="demo-label">健保雲端藥歷 <span style="font-size:0.7rem;color:var(--blue);font-weight:600;">NEW</span></div>
+  <div class="demo-input" style="font-size:0.8rem;">Carvedilol  SYNTREND TABLETS 25MG  BIDPC  56顆/28天
+Telmisartan；Amlodipine  Twynsta Tablets 80/5mg  QDPC  28顆/28天
+Olmesartan Medoxomil  Olmetec 40mg  QDPC  28顆/28天
+Febuxostat  Forliton F.C. Tablets 80mg  QDPC  28顆/28天</div>
   <div class="demo-arrow">▼ ▼ ▼</div>
-  <div class="demo-output-med">Aspirin(100)QD, Zolpidem(10)HS, Amlodipine(5)QD, Pitavastatin(2)QD</div>
+  <div class="demo-output-med">Carvedilol(25)BID, Telmisartan/Amlodipine(80/5)QD, Olmesartan(40)QD, Febuxostat(80)QD</div>
 </div>
 
 <!-- ══════ Usage Flow ══════ -->
@@ -584,7 +600,10 @@ td {
   <div class="readme-box">
     <div class="readme-header">
       <span>📄 readme.txt</span>
-      <button class="readme-copy" onclick="copyReadme()">複製全文</button>
+      <div style="display:flex;gap:8px;">
+        <button class="readme-copy" id="toggleReadmeBtn" onclick="toggleReadme()">展開 ▼</button>
+        <button class="readme-copy" onclick="copyReadme()">複製全文</button>
+      </div>
     </div>
     <div class="readme-content" id="readmeContent"></div>
   </div>
@@ -693,6 +712,18 @@ var readmeText = [
 ].join("\n");
 
 document.getElementById("readmeContent").textContent = readmeText;
+
+function toggleReadme() {
+  var el = document.getElementById("readmeContent");
+  var btn = document.getElementById("toggleReadmeBtn");
+  if (el.classList.contains("expanded")) {
+    el.classList.remove("expanded");
+    btn.textContent = "展開 ▼";
+  } else {
+    el.classList.add("expanded");
+    btn.textContent = "收合 ▲";
+  }
+}
 
 function copyReadme() {
   navigator.clipboard.writeText(readmeText).then(function(){
