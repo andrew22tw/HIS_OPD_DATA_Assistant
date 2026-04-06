@@ -11,55 +11,57 @@
 <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@300;400;500;700;900&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
 <style>
 :root {
-  --bg: #0a0e17;
-  --surface: #111827;
-  --surface2: #1a2235;
-  --border: #1e293b;
+  --bg: #08090a;
+  --surface: #111214;
+  --surface2: #191a1c;
+  --border: rgba(255,255,255,0.06);
+  --border-strong: rgba(255,255,255,0.1);
   --accent: #22c55e;
   --accent2: #4ade80;
-  --accent-dim: rgba(34,197,94,0.12);
-  --text: #e2e8f0;
-  --text2: #94a3b8;
-  --text3: #64748b;
-  --gold: #fbbf24;
+  --accent-dim: rgba(34,197,94,0.10);
+  --text: #f0f1f2;
+  --text2: #9ca3af;
+  --text3: #6b7280;
+  --gold: #f59e0b;
   --red: #ef4444;
-  --blue: #3b82f6;
+  --blue: #6366f1;
   --purple: #a78bfa;
 }
 * { margin:0; padding:0; box-sizing:border-box; }
 body {
-  font-family:'Noto Sans TC',sans-serif;
+  font-family:'Noto Sans TC','Inter',system-ui,sans-serif;
   background:var(--bg);
   color:var(--text);
   line-height:1.7;
   overflow-x:hidden;
+  -webkit-font-smoothing:antialiased;
 }
 /* ── Hero ── */
 .hero {
   position:relative;
-  padding:80px 0 60px;
+  padding:100px 0 70px;
   text-align:center;
   overflow:hidden;
 }
 .hero::before {
   content:'';
   position:absolute;
-  top:-50%;left:-50%;width:200%;height:200%;
-  background:radial-gradient(circle at 50% 40%, rgba(34,197,94,0.08) 0%, transparent 50%);
-  animation:pulse 8s ease-in-out infinite;
+  top:-40%;left:-30%;width:160%;height:160%;
+  background:radial-gradient(ellipse at 50% 30%, rgba(34,197,94,0.06) 0%, transparent 60%);
+  animation:pulse 10s ease-in-out infinite;
 }
 @keyframes pulse {
-  0%,100%{opacity:0.5;transform:scale(1)}
-  50%{opacity:1;transform:scale(1.05)}
+  0%,100%{opacity:0.4;transform:scale(1)}
+  50%{opacity:0.8;transform:scale(1.03)}
 }
 .hero-content { position:relative; z-index:1; }
 .hero h1 {
-  font-size:3rem; font-weight:900; letter-spacing:-1px;
-  background:linear-gradient(135deg, var(--accent), var(--accent2), var(--gold));
+  font-size:3.2rem; font-weight:800; letter-spacing:-1.5px; line-height:1.1;
+  background:linear-gradient(135deg, #f0f1f2, #e0e0e0);
   -webkit-background-clip:text; -webkit-text-fill-color:transparent;
   background-clip:text;
 }
-.hero .subtitle { font-size:1.15rem; color:var(--text2); margin-top:8px; font-weight:300; }
+.hero .subtitle { font-size:1.1rem; color:var(--text2); margin-top:12px; font-weight:400; letter-spacing:-0.2px; }
 .hero .subtitle2 { font-size:0.95rem; color:var(--text3); margin-top:4px; font-weight:300; }
 
 /* ── Version Badge ── */
@@ -71,9 +73,9 @@ body {
   padding:8px 20px; border-radius:100px;
   font-family:'JetBrains Mono',monospace; font-size:0.95rem;
 }
-.badge-version { background:var(--accent-dim); border:1px solid rgba(34,197,94,0.3); color:var(--accent2); }
-.badge-date { background:rgba(59,130,246,0.1); border:1px solid rgba(59,130,246,0.25); color:var(--blue); }
-.badge-dl { background:rgba(251,191,36,0.1); border:1px solid rgba(251,191,36,0.25); color:var(--gold); }
+.badge-version { background:rgba(34,197,94,0.08); border:1px solid rgba(34,197,94,0.2); color:var(--accent2); }
+.badge-date { background:rgba(99,102,241,0.08); border:1px solid rgba(99,102,241,0.2); color:var(--blue); }
+.badge-dl { background:rgba(245,158,11,0.08); border:1px solid rgba(245,158,11,0.2); color:var(--gold); }
 .badge-new { background:rgba(167,139,250,0.12); border:1px solid rgba(167,139,250,0.3); color:var(--purple); font-size:0.85rem; }
 .badge-dot {
   width:8px;height:8px;border-radius:50%;background:var(--accent);
@@ -87,18 +89,18 @@ body {
 /* ── Section ── */
 .section { padding:50px 0; }
 .section-title {
-  font-size:1.5rem; font-weight:700; margin-bottom:24px;
-  padding-left:16px;
-  border-left:4px solid var(--accent);
+  font-size:1.4rem; font-weight:700; margin-bottom:24px;
+  padding-left:16px; letter-spacing:-0.3px;
+  border-left:3px solid var(--accent);
 }
 
 /* ── Demo Block ── */
 .demo {
   background:var(--surface);
   border:1px solid var(--border);
-  border-radius:12px;
+  border-radius:14px;
   padding:28px 32px;
-  margin:30px 0;
+  margin:24px 0;
 }
 .demo-label {
   font-size:0.8rem; color:var(--text3); text-transform:uppercase;
@@ -143,10 +145,10 @@ body {
 @media(max-width:640px){ .features{grid-template-columns:1fr;} }
 .feat {
   background:var(--surface); border:1px solid var(--border);
-  border-radius:10px; padding:20px 22px;
-  transition:border-color 0.3s;
+  border-radius:12px; padding:22px 24px;
+  transition:border-color 0.3s, background 0.3s;
 }
-.feat:hover { border-color:rgba(34,197,94,0.4); }
+.feat:hover { border-color:rgba(255,255,255,0.12); background:var(--surface2); }
 .feat-icon { font-size:1.4rem; margin-bottom:8px; }
 .feat-title { font-weight:700; margin-bottom:4px; }
 .feat-desc { font-size:0.9rem; color:var(--text2); }
@@ -197,9 +199,9 @@ body {
 .changelog-item {
   background:var(--surface);
   border:1px solid var(--border);
-  border-radius:10px;
+  border-radius:12px;
   padding:20px 24px;
-  margin-bottom:12px;
+  margin-bottom:14px;
 }
 .cl-header { display:flex; align-items:center; gap:12px; margin-bottom:10px; }
 .cl-ver {
@@ -262,12 +264,14 @@ table {
 }
 th {
   text-align:left; padding:10px 16px;
-  background:var(--surface2); color:var(--text2);
-  font-weight:500; font-size:0.8rem;
-  text-transform:uppercase; letter-spacing:1px;
+  background:var(--surface); color:var(--text3);
+  font-weight:500; font-size:0.78rem;
+  text-transform:uppercase; letter-spacing:0.8px;
+  border-bottom:1px solid var(--border-strong);
 }
 td {
   padding:10px 16px; border-bottom:1px solid var(--border);
+  font-size:0.9rem;
 }
 .kbd {
   font-family:'JetBrains Mono',monospace;
@@ -306,15 +310,15 @@ td {
   text-decoration:none; transition:all 0.3s; cursor:pointer; border:none;
 }
 .dl-btn-main {
-  background:linear-gradient(135deg, var(--accent), #16a34a);
-  color:#fff; box-shadow:0 4px 20px rgba(34,197,94,0.3);
-  font-size:1.1rem; padding:14px 36px;
+  background:var(--accent);
+  color:#fff; box-shadow:0 0 20px rgba(34,197,94,0.2);
+  font-size:1.05rem; padding:14px 36px; font-weight:600;
 }
-.dl-btn-main:hover { transform:translateY(-2px); box-shadow:0 6px 28px rgba(34,197,94,0.45); }
+.dl-btn-main:hover { background:#16a34a; box-shadow:0 0 30px rgba(34,197,94,0.35); transform:translateY(-1px); }
 .dl-btn-sub {
-  background:var(--surface2); border:1px solid var(--border); color:var(--text2);
+  background:transparent; border:1px solid var(--border-strong); color:var(--text2);
 }
-.dl-btn-sub:hover { border-color:var(--accent); color:var(--accent2); }
+.dl-btn-sub:hover { border-color:rgba(255,255,255,0.2); color:var(--text); }
 .dl-icon { font-size:1.2rem; }
 
 /* ── Source badges ── */
