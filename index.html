@@ -570,17 +570,14 @@ function copyReadme(){
   });
 }
 
-/* ── GitHub API ── */
+/* ── Download links (直接從 GitHub Pages 下載) ── */
 (function(){
-  var repo="andrew22tw/HIS_OPD_DATA_Assistant";
-  var v=document.getElementById("latestVer"),d=document.getElementById("latestDate");
+  var base="https://andrew22tw.github.io/HIS_OPD_DATA_Assistant/";
   var dlE=document.getElementById("dlExe"),dlR=document.getElementById("dlReadme");
-  dlE.href="https://github.com/"+repo+"/releases/latest/download/LabFormatter_v2.3.exe";
-  dlR.href="https://github.com/"+repo+"/releases/latest/download/readme.txt";
-  fetch("https://api.github.com/repos/"+repo+"/releases/latest").then(function(r){if(!r.ok)throw 0;return r.json();}).then(function(data){
-    if(data.tag_name){v.textContent=data.tag_name;var dt=new Date(data.published_at);d.textContent=dt.getFullYear()+"-"+String(dt.getMonth()+1).padStart(2,"0")+"-"+String(dt.getDate()).padStart(2,"0");
-    (data.assets||[]).forEach(function(a){if(a.name.toLowerCase().indexOf(".exe")>=0)dlE.href=a.browser_download_url;if(a.name.toLowerCase().indexOf("readme")>=0)dlR.href=a.browser_download_url;});}
-  }).catch(function(){v.textContent="v2.3";d.textContent="2026-04-16";});
+  var v=document.getElementById("latestVer"),d=document.getElementById("latestDate");
+  dlE.href=base+"LabFormatter_v2.3.exe";
+  dlR.href=base+"readme.txt";
+  v.textContent="v2.3"; d.textContent="2026-04-16";
 })();
 
 /* ── Download counter ── */
