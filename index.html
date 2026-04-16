@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <!-- Lab Data Formatter Website -->
 <!-- Last Modified: 2026-04-06 (UTC+8) -->
-<!-- Version: v2.2 -->
+<!-- Version: v2.3 -->
 <!-- Design: Apple-inspired, light/dark mode -->
 <html lang="zh-TW">
 <head>
@@ -285,7 +285,7 @@ td{padding:10px 14px;border-bottom:1px solid var(--border);}
   <div class="hero-inner">
     <h1>Lab Data Formatter</h1>
     <p class="sub">檢驗報告快速整理工具</p>
-    <p class="sub2">Ctrl+C 擷取 . Ctrl+3 貼上 . v2.2</p>
+    <p class="sub2">Ctrl+C 擷取 . Ctrl+3 貼上 . v2.3</p>
     <div class="badges">
       <span class="badge"><span class="badge-dot"></span>最新版本 <span id="latestVer">...</span></span>
       <span class="badge">更新 <span id="latestDate">...</span></span>
@@ -452,8 +452,19 @@ Febuxostat  Forliton F.C. Tablets 80mg  QDPC  28顆/28天</div>
   <h2 class="sec-title">更新紀錄</h2>
   <div class="cl-item">
     <div class="cl-head">
+      <span class="cl-ver">v2.3</span><span class="cl-date">2026-04-16</span>
+      <span class="cl-tag cl-tag-latest">Latest</span>
+    </div>
+    <ul class="cl-list">
+      <li>修正 Ctrl+3 貼上位置偏移：改用絕對座標模擬滑鼠點擊</li>
+      <li>修正 Ctrl+A/Ctrl+C 偶爾卡住：等待修飾鍵釋放後再送按鍵</li>
+      <li>增加目標視窗焦點切換等待時間，提高相容性</li>
+    </ul>
+  </div>
+  <div class="cl-item">
+    <div class="cl-head">
       <span class="cl-ver">v2.2</span><span class="cl-date">2026-04-06</span>
-      <span class="cl-tag cl-tag-latest">Latest</span><span class="cl-tag cl-tag-major">Major</span>
+      <span class="cl-tag cl-tag-major">Major</span>
     </div>
     <ul class="cl-list">
       <li>雲端檢驗報告輸出全部項目</li>
@@ -521,7 +532,7 @@ function toggleTheme(){
 /* ── Readme ── */
 var readmeText=[
 "================================================================",
-"  Lab Data Formatter v2.2 使用說明",
+"  HIS OPD Data Assistant v2.3 使用說明",
 "  作者：吳岳霖醫師  DAL93"+String.fromCharCode(64)+"tpech.gov.tw",
 "================================================================",
 "","【簡介】","",
@@ -568,7 +579,7 @@ function copyReadme(){
   fetch("https://api.github.com/repos/"+repo+"/releases/latest").then(function(r){if(!r.ok)throw 0;return r.json();}).then(function(data){
     if(data.tag_name){v.textContent=data.tag_name;var dt=new Date(data.published_at);d.textContent=dt.getFullYear()+"-"+String(dt.getMonth()+1).padStart(2,"0")+"-"+String(dt.getDate()).padStart(2,"0");
     (data.assets||[]).forEach(function(a){if(a.name.toLowerCase().indexOf(".exe")>=0)dlE.href=a.browser_download_url;if(a.name.toLowerCase().indexOf("readme")>=0)dlR.href=a.browser_download_url;});}
-  }).catch(function(){v.textContent="v2.2";d.textContent="2026-04-06";});
+  }).catch(function(){v.textContent="v2.3";d.textContent="2026-04-16";});
 })();
 
 /* ── Download counter ── */
