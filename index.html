@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <!-- Lab Data Formatter Website -->
 <!-- Last Modified: 2026-04-06 (UTC+8) -->
-<!-- Version: v2.3.5 -->
+<!-- Version: v2.3.6 -->
 <!-- Design: Apple-inspired, light/dark mode -->
 <html lang="zh-TW">
 <head>
@@ -285,7 +285,7 @@ td{padding:10px 14px;border-bottom:1px solid var(--border);}
   <div class="hero-inner">
     <h1>Lab Data Formatter</h1>
     <p class="sub">檢驗報告快速整理工具</p>
-    <p class="sub2">右鍵擷取 . Ctrl+V 貼上 . 也支援 Ctrl+A/C → Ctrl+3 . v2.3.5</p>
+    <p class="sub2">右鍵擷取 . Ctrl+V 貼上 . 也支援 Ctrl+A/C → Ctrl+3 . v2.3.6</p>
     <div class="badges">
       <span class="badge"><span class="badge-dot"></span>最新版本 <span id="latestVer">...</span></span>
       <span class="badge">更新 <span id="latestDate">...</span></span>
@@ -297,7 +297,7 @@ td{padding:10px 14px;border-bottom:1px solid var(--border);}
       <span class="src src-p">健保雲端藥歷</span>
     </div>
     <div class="dl-bar">
-      <a class="dl-btn dl-main" id="dlExe" href="LabFormatter_v2.3.5.exe" download="LabFormatter_v2.3.5.exe" onclick="incrementDl(event)">⬇ 下載 LabFormatter_v2.3.5.exe</a>
+      <a class="dl-btn dl-main" id="dlExe" href="LabFormatter_v2.3.6.exe" download="LabFormatter_v2.3.6.exe" onclick="incrementDl(event)">⬇ 下載 LabFormatter_v2.3.6.exe</a>
       <a class="dl-btn dl-sub" id="dlReadme" href="readme.txt" download="readme.txt">📄 readme.txt</a>
     </div>
   </div>
@@ -476,15 +476,16 @@ Febuxostat  Forliton F.C. Tablets 80mg  QDPC  28顆/28天</div>
   <h2 class="sec-title">更新紀錄</h2>
   <div class="cl-item">
     <div class="cl-head">
-      <span class="cl-ver">v2.3.5</span><span class="cl-date">2026-04-16</span>
+      <span class="cl-ver">v2.3.6</span><span class="cl-date">2026-04-16</span>
       <span class="cl-tag cl-tag-latest">Latest</span>
     </div>
     <ul class="cl-list">
+      <li>🆕 右鍵擷取支援多份報告合併（與 Ctrl+C 一致，15 秒內按多次右鍵會累積整理）</li>
       <li>🖱 右鍵擷取：右鍵點擊報告視窗→自動擷取整理→Ctrl+V 直接貼上</li>
       <li>零畫面變化：優先用 WM_GETTEXT 讀取視窗文字，不觸發全選</li>
       <li>雙流程支援：右鍵+Ctrl+V（推薦）或 Ctrl+A/C+Ctrl+3（傳統）</li>
       <li>綠色病歷夾板圖示（桌面/系統匣/工作列）</li>
-      <li>修正 Ctrl+3 貼上位置偏移、Ctrl+A/C 偶爾卡住</li>
+      <li>修正 Ctrl+C 複製後不觸發整理（ignoreUntil 順序錯誤）</li>
     </ul>
   </div>
   <div class="cl-item">
@@ -558,7 +559,7 @@ function toggleTheme(){
 /* ── Readme ── */
 var readmeText=[
 "================================================================",
-"  HIS OPD Data Assistant v2.3.5 使用說明",
+"  HIS OPD Data Assistant v2.3.6 使用說明",
 "  作者：吳岳霖醫師  DAL93"+String.fromCharCode(64)+"tpech.gov.tw",
 "================================================================",
 "","【簡介】","",
@@ -600,9 +601,9 @@ function copyReadme(){
   var base="https://andrew22tw.github.io/HIS_OPD_DATA_Assistant/";
   var dlE=document.getElementById("dlExe"),dlR=document.getElementById("dlReadme");
   var v=document.getElementById("latestVer"),d=document.getElementById("latestDate");
-  dlE.href=base+"LabFormatter_v2.3.5.exe";
+  dlE.href=base+"LabFormatter_v2.3.6.exe";
   dlR.href=base+"readme.txt";
-  v.textContent="v2.3.5"; d.textContent="2026-04-16";
+  v.textContent="v2.3.6"; d.textContent="2026-04-16";
 })();
 
 /* ── Download counter ── */
