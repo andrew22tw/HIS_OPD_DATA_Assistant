@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <!-- Lab Data Formatter Website -->
-<!-- Last Modified: 2026-04-06 (UTC+8) -->
-<!-- Version: v2.3.10 -->
+<!-- Last Modified: 2026-04-20 (UTC+8) -->
+<!-- Version: v2.3.11 -->
 <!-- Design: Apple-inspired, light/dark mode -->
 <html lang="zh-TW">
 <head>
@@ -285,7 +285,7 @@ td{padding:10px 14px;border-bottom:1px solid var(--border);}
   <div class="hero-inner">
     <h1>Lab Data Formatter</h1>
     <p class="sub">檢驗報告快速整理工具</p>
-    <p class="sub2">右鍵擷取 . Ctrl+V 貼上 . Ctrl+` 開關切換 . 也支援 Ctrl+A/C → Ctrl+3 . v2.3.10</p>
+    <p class="sub2">右鍵擷取 . Ctrl+V 貼上 . Ctrl+` 開關切換 . 也支援 Ctrl+A/C → Ctrl+3 . v2.3.11</p>
     <div class="badges">
       <span class="badge"><span class="badge-dot"></span>最新版本 <span id="latestVer">...</span></span>
       <span class="badge">更新 <span id="latestDate">...</span></span>
@@ -297,7 +297,7 @@ td{padding:10px 14px;border-bottom:1px solid var(--border);}
       <span class="src src-p">健保雲端藥歷</span>
     </div>
     <div class="dl-bar">
-      <a class="dl-btn dl-main" id="dlExe" href="LabFormatter_v2.3.10.exe" download="LabFormatter_v2.3.10.exe" onclick="incrementDl(event)">⬇ 下載 LabFormatter_v2.3.10.exe</a>
+      <a class="dl-btn dl-main" id="dlExe" href="LabFormatter_v2.3.11.exe" download="LabFormatter_v2.3.11.exe" onclick="incrementDl(event)">⬇ 下載 LabFormatter_v2.3.11.exe</a>
       <a class="dl-btn dl-sub" id="dlReadme" href="readme.txt" download="readme.txt">📄 readme.txt</a>
     </div>
   </div>
@@ -477,8 +477,18 @@ Febuxostat  Forliton F.C. Tablets 80mg  QDPC  28顆/28天</div>
   <h2 class="sec-title">更新紀錄</h2>
   <div class="cl-item">
     <div class="cl-head">
-      <span class="cl-ver">v2.3.10</span><span class="cl-date">2026-04-19</span>
+      <span class="cl-ver">v2.3.11</span><span class="cl-date">2026-04-20</span>
       <span class="cl-tag cl-tag-latest">Latest</span>
+    </div>
+    <ul class="cl-list">
+      <li>🎨 UI 更新：採用 Apple design system 配色（純黑背景 #000000、Surface #272729）</li>
+      <li>🔵 儲存設定按鈕改為 Apple Blue (#0071E3)，符合互動元素規範</li>
+      <li>🔤 字體放大：Body 9pt → 10pt，Small 8pt → 9pt，提升可讀性</li>
+    </ul>
+  </div>
+  <div class="cl-item">
+    <div class="cl-head">
+      <span class="cl-ver">v2.3.10</span><span class="cl-date">2026-04-19</span>
     </div>
     <ul class="cl-list">
       <li>⌨️ 右鍵切換熱鍵改為 <strong>Ctrl+`</strong>（數字 1 左邊），可在設定中自訂</li>
@@ -561,7 +571,7 @@ function toggleTheme(){
 /* ── Readme ── */
 var readmeText=[
 "================================================================",
-"  HIS OPD Data Assistant v2.3.10 使用說明",
+"  HIS OPD Data Assistant v2.3.11 使用說明",
 "  作者：吳岳霖醫師  DAL93"+String.fromCharCode(64)+"tpech.gov.tw",
 "================================================================",
 "","【簡介】","",
@@ -603,9 +613,9 @@ function copyReadme(){
   var base="https://andrew22tw.github.io/HIS_OPD_DATA_Assistant/";
   var dlE=document.getElementById("dlExe"),dlR=document.getElementById("dlReadme");
   var v=document.getElementById("latestVer"),d=document.getElementById("latestDate");
-  dlE.href=base+"LabFormatter_v2.3.10.exe";
+  dlE.href=base+"LabFormatter_v2.3.11.exe";
   dlR.href=base+"readme.txt";
-  v.textContent="v2.3.10"; d.textContent="2026-04-16";
+  v.textContent="v2.3.11"; d.textContent="2026-04-20";
 })();
 
 /* ── Download counter ── */
