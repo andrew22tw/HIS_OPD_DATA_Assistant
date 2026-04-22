@@ -608,17 +608,18 @@ function copyReadme(){
   });
 }
 
-/* ── Download links (直接從 GitHub Pages 下載) ── */
+/* ── Download links (GitHub Releases — 可計數下載次數) ── */
 (function(){
-  var base="https://andrew22tw.github.io/HIS_OPD_DATA_Assistant/";
+  var rel="https://github.com/andrew22tw/HIS_OPD_DATA_Assistant/releases/download/v2.3.11/";
+  var pages="https://andrew22tw.github.io/HIS_OPD_DATA_Assistant/";
   var dlE=document.getElementById("dlExe"),dlR=document.getElementById("dlReadme");
   var v=document.getElementById("latestVer"),d=document.getElementById("latestDate");
-  dlE.href=base+"LabFormatter_v2.3.11.exe";
-  dlR.href=base+"readme.txt";
+  dlE.href=rel+"LabFormatter_v2.3.11.exe";
+  dlR.href=pages+"readme.txt";
   v.textContent="v2.3.11"; d.textContent="2026-04-20";
 })();
 
-/* ── Download counter ── */
+/* ── Download counter (GitHub Releases API — 跨裝置真實計數) ── */
 var _dlK="ldf_dl_count";
 function gDl(){try{return parseInt(localStorage.getItem(_dlK)||"0",10)||0;}catch(e){return 0;}}
 function sDl(n){try{localStorage.setItem(_dlK,n.toString());}catch(e){}}
@@ -626,13 +627,23 @@ function sDl(n){try{localStorage.setItem(_dlK,n.toString());}catch(e){}}
   var el=document.getElementById("dlCount"),loc=gDl();
   el.textContent=loc>0?loc.toLocaleString():"...";
   fetch("https://api.github.com/repos/andrew22tw/HIS_OPD_DATA_Assistant/releases")
-    .then(function(r){if(!r.ok)throw 0;return r.json();}).then(function(rels){
-      if(!Array.isArray(rels))return;var t=30;rels.forEach(function(r){(r.assets||[]).forEach(function(a){t+=a.download_count||0;});});
-      var disp=Math.max(t,loc);el.textContent=disp.toLocaleString();if(t>loc)sDl(t);
-    }).catch(function(){el.textContent=loc>0?loc.toLocaleString():"\u2014";});
+    .then(function(r){if(!r.ok)throw 0;return r.json();})
+    .then(function(rels){
+      if(!Array.isArray(rels))return;
+      var t=0;
+      rels.forEach(function(r){(r.assets||[]).forEach(function(a){t+=a.download_count||0;});});
+      var disp=t>0?Math.max(t,loc):loc;
+      el.textContent=disp>0?disp.toLocaleString():"\u2014";
+      if(t>loc)sDl(t);
+    })
+    .catch(function(){el.textContent=loc>0?loc.toLocaleString():"\u2014";});
 })();
-function incrementDl(e){if(e)e.preventDefault();var el=document.getElementById("dlCount"),btn=document.getElementById("dlExe"),url=btn.href;
-  var c=gDl()+1;sDl(c);el.textContent=c.toLocaleString();setTimeout(function(){window.location.href=url;},150);}
+function incrementDl(e){
+  if(e)e.preventDefault();
+  var el=document.getElementById("dlCount"),btn=document.getElementById("dlExe"),url=btn.href;
+  var c=gDl()+1;sDl(c);el.textContent=c.toLocaleString();
+  setTimeout(function(){window.location.href=url;},150);
+}
 
 (function(){var e=document.getElementById("footerEmail");if(e)e.textContent="DAL93"+String.fromCharCode(64)+"tpech.gov.tw";})();
 </script>
