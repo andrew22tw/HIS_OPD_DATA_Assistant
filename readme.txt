@@ -1,5 +1,5 @@
 ================================================================
-  HIS OPD Data Assistant v2.3.12 使用說明
+  HIS OPD Data Assistant v2.3.13 使用說明
   (原名 Lab Data Formatter)
   作者：吳岳霖醫師  DAL93@tpech.gov.tw
 ================================================================
@@ -50,7 +50,7 @@
 
 【安裝方式】
 
-  1. 從網頁下載 LabFormatter_v2.3.12.exe
+  1. 從網頁下載 LabFormatter_v2.3.13.exe
      下載網址：https://andrew22tw.github.io/HIS_OPD_DATA_Assistant/
   2. 放在桌面或任何位置
   3. 雙擊啟動，圖示出現在右下角系統匣
@@ -209,7 +209,7 @@
 
 【更新紀錄】
 
-  v2.3.12 TSH/FT4 甲狀腺功能報告支援、修正數值尾零、設定升級自動補入新項目
+  v2.3.13 ORD 慢箋/急性處方解析（複製藥單自動提煉藥名劑量用法）、TSH/FT4、數值修正
   v2.3.11 UI 更新：Apple design system 配色、儲存按鈕改 Apple Blue、字體放大
   v2.3.10 切換熱鍵改為 Ctrl+`（原 Ctrl+9）
   v2.3.9  右鍵開關切換熱鍵（預設 Ctrl+9）、右下角狀態通知

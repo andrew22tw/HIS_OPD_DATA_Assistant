@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <!-- Lab Data Formatter Website -->
 <!-- Last Modified: 2026-04-20 (UTC+8) -->
-<!-- Version: v2.3.12 -->
+<!-- Version: v2.3.13 -->
 <!-- Design: Apple-inspired, light/dark mode -->
 <html lang="zh-TW">
 <head>
@@ -285,7 +285,7 @@ td{padding:10px 14px;border-bottom:1px solid var(--border);}
   <div class="hero-inner">
     <h1>Lab Data Formatter</h1>
     <p class="sub">檢驗報告快速整理工具</p>
-    <p class="sub2">右鍵擷取 . Ctrl+V 貼上 . Ctrl+` 開關切換 . 也支援 Ctrl+A/C → Ctrl+3 . v2.3.12</p>
+    <p class="sub2">右鍵擷取 . Ctrl+V 貼上 . Ctrl+` 開關切換 . 也支援 Ctrl+A/C → Ctrl+3 . v2.3.13</p>
     <div class="badges">
       <span class="badge"><span class="badge-dot"></span>最新版本 <span id="latestVer">...</span></span>
       <span class="badge">更新 <span id="latestDate">...</span></span>
@@ -297,7 +297,7 @@ td{padding:10px 14px;border-bottom:1px solid var(--border);}
       <span class="src src-p">健保雲端藥歷</span>
     </div>
     <div class="dl-bar">
-      <a class="dl-btn dl-main" id="dlExe" href="LabFormatter_v2.3.12.exe" download="LabFormatter_v2.3.12.exe" onclick="incrementDl(event)">⬇ 下載 LabFormatter_v2.3.12.exe</a>
+      <a class="dl-btn dl-main" id="dlExe" href="LabFormatter_v2.3.13.exe" download="LabFormatter_v2.3.13.exe" onclick="incrementDl(event)">⬇ 下載 LabFormatter_v2.3.13.exe</a>
       <a class="dl-btn dl-sub" id="dlReadme" href="readme.txt" download="readme.txt">📄 readme.txt</a>
     </div>
   </div>
@@ -477,13 +477,15 @@ Febuxostat  Forliton F.C. Tablets 80mg  QDPC  28顆/28天</div>
   <h2 class="sec-title">更新紀錄</h2>
   <div class="cl-item">
     <div class="cl-head">
-      <span class="cl-ver">v2.3.12</span><span class="cl-date">2026-04-25</span>
+      <span class="cl-ver">v2.3.13</span><span class="cl-date">2026-04-25</span>
       <span class="cl-tag cl-tag-latest">Latest</span>
     </div>
     <ul class="cl-list">
-      <li>🔬 支援 TSH / Free T4 甲狀腺功能報告擷取，輸出格式：<code>TSH/FT4:0.055/1.11</code></li>
-      <li>🐛 修正數值尾零：<code>1.110</code> → <code>1.11</code>，<code>2.0</code> → <code>2</code></li>
-      <li>🔧 設定相容性：升級後自動補入新預設項目，不需重設設定</li>
+      <li>💊 新增 ORD 慢箋 / 急性處方解析：複製整份處方單 → 自動提煉藥名+劑量+用法</li>
+      <li>📋 輸出格式：<code>Glimepiride (2) 1# QD, L-Thyroxine (100) 1# QD, ...</code></li>
+      <li>🔬 支援 TSH / Free T4 甲狀腺功能報告擷取：<code>TSH/FT4:0.055/1.11</code></li>
+      <li>🐛 修正數值尾零：<code>1.110</code> → <code>1.11</code></li>
+      <li>🔧 設定升級後自動補入新預設項目（TSH / FT4 等）</li>
     </ul>
   </div>
   <div class="cl-item">
@@ -581,7 +583,7 @@ function toggleTheme(){
 /* ── Readme ── */
 var readmeText=[
 "================================================================",
-"  HIS OPD Data Assistant v2.3.12 使用說明",
+"  HIS OPD Data Assistant v2.3.13 使用說明",
 "  作者：吳岳霖醫師  DAL93"+String.fromCharCode(64)+"tpech.gov.tw",
 "================================================================",
 "","【簡介】","",
@@ -620,13 +622,13 @@ function copyReadme(){
 
 /* ── Download links (GitHub Releases — 可計數下載次數) ── */
 (function(){
-  var rel="https://github.com/andrew22tw/HIS_OPD_DATA_Assistant/releases/download/v2.3.12/";
+  var rel="https://github.com/andrew22tw/HIS_OPD_DATA_Assistant/releases/download/v2.3.13/";
   var pages="https://andrew22tw.github.io/HIS_OPD_DATA_Assistant/";
   var dlE=document.getElementById("dlExe"),dlR=document.getElementById("dlReadme");
   var v=document.getElementById("latestVer"),d=document.getElementById("latestDate");
-  dlE.href=rel+"LabFormatter_v2.3.12.exe";
+  dlE.href=rel+"LabFormatter_v2.3.13.exe";
   dlR.href=pages+"readme.txt";
-  v.textContent="v2.3.12"; d.textContent="2026-04-25";
+  v.textContent="v2.3.13"; d.textContent="2026-04-25";
 })();
 
 /* ── Download counter (GitHub Releases API — 跨裝置真實計數) ── */
