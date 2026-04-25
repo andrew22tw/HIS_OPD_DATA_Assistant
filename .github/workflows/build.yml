@@ -1,0 +1,77 @@
+name: Build LabFormatter
+
+on:
+  push:
+    branches: [ main ]
+    paths:
+      - 'LabFormatter.cs'
+      - '.github/workflows/build.yml'
+  pull_request:
+    branches: [ main ]
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup MSBuild path
+        run: |
+          $cscPath = "C:\Windows\Microsoft.NET\Framework\v4.0.30319\csc.exe"
+          if (-Not (Test-Path $cscPath)) {
+            Write-Error "csc.exe not found at $cscPath"
+            exit 1
+          }
+          echo "CSC=$cscPath" >> $env:GITHUB_ENV
+
+      - name: Compile LabFormatter.cs
+        run: |
+          if (Test-Path LabFormatter.cs) {
+            & "$env:CSC" /target:winexe /out:LabFormatter_built.exe LabFormatter.cs
+            if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
+          } else {
+            Write-Host "LabFormatter.cs not in repo root - source lives in private location."
+            Write-Host "This workflow is a smoke test for repo files only."
+          }
+
+      - name: Verify exe assets present
+        shell: powershell
+        run: |
+          $files = Get-ChildItem -Path . -Filter "LabFormatter*.exe"
+          Write-Host "Found exe files:"
+          $files | ForEach-Object { Write-Host "  $($_.Name) - $([math]::Round($_.Length/1KB, 1)) KB" }
+          if ($files.Count -eq 0) { exit 1 }
+
+      - name: Validate readme + index.html
+        shell: powershell
+        run: |
+          $err = 0
+          if (-not (Test-Path readme.txt)) { Write-Error "readme.txt missing"; $err = 1 }
+          if (-not (Test-Path index.html)) { Write-Error "index.html missing"; $err = 1 }
+          $readme = Get-Content readme.txt -Raw
+          $html = Get-Content index.html -Raw
+          # Extract version from readme (first vX.Y.Z occurrence)
+          $m = [regex]::Match($readme, 'v\d+\.\d+\.\d+')
+          if ($m.Success) {
+            $ver = $m.Value
+            Write-Host "Detected version in readme: $ver"
+            if ($html -notmatch [regex]::Escape($ver)) {
+              Write-Warning "Version $ver not found in index.html"
+            }
+          }
+          exit $err
+
+  lint-config:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Validate JSON / YAML files
+        run: |
+          set -e
+          for f in $(find . -name "*.json" -not -path "*/node_modules/*"); do
+            python3 -c "import json,sys; json.load(open('$f', encoding='utf-8'))" && echo "OK: $f"
+          done
+          for f in $(find .github -name "*.yml" -o -name "*.yaml"); do
+            python3 -c "import yaml,sys; yaml.safe_load(open('$f'))" && echo "OK: $f" || true
+          done

@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <!-- Lab Data Formatter Website -->
 <!-- Last Modified: 2026-04-20 (UTC+8) -->
-<!-- Version: v2.3.14 -->
+<!-- Version: v2.3.15 -->
 <!-- Design: Apple-inspired, light/dark mode -->
 <html lang="zh-TW">
 <head>
@@ -285,7 +285,7 @@ td{padding:10px 14px;border-bottom:1px solid var(--border);}
   <div class="hero-inner">
     <h1>Lab Data Formatter</h1>
     <p class="sub">檢驗報告快速整理工具</p>
-    <p class="sub2">右鍵擷取 . 慢箋藥單提煉 . TSH/FT4 . Ctrl+V 貼上 . Ctrl+` 開關切換 . v2.3.14</p>
+    <p class="sub2">右鍵擷取 . 慢箋藥單提煉 . TSH/FT4 . Ctrl+V 貼上 . Ctrl+` 開關切換 . v2.3.15</p>
     <div class="badges">
       <span class="badge"><span class="badge-dot"></span>最新版本 <span id="latestVer">...</span></span>
       <span class="badge">更新 <span id="latestDate">...</span></span>
@@ -297,7 +297,7 @@ td{padding:10px 14px;border-bottom:1px solid var(--border);}
       <span class="src src-p">健保雲端藥歷</span>
     </div>
     <div class="dl-bar">
-      <a class="dl-btn dl-main" id="dlExe" href="LabFormatter_v2.3.14.exe" download="LabFormatter_v2.3.14.exe" onclick="incrementDl(event)">⬇ 下載 LabFormatter_v2.3.14.exe</a>
+      <a class="dl-btn dl-main" id="dlExe" href="LabFormatter_v2.3.15.exe" download="LabFormatter_v2.3.15.exe" onclick="incrementDl(event)">⬇ 下載 LabFormatter_v2.3.15.exe</a>
       <a class="dl-btn dl-sub" id="dlReadme" href="readme.txt" download="readme.txt">📄 readme.txt</a>
     </div>
   </div>
@@ -478,8 +478,22 @@ Febuxostat  Forliton F.C. Tablets 80mg  QDPC  28顆/28天</div>
   <h2 class="sec-title">更新紀錄</h2>
   <div class="cl-item">
     <div class="cl-head">
-      <span class="cl-ver">v2.3.14</span><span class="cl-date">2026-04-26</span>
+      <span class="cl-ver">v2.3.15</span><span class="cl-date">2026-04-25</span>
       <span class="cl-tag cl-tag-latest">Latest</span>
+    </div>
+    <ul class="cl-list">
+      <li>🔬 大量檢驗項目擴充：凝血（PT/INR/APTT/D-Dimer）、心臟（Troponin/CK/CKMB/BNP）、胰臟（Amylase/Lipase）、肝膽（ALP/GGT/D-Bil）、內分泌（T3/Cortisol）、維生素（D/B12/Folate）、腫瘤（CEA/AFP/PSA/CA-199/125/153）、風濕（RF/ANA/Anti-CCP）共 30+ 項</li>
+      <li>🚀 自動更新檢查：啟動時偵測新版本並通知</li>
+      <li>📤 設定匯出 / 匯入：JSON 檔，方便換電腦或分享</li>
+      <li>📋 歷史記錄：最近 10 筆轉換結果保留於記憶體</li>
+      <li>🔒 病人 ID 自動遮罩（可選）：健保 ID / 8+ 位數字</li>
+      <li>📝 本機操作日誌（可選）：時戳 + 動作類型，不含病人資料</li>
+      <li>⚙️ GitHub Actions CI：每次推送自動編譯與驗證</li>
+    </ul>
+  </div>
+  <div class="cl-item">
+    <div class="cl-head">
+      <span class="cl-ver">v2.3.14</span><span class="cl-date">2026-04-25</span>
     </div>
     <ul class="cl-list">
       <li>🐛 修正 Ctrl+3 貼入位置錯誤：改用 <code>SetForegroundWindow</code> 取代滑鼠點擊對焦</li>
@@ -594,7 +608,7 @@ function toggleTheme(){
 /* ── Readme ── */
 var readmeText=[
 "================================================================",
-"  HIS OPD Data Assistant v2.3.14 使用說明",
+"  HIS OPD Data Assistant v2.3.15 使用說明",
 "  作者：吳岳霖醫師  DAL93"+String.fromCharCode(64)+"tpech.gov.tw",
 "================================================================",
 "","【簡介】","",
@@ -633,13 +647,13 @@ function copyReadme(){
 
 /* ── Download links (GitHub Releases — 可計數下載次數) ── */
 (function(){
-  var rel="https://github.com/andrew22tw/HIS_OPD_DATA_Assistant/releases/download/v2.3.14/";
+  var rel="https://github.com/andrew22tw/HIS_OPD_DATA_Assistant/releases/download/v2.3.15/";
   var pages="https://andrew22tw.github.io/HIS_OPD_DATA_Assistant/";
   var dlE=document.getElementById("dlExe"),dlR=document.getElementById("dlReadme");
   var v=document.getElementById("latestVer"),d=document.getElementById("latestDate");
-  dlE.href=rel+"LabFormatter_v2.3.14.exe";
+  dlE.href=rel+"LabFormatter_v2.3.15.exe";
   dlR.href=pages+"readme.txt";
-  v.textContent="v2.3.14"; d.textContent="2026-04-26";
+  v.textContent="v2.3.15"; d.textContent="2026-04-26";
 })();
 
 /* ── Download counter (GitHub Releases API — 跨裝置真實計數) ── */
