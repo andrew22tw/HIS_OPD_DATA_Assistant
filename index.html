@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <!-- Lab Data Formatter Website -->
 <!-- Last Modified: 2026-04-20 (UTC+8) -->
-<!-- Version: v2.3.13 -->
+<!-- Version: v2.3.14 -->
 <!-- Design: Apple-inspired, light/dark mode -->
 <html lang="zh-TW">
 <head>
@@ -285,7 +285,7 @@ td{padding:10px 14px;border-bottom:1px solid var(--border);}
   <div class="hero-inner">
     <h1>Lab Data Formatter</h1>
     <p class="sub">檢驗報告快速整理工具</p>
-    <p class="sub2">右鍵擷取 . Ctrl+V 貼上 . Ctrl+` 開關切換 . 也支援 Ctrl+A/C → Ctrl+3 . v2.3.13</p>
+    <p class="sub2">右鍵擷取 . 慢箋藥單提煉 . TSH/FT4 . Ctrl+V 貼上 . Ctrl+` 開關切換 . v2.3.14</p>
     <div class="badges">
       <span class="badge"><span class="badge-dot"></span>最新版本 <span id="latestVer">...</span></span>
       <span class="badge">更新 <span id="latestDate">...</span></span>
@@ -297,7 +297,7 @@ td{padding:10px 14px;border-bottom:1px solid var(--border);}
       <span class="src src-p">健保雲端藥歷</span>
     </div>
     <div class="dl-bar">
-      <a class="dl-btn dl-main" id="dlExe" href="LabFormatter_v2.3.13.exe" download="LabFormatter_v2.3.13.exe" onclick="incrementDl(event)">⬇ 下載 LabFormatter_v2.3.13.exe</a>
+      <a class="dl-btn dl-main" id="dlExe" href="LabFormatter_v2.3.14.exe" download="LabFormatter_v2.3.14.exe" onclick="incrementDl(event)">⬇ 下載 LabFormatter_v2.3.14.exe</a>
       <a class="dl-btn dl-sub" id="dlReadme" href="readme.txt" download="readme.txt">📄 readme.txt</a>
     </div>
   </div>
@@ -399,10 +399,11 @@ Febuxostat  Forliton F.C. Tablets 80mg  QDPC  28顆/28天</div>
     <div class="feat"><div class="feat-icon">🖱</div><div class="feat-name">右鍵一鍵擷取<span class="feat-tag">New</span></div><div class="feat-desc">右鍵點擊報告視窗，自動擷取整理，Ctrl+V 即可貼上</div></div>
     <div class="feat"><div class="feat-icon">⚡</div><div class="feat-name">即時轉換</div><div class="feat-desc">Ctrl+A/C 複製也自動整理，Ctrl+3 一鍵貼上</div></div>
     <div class="feat"><div class="feat-icon">☁️</div><div class="feat-name">健保雲端檢驗<span class="feat-tag">New</span></div><div class="feat-desc">輸出全部項目，日期精確到年月日 YYYMMDD</div></div>
-    <div class="feat"><div class="feat-icon">💊</div><div class="feat-name">雲端藥歷整理<span class="feat-tag">New</span></div><div class="feat-desc">學名顯示、複方藥 / 連接、60 秒自動過期</div></div>
-    <div class="feat"><div class="feat-icon">📋</div><div class="feat-name">多份合併</div><div class="feat-desc">15 秒內連續複製 ORD 報告自動合併</div></div>
-    <div class="feat"><div class="feat-icon">🩸</div><div class="feat-name">血液/尿液分離</div><div class="feat-desc">自動區分檢體來源，不會混淆</div></div>
-    <div class="feat"><div class="feat-icon">🎯</div><div class="feat-name">eGFR 附在 Cr 後</div><div class="feat-desc">BUN/Cr:61/2.42(24)，四捨五入整數</div></div>
+    <div class="feat"><div class="feat-icon">💊</div><div class="feat-name">雲端藥歷整理</div><div class="feat-desc">學名顯示、複方藥 / 連接、60 秒自動過期</div></div>
+    <div class="feat"><div class="feat-icon">📋</div><div class="feat-name">ORD 慢箋/急性處方<span class="feat-tag">New</span></div><div class="feat-desc">複製整份處方單，自動提煉學名 (劑量) 用量 頻率</div></div>
+    <div class="feat"><div class="feat-icon">🔬</div><div class="feat-name">TSH / Free T4<span class="feat-tag">New</span></div><div class="feat-desc">甲狀腺功能報告，輸出 TSH/FT4:0.055/1.11</div></div>
+    <div class="feat"><div class="feat-icon">🩸</div><div class="feat-name">多份合併 + 血液/尿液分離</div><div class="feat-desc">15 秒內連續複製自動合併，自動區分檢體來源</div></div>
+    <div class="feat"><div class="feat-icon">🎯</div><div class="feat-name">eGFR 附在 Cr 後</div><div class="feat-desc">BUN/Cr:61/2.42(24)，Iron/TIBC/Ferritin:61/230/425</div></div>
     <div class="feat"><div class="feat-icon">⚙️</div><div class="feat-name">自訂熱鍵</div><div class="feat-desc">Ctrl+1~4 可自訂快貼、報告、範本</div></div>
     <div class="feat"><div class="feat-icon">🔒</div><div class="feat-name">隱私安全</div><div class="feat-desc">不會上網，病人資料不外洩</div></div>
   </div>
@@ -477,15 +478,25 @@ Febuxostat  Forliton F.C. Tablets 80mg  QDPC  28顆/28天</div>
   <h2 class="sec-title">更新紀錄</h2>
   <div class="cl-item">
     <div class="cl-head">
-      <span class="cl-ver">v2.3.13</span><span class="cl-date">2026-04-25</span>
+      <span class="cl-ver">v2.3.14</span><span class="cl-date">2026-04-26</span>
       <span class="cl-tag cl-tag-latest">Latest</span>
     </div>
     <ul class="cl-list">
+      <li>🐛 修正 Ctrl+3 貼入位置錯誤：改用 <code>SetForegroundWindow</code> 取代滑鼠點擊對焦</li>
+      <li>🔬 Iron / TIBC / Ferritin 支援冒號格式 <code>TIBC:229.80</code> 及小寫名稱</li>
+      <li>🐛 修正四捨五入：<code>60.50</code> → <code>61</code>（AwayFromZero，非 Banker's rounding）</li>
+      <li>🔬 所有檢驗項目名稱改大小寫不敏感（<code>iron</code>/<code>ferritin</code> 等小寫亦可識別）</li>
+    </ul>
+  </div>
+  <div class="cl-item">
+    <div class="cl-head">
+      <span class="cl-ver">v2.3.13</span><span class="cl-date">2026-04-25</span>
+    </div>
+    <ul class="cl-list">
       <li>💊 新增 ORD 慢箋 / 急性處方解析：複製整份處方單 → 自動提煉藥名+劑量+用法</li>
-      <li>📋 輸出格式：<code>Glimepiride (2) 1# QD, L-Thyroxine (100) 1# QD, ...</code></li>
-      <li>🔬 支援 TSH / Free T4 甲狀腺功能報告擷取：<code>TSH/FT4:0.055/1.11</code></li>
-      <li>🐛 修正數值尾零：<code>1.110</code> → <code>1.11</code></li>
-      <li>🔧 設定升級後自動補入新預設項目（TSH / FT4 等）</li>
+      <li>🔬 TSH / FT4 甲狀腺功能報告擷取：<code>TSH/FT4:0.055/1.11</code></li>
+      <li>🐛 數值尾零修正：<code>1.110</code> → <code>1.11</code></li>
+      <li>🔧 設定升級後自動補入新預設項目</li>
     </ul>
   </div>
   <div class="cl-item">
@@ -583,7 +594,7 @@ function toggleTheme(){
 /* ── Readme ── */
 var readmeText=[
 "================================================================",
-"  HIS OPD Data Assistant v2.3.13 使用說明",
+"  HIS OPD Data Assistant v2.3.14 使用說明",
 "  作者：吳岳霖醫師  DAL93"+String.fromCharCode(64)+"tpech.gov.tw",
 "================================================================",
 "","【簡介】","",
@@ -622,13 +633,13 @@ function copyReadme(){
 
 /* ── Download links (GitHub Releases — 可計數下載次數) ── */
 (function(){
-  var rel="https://github.com/andrew22tw/HIS_OPD_DATA_Assistant/releases/download/v2.3.13/";
+  var rel="https://github.com/andrew22tw/HIS_OPD_DATA_Assistant/releases/download/v2.3.14/";
   var pages="https://andrew22tw.github.io/HIS_OPD_DATA_Assistant/";
   var dlE=document.getElementById("dlExe"),dlR=document.getElementById("dlReadme");
   var v=document.getElementById("latestVer"),d=document.getElementById("latestDate");
-  dlE.href=rel+"LabFormatter_v2.3.13.exe";
+  dlE.href=rel+"LabFormatter_v2.3.14.exe";
   dlR.href=pages+"readme.txt";
-  v.textContent="v2.3.13"; d.textContent="2026-04-25";
+  v.textContent="v2.3.14"; d.textContent="2026-04-26";
 })();
 
 /* ── Download counter (GitHub Releases API — 跨裝置真實計數) ── */

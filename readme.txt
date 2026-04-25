@@ -1,5 +1,5 @@
 ================================================================
-  HIS OPD Data Assistant v2.3.13 使用說明
+  HIS OPD Data Assistant v2.3.14 使用說明
   (原名 Lab Data Formatter)
   作者：吳岳霖醫師  DAL93@tpech.gov.tw
 ================================================================
@@ -43,14 +43,24 @@
   7. 健保雲端藥歷整理
      Amlodipine(5)QD, Pitavastatin(2)QD, Aspirin(100)QD
 
-  8. Ctrl+3 / 貼上鍵 自動對焦
-     先在游標位置模擬點擊，確保目標視窗有焦點後再貼上。
+  8. ORD 慢箋 / 急性處方提煉
+     複製整份處方單（含 SOAP 筆記也沒關係），程式自動偵測
+     並提煉藥名+劑量+用法，輸出格式：
+     Glimepiride (2) 1# QD, L-Thyroxine (100) 1# QD, Pitavastatin (2) 1# QD
+
+  9. TSH / Free T4 甲狀腺功能報告
+     ORD 或含 TSH/Free T4 的報告，輸出格式：
+     TSH/FT4:0.055/1.11（正確處理 L/H 異常旗標）
+
+  10. Ctrl+3 / 貼上鍵 精確對焦
+      按下熱鍵時立即記錄目標視窗，用 SetForegroundWindow
+      恢復焦點後再貼上，不受游標移動影響。
 
 ================================================================
 
 【安裝方式】
 
-  1. 從網頁下載 LabFormatter_v2.3.13.exe
+  1. 從網頁下載 LabFormatter_v2.3.14.exe
      下載網址：https://andrew22tw.github.io/HIS_OPD_DATA_Assistant/
   2. 放在桌面或任何位置
   3. 雙擊啟動，圖示出現在右下角系統匣
@@ -209,6 +219,7 @@
 
 【更新紀錄】
 
+  v2.3.14 修正 Ctrl+3 貼入位置錯誤、Iron/TIBC 冒號格式支援、四捨五入修正、大小寫不敏感
   v2.3.13 ORD 慢箋/急性處方解析（複製藥單自動提煉藥名劑量用法）、TSH/FT4、數值修正
   v2.3.11 UI 更新：Apple design system 配色、儲存按鈕改 Apple Blue、字體放大
   v2.3.10 切換熱鍵改為 Ctrl+`（原 Ctrl+9）
