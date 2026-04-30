@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <!-- Lab Data Formatter Website -->
 <!-- Last Modified: 2026-04-20 (UTC+8) -->
-<!-- Version: v2.3.17 -->
+<!-- Version: v2.3.18 -->
 <!-- Design: Apple-inspired, light/dark mode -->
 <html lang="zh-TW">
 <head>
@@ -285,7 +285,7 @@ td{padding:10px 14px;border-bottom:1px solid var(--border);}
   <div class="hero-inner">
     <h1>Lab Data Formatter</h1>
     <p class="sub">檢驗報告快速整理工具</p>
-    <p class="sub2">右鍵擷取 . 慢箋藥單提煉 . TSH/FT4 . Ctrl+V 貼上 . Ctrl+` 開關切換 . v2.3.17</p>
+    <p class="sub2">右鍵擷取 . 慢箋藥單提煉 . TSH/FT4 . Ctrl+V 貼上 . Ctrl+` 開關切換 . v2.3.18</p>
     <div class="badges">
       <span class="badge"><span class="badge-dot"></span>最新版本 <span id="latestVer">...</span></span>
       <span class="badge">更新 <span id="latestDate">...</span></span>
@@ -297,7 +297,7 @@ td{padding:10px 14px;border-bottom:1px solid var(--border);}
       <span class="src src-p">健保雲端藥歷</span>
     </div>
     <div class="dl-bar">
-      <a class="dl-btn dl-main" id="dlExe" href="LabFormatter_v2.3.17.exe" download="LabFormatter_v2.3.17.exe" onclick="incrementDl(event)">⬇ 下載 LabFormatter_v2.3.17.exe</a>
+      <a class="dl-btn dl-main" id="dlExe" href="LabFormatter_v2.3.18.exe" download="LabFormatter_v2.3.18.exe" onclick="incrementDl(event)">⬇ 下載 LabFormatter_v2.3.18.exe</a>
       <a class="dl-btn dl-sub" id="dlReadme" href="readme.txt" download="readme.txt">📄 readme.txt</a>
     </div>
   </div>
@@ -478,8 +478,17 @@ Febuxostat  Forliton F.C. Tablets 80mg  QDPC  28顆/28天</div>
   <h2 class="sec-title">更新紀錄</h2>
   <div class="cl-item">
     <div class="cl-head">
-      <span class="cl-ver">v2.3.17</span><span class="cl-date">2026-04-29</span>
+      <span class="cl-ver">v2.3.18</span><span class="cl-date">2026-04-29</span>
       <span class="cl-tag cl-tag-latest">Latest</span>
+    </div>
+    <ul class="cl-list">
+      <li>🩺 新增「診斷模式」（系統匣右鍵 → 診斷模式）：即時顯示 3 個 buffer 筆數、合併視窗倒數、最近 20 筆剪貼簿事件、可手動清空 buffer / 複製目前結果</li>
+      <li>🐛 修正多筆模式 boundary regex 與 ExtractDate 不一致：冒號改為可有可無（與 RxDate 對齊）</li>
+    </ul>
+  </div>
+  <div class="cl-item">
+    <div class="cl-head">
+      <span class="cl-ver">v2.3.17</span><span class="cl-date">2026-04-29</span>
     </div>
     <ul class="cl-list">
       <li>🐛 修正 <code>Mg</code> 在 IgnoreCase 下誤匹配單位 <code>mg/dl</code> 的 bug（會導致無中生有的 <code>Mg:70</code>）</li>
@@ -629,7 +638,7 @@ function toggleTheme(){
 /* ── Readme ── */
 var readmeText=[
 "================================================================",
-"  HIS OPD Data Assistant v2.3.17 使用說明",
+"  HIS OPD Data Assistant v2.3.18 使用說明",
 "  作者：吳岳霖醫師  DAL93"+String.fromCharCode(64)+"tpech.gov.tw",
 "================================================================",
 "","【簡介】","",
@@ -668,13 +677,13 @@ function copyReadme(){
 
 /* ── Download links (GitHub Releases — 可計數下載次數) ── */
 (function(){
-  var rel="https://github.com/andrew22tw/HIS_OPD_DATA_Assistant/releases/download/v2.3.17/";
+  var rel="https://github.com/andrew22tw/HIS_OPD_DATA_Assistant/releases/download/v2.3.18/";
   var pages="https://andrew22tw.github.io/HIS_OPD_DATA_Assistant/";
   var dlE=document.getElementById("dlExe"),dlR=document.getElementById("dlReadme");
   var v=document.getElementById("latestVer"),d=document.getElementById("latestDate");
-  dlE.href=rel+"LabFormatter_v2.3.17.exe";
+  dlE.href=rel+"LabFormatter_v2.3.18.exe";
   dlR.href=pages+"readme.txt";
-  v.textContent="v2.3.17"; d.textContent="2026-04-26";
+  v.textContent="v2.3.18"; d.textContent="2026-04-26";
 })();
 
 /* ── Download counter (GitHub Releases API — 跨裝置真實計數) ── */
