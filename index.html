@@ -329,7 +329,7 @@ td {
 <div class="hero">
   <div class="hero-content">
     <h1>Lab Data Formatter</h1>
-    <p class="subtitle">檢驗報告快速整理工具 — Ctrl+C 擷取，Ctrl+3 貼上</p>
+    <p class="subtitle">檢驗報告快速整理工具 — 右鍵擷取 / Ctrl+C，Ctrl+3 貼上</p>
     <p class="subtitle2">v2.3.19 CBC 優先分組、採檢時間分組、20 秒合併視窗</p>
     <div class="version-bar">
       <span class="badge badge-version"><span class="badge-dot"></span>最新版本 <span id="latestVer">載入中...</span></span>
@@ -384,6 +384,29 @@ td {
 <!-- ══════ Usage Flow ══════ -->
 <div class="section" style="padding-bottom:20px;">
   <h2 class="section-title">使用方式</h2>
+  <h3 style="font-size:1.05rem;font-weight:600;margin-bottom:12px;color:var(--accent2);">方法一：右鍵擷取（推薦）</h3>
+  <div style="background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:24px 28px;margin-bottom:16px;">
+    <div style="display:flex;gap:16px;flex-wrap:wrap;justify-content:center;align-items:center;">
+      <div style="text-align:center;flex:1;min-width:180px;">
+        <div style="font-size:2rem;margin-bottom:6px;">1</div>
+        <div style="font-size:1.1rem;font-weight:700;color:var(--accent2);">滑鼠右鍵</div>
+        <div style="font-size:0.85rem;color:var(--text2);margin-top:4px;">在報告視窗上按右鍵<br>程式自動讀取並整理<br>無畫面閃動</div>
+      </div>
+      <div style="font-size:1.5rem;color:var(--accent);">→</div>
+      <div style="text-align:center;flex:1;min-width:180px;">
+        <div style="font-size:2rem;margin-bottom:6px;">2</div>
+        <div style="font-size:1.1rem;font-weight:700;color:var(--accent2);">自動整理</div>
+        <div style="font-size:0.85rem;color:var(--text2);margin-top:4px;">圖示變綠，右下角預覽結果<br>結果自動寫入剪貼簿<br>20 秒內多次右鍵自動合併</div>
+      </div>
+      <div style="font-size:1.5rem;color:var(--accent);">→</div>
+      <div style="text-align:center;flex:1;min-width:180px;">
+        <div style="font-size:2rem;margin-bottom:6px;">3</div>
+        <div style="font-size:1.1rem;font-weight:700;color:var(--accent2);">Ctrl+V 貼上</div>
+        <div style="font-size:0.85rem;color:var(--text2);margin-top:4px;">切到病歷或筆記<br>直接 Ctrl+V 貼上<br>（或 Ctrl+3 備用）</div>
+      </div>
+    </div>
+  </div>
+  <h3 style="font-size:1.05rem;font-weight:600;margin-bottom:12px;color:var(--text2);">方法二：Ctrl+C 複製（傳統）</h3>
   <div style="background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:24px 28px;">
     <div style="display:flex;gap:16px;flex-wrap:wrap;justify-content:center;align-items:center;">
       <div style="text-align:center;flex:1;min-width:180px;">
@@ -412,44 +435,54 @@ td {
   <h2 class="section-title">功能特色</h2>
   <div class="features">
     <div class="feat">
+      <div class="feat-icon">🖱️</div>
+      <div class="feat-title">右鍵一鍵擷取</div>
+      <div class="feat-desc">在報告視窗上按右鍵，自動讀取並整理，無畫面閃動，Ctrl+V 直接貼上</div>
+    </div>
+    <div class="feat">
       <div class="feat-icon">⚡</div>
       <div class="feat-title">即時轉換</div>
-      <div class="feat-desc">Ctrl+A 全選 → Ctrl+C 複製，程式自動整理，Ctrl+3 貼上結果</div>
+      <div class="feat-desc">右鍵或 Ctrl+C 擷取，程式自動整理，支援雙軌操作</div>
+    </div>
+    <div class="feat">
+      <div class="feat-icon">📋</div>
+      <div class="feat-title">多份合併 + 採檢時間分組</div>
+      <div class="feat-desc">20 秒內連續擷取多份報告自動合併，依採檢時間分組獨立成行</div>
+    </div>
+    <div class="feat">
+      <div class="feat-icon">🩺</div>
+      <div class="feat-title">CBC 優先分組</div>
+      <div class="feat-desc">WBC/Hb/PLT 自動分組排在最前面，一目了然</div>
     </div>
     <div class="feat">
       <div class="feat-icon">☁️</div>
-      <div class="feat-title">健保雲端檢驗 <span class="feat-new">New</span></div>
+      <div class="feat-title">健保雲端檢驗</div>
       <div class="feat-desc">自動解析健保雲端網站的檢驗報告，輸出相同的濃縮格式</div>
     </div>
     <div class="feat">
       <div class="feat-icon">💊</div>
-      <div class="feat-title">雲端藥歷整理 <span class="feat-new">New</span></div>
-      <div class="feat-desc">自動解析雲端藥歷，以學名顯示、超過2顆標示N#、橫式一行輸出</div>
+      <div class="feat-title">雲端藥歷 / ORD 處方</div>
+      <div class="feat-desc">自動解析藥歷及 ORD 慢箋處方，學名顯示、劑量+用法、超過1顆標示N#</div>
     </div>
     <div class="feat">
-      <div class="feat-icon">📋</div>
-      <div class="feat-title">多份合併</div>
-      <div class="feat-desc">20 秒內連續 Ctrl+C 複製多份報告（生化、CBC、尿液、藥歷），自動合併</div>
+      <div class="feat-icon">🧮</div>
+      <div class="feat-title">衍生公式 + 臨床判讀</div>
+      <div class="feat-desc">自動計算 HOMA-IR、eLDL、GA→HbA1c；FIB-4/NT-proBNP/ACR 陰性判讀</div>
     </div>
     <div class="feat">
       <div class="feat-icon">🩸</div>
       <div class="feat-title">血液/尿液分離</div>
-      <div class="feat-desc">自動區分檢體來源，血液 Cr 和尿液 Cr 不會混淆</div>
+      <div class="feat-desc">自動區分檢體來源，血液 Cr 和尿液 ACR/PCR 不會混淆</div>
     </div>
     <div class="feat">
-      <div class="feat-icon">🎨</div>
-      <div class="feat-title">Apple-style UI <span class="feat-new">New</span></div>
-      <div class="feat-desc">全新深色介面，毛玻璃效果、圓角設計，Win11 Mica 支援</div>
+      <div class="feat-icon">🔒</div>
+      <div class="feat-title">隱私安全</div>
+      <div class="feat-desc">不連網、免安裝，所有處理皆在本機記憶體完成，病人資料不外洩</div>
     </div>
     <div class="feat">
       <div class="feat-icon">⚙️</div>
-      <div class="feat-title">自訂熱鍵</div>
-      <div class="feat-desc">Ctrl+1~4 可自訂為快貼文字、報告整理、範本套用</div>
-    </div>
-    <div class="feat">
-      <div class="feat-icon">💾</div>
-      <div class="feat-title">極輕量</div>
-      <div class="feat-desc">exe 僅約 30KB，免安裝，下載即用</div>
+      <div class="feat-title">自訂熱鍵 + 設定匯出</div>
+      <div class="feat-desc">熱鍵、輸出項目可自訂，設定可匯出/匯入，方便換電腦或分享給同事</div>
     </div>
   </div>
 </div>
@@ -459,18 +492,19 @@ td {
   <h2 class="section-title">熱鍵說明</h2>
   <table>
     <tr><th>熱鍵</th><th>功能</th><th>說明</th></tr>
-    <tr><td><span class="kbd">Ctrl+A → Ctrl+C</span></td><td>擷取</td><td>全選+複製報告，程式自動整理</td></tr>
-    <tr><td><span class="kbd">Ctrl+3</span></td><td>貼上報告</td><td>貼上整理後的結果（檢驗+藥歷）</td></tr>
-    <tr><td><span class="kbd">Ctrl+0</span></td><td>開啟設定</td><td>編輯熱鍵、檢視結果</td></tr>
-    <tr><td><span class="kbd">Ctrl+1</span></td><td>自訂快貼 1</td><td>可設定常用文字片段</td></tr>
-    <tr><td><span class="kbd">Ctrl+2</span></td><td>自訂快貼 2</td><td>可設定常用文字片段</td></tr>
-    <tr><td><span class="kbd">Ctrl+4</span></td><td>自訂快貼 3</td><td>可設定常用文字片段</td></tr>
+    <tr><td><span class="kbd">滑鼠右鍵</span></td><td>一鍵擷取</td><td>讀取視窗資料+整理+寫入剪貼簿，Ctrl+V 貼上</td></tr>
+    <tr><td><span class="kbd">Ctrl+`</span></td><td>右鍵開關</td><td>快速切換右鍵擷取功能 開/關</td></tr>
+    <tr><td><span class="kbd">Ctrl+A → Ctrl+C</span></td><td>複製擷取</td><td>全選+複製報告，程式自動整理</td></tr>
+    <tr><td><span class="kbd">Ctrl+E</span></td><td>擷取鍵</td><td>一鍵全選+複製（可在設定中自訂）</td></tr>
+    <tr><td><span class="kbd">Ctrl+3</span></td><td>貼上報告</td><td>自動對焦目標視窗後貼上結果</td></tr>
+    <tr><td><span class="kbd">Ctrl+0</span></td><td>開啟設定</td><td>編輯熱鍵、輸出項目、右鍵設定</td></tr>
+    <tr><td><span class="kbd">Ctrl+1 ~ Ctrl+4</span></td><td>自訂快貼</td><td>可設定常用文字片段</td></tr>
   </table>
   <h3 style="margin-top:28px;font-size:1.1rem;font-weight:600;">系統匣燈泡</h3>
   <div class="tray-colors">
     <div class="tray-item"><div class="tray-dot yellow"></div><span>等待中</span></div>
-    <div class="tray-item"><div class="tray-dot green"></div><span>檢驗已轉換</span></div>
-    <div class="tray-item"><div class="tray-dot blue"></div><span>藥歷已整理</span></div>
+    <div class="tray-item"><div class="tray-dot blue"></div><span>右鍵擷取中</span></div>
+    <div class="tray-item"><div class="tray-dot green"></div><span>已轉換（可貼上）</span></div>
     <div class="tray-item"><div class="tray-dot red"></div><span>錯誤</span></div>
   </div>
 </div>
@@ -597,78 +631,54 @@ td {
 <script>
 var readmeText = [
 "================================================================",
-"  Lab Data Formatter v2.3.19 使用說明",
+"  HIS OPD Data Assistant v2.3.19 使用說明",
+"  (原名 Lab Data Formatter)",
 "  作者：吳岳霖醫師  DAL93"+String.fromCharCode(64)+"tpech.gov.tw",
 "================================================================",
 "",
 "【簡介】",
 "",
-"  Lab Data Formatter 是一個常駐系統匣的小工具，",
-"  能自動擷取醫院檢驗報告文字，轉換成簡潔格式，",
-"  方便貼到病歷或筆記中。",
+"  HIS OPD Data Assistant 是一個常駐系統匣的小工具，",
+"  能自動整理醫院 ORD 系統及健保雲端的檢驗報告與藥歷資料，",
+"  轉換成簡潔格式，方便貼到病歷或筆記中。",
 "",
-"  v2.3.19 CBC 優先分組、採檢時間分組、20 秒合併視窗。",
-"",
-"  例如把整頁報告轉成：",
-"  11503 WBC/Hb/PLT:6.97/15.8/184,AC:122(6.5),BUN/Cr:27.0/1.71,Na/K:140/3.6,ALT:25",
+"  免安裝、不連網、所有處理皆在本機記憶體完成。",
 "",
 "================================================================",
 "",
-"【安裝方式】",
+"【操作方式】",
 "",
-"  1. 從網頁下載 LabFormatter.exe",
-"  2. 放在任何位置（桌面即可）",
-"  3. 雙擊執行，圖示出現在右下角系統匣",
+"  方法一：右鍵擷取（推薦）",
 "",
-"  免安裝，下載即用。",
+"    1. 將滑鼠移到報告視窗上",
+"    2. 按滑鼠右鍵 → 程式自動讀取並整理",
+"    3. 圖示變綠，右下角彈出預覽視窗",
+"    4. 在要貼上的地方按 Ctrl+V",
+"    5. 如需合併多份報告，20 秒內在其他視窗再次右鍵",
 "",
-"================================================================",
+"  方法二：Ctrl+C 複製（傳統）",
 "",
-"【基本操作】",
-"",
-"  步驟一：將滑鼠移到 ORD 系統或健保雲端的報告上",
-"  步驟二：按 Ctrl+A 全選，再按 Ctrl+C 複製",
-"  步驟三：系統匣燈泡變色，右下角彈出預覽視窗",
-"  步驟四：切到要貼上的地方，按 Ctrl+3 貼上結果",
-"",
-"================================================================",
-"",
-"【支援的資料來源】",
-"",
-"  1. ORD 檢驗報告 → 濃縮格式（如 AC:122(6.5),BUN/Cr:27/1.71）",
-"  2. 健保雲端檢驗 → 同上濃縮格式",
-"  3. 健保雲端藥歷 → 條列式（藥名+劑量+用法+天數）",
-"",
-"  程式會自動辨識資料類型，不需手動切換。",
+"    1. 按 Ctrl+A 全選，再按 Ctrl+C 複製",
+"    2. 圖示變綠，右下角彈出預覽視窗",
+"    3. 20 秒內可繼續複製（自動合併）",
+"    4. 按 Ctrl+3 貼上結果",
 "",
 "================================================================",
 "",
 "【熱鍵說明】",
 "",
-"  Ctrl+A → Ctrl+C  全選+複製報告（程式自動整理）",
-"  Ctrl+3    貼上整理後的報告",
-"  Ctrl+0    開啟設定視窗",
-"  Ctrl+1    自訂快貼 1（可設定常用文字片段）",
-"  Ctrl+2    自訂快貼 2",
-"  Ctrl+4    自訂快貼 3",
-"",
-"================================================================",
-"",
-"【多份報告合併】",
-"",
-"  如果同一位病人有多份報告（例如生化、血液、尿液、藥歷），",
-"  只要在 20 秒內連續 Ctrl+C 複製，程式會自動合併。",
-"  不同採檢時間的報告會自動分組成獨立行。",
-"",
-"  程式會自動區分血液和尿液檢體：",
-"  - 血液項目只從「檢體 血液」擷取",
-"  - 尿液項目（ACR、PCR）只從「檢體 尿液」擷取",
+"  滑鼠右鍵         一鍵擷取（讀取+整理+寫入剪貼簿）",
+"  Ctrl+V           貼上右鍵擷取的結果",
+"  Ctrl+`           切換右鍵擷取 開/關",
+"  Ctrl+A → Ctrl+C  全選+複製報告（自動辨識整理）",
+"  Ctrl+E           擷取鍵（一鍵全選+複製，可自訂）",
+"  Ctrl+3           貼上鍵（自動對焦後貼上）",
+"  Ctrl+0           開啟設定視窗",
+"  Ctrl+1 ~ Ctrl+4  自訂快貼槽",
 "",
 "================================================================",
 "",
 "【輸出格式】",
-"",
-"  日期格式：民國年YYYMM（例如 11503 = 民國 115 年 3 月）",
 "",
 "  輸出順序：",
 "  WBC/Hb/PLT → AC(HbA1c) → BUN/Cr → Na/K → HCO3 → ALT/AST →",
@@ -677,12 +687,15 @@ var readmeText = [
 "  特殊規則：",
 "  - CBC 項目（WBC/Hb/PLT）自動分組，排在最前面",
 "  - AC 有 HbA1c 時合併：AC:122(6.5)",
-"  - eGFR 四捨五入到小數 1 位，附在 Cr 後：BUN/Cr:14.6/1.16(69.5)",
+"  - eGFR 四捨五入到小數 1 位：BUN/Cr:14.6/1.16(69.5)",
 "  - 多份報告按採檢時間分組，同次抽血合併",
 "  - 血液/尿液自動分離",
+"  - 衍生公式：HOMA-IR、eLDL、GA→HbA1c",
+"  - 臨床判讀：FIB-4(-)、NT-proBNP(-)、ACR:-",
 "",
 "================================================================",
 "",
+"  網站：https://andrew22tw.github.io/HIS_OPD_DATA_Assistant/",
 "  意見回饋：吳岳霖醫師  DAL93"+String.fromCharCode(64)+"tpech.gov.tw",
 "",
 "================================================================"
