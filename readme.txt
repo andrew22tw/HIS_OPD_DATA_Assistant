@@ -1,5 +1,5 @@
 ================================================================
-  HIS OPD Data Assistant v2.3.20 使用說明
+  HIS OPD Data Assistant v2.3.21 使用說明
   (原名 Lab Data Formatter)
   作者：吳岳霖醫師  DAL93@tpech.gov.tw
 ================================================================
@@ -126,7 +126,7 @@
 
 【安裝方式】
 
-  1. 從網頁下載 LabFormatter_v2.3.20.exe
+  1. 從網頁下載 LabFormatter_v2.3.21.exe
      下載網址：https://andrew22tw.github.io/HIS_OPD_DATA_Assistant/
   2. 放在桌面或任何位置
   3. 雙擊啟動，圖示出現在右下角系統匣
@@ -287,6 +287,8 @@
 
 【更新紀錄】
 
+  v2.3.21 雲端檢驗名稱大量擴充（Hb A1c/醣化血色素、eGFR(female/male)、
+          ACR(Urine)、腎絲球過濾率(新) 等），自動過濾尿液常規和健保署重複值
   v2.3.20 智慧日期顯示（同月不同日→YYYMMDD，否則→YYYMM）、
           雲端資料加 * 號標記、院內同樣套用智慧日期、
           修正雲端報告被誤判為 ORD 報告的 bug、雲端辨識移除 Tab 強制要求
