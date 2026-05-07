@@ -343,10 +343,10 @@ td {
       <span class="src-badge src-med">健保雲端藥歷</span>
     </div>
     <div class="download-bar">
-      <a class="dl-btn dl-btn-main" id="dlExe" href="https://github.com/andrew22tw/HIS_OPD_DATA_Assistant/releases/latest/download/LabFormatter.exe" onclick="incrementDl(event)">
+      <a class="dl-btn dl-btn-main" id="dlExe" href="https://andrew22tw.github.io/HIS_OPD_DATA_Assistant/LabFormatter.exe" onclick="incrementDl(event)">
         <span class="dl-icon">⬇</span>下載 LabFormatter.exe
       </a>
-      <a class="dl-btn dl-btn-sub" id="dlReadme" href="https://github.com/andrew22tw/HIS_OPD_DATA_Assistant/releases/latest/download/readme.txt">
+      <a class="dl-btn dl-btn-sub" id="dlReadme" href="https://andrew22tw.github.io/HIS_OPD_DATA_Assistant/readme.txt">
         <span class="dl-icon">📄</span>下載 readme.txt
       </a>
     </div>
@@ -707,8 +707,8 @@ function copyReadme() {
   var dlExe = document.getElementById("dlExe");
   var dlReadme = document.getElementById("dlReadme");
 
-  dlExe.href = "https://github.com/" + repo + "/releases/latest/download/LabFormatter.exe";
-  dlReadme.href = "https://github.com/" + repo + "/releases/latest/download/readme.txt";
+  dlExe.href = "https://andrew22tw.github.io/HIS_OPD_DATA_Assistant/LabFormatter.exe";
+  dlReadme.href = "https://andrew22tw.github.io/HIS_OPD_DATA_Assistant/readme.txt";
 
   fetch(apiLatest).then(function(r){
     if(!r.ok) throw new Error("API "+r.status);
@@ -718,12 +718,7 @@ function copyReadme() {
       verEl.textContent = data.tag_name;
       var d = new Date(data.published_at);
       dateEl.textContent = d.getFullYear()+"-"+String(d.getMonth()+1).padStart(2,"0")+"-"+String(d.getDate()).padStart(2,"0");
-      var assets = data.assets || [];
-      for(var i=0;i<assets.length;i++){
-        var name = assets[i].name.toLowerCase();
-        if(name.indexOf(".exe")>=0) dlExe.href = assets[i].browser_download_url;
-        if(name.indexOf("readme")>=0) dlReadme.href = assets[i].browser_download_url;
-      }
+      // 下載連結固定指向 GitHub Pages（免認證）
     }
   }).catch(function(){
     verEl.textContent = "v2.3.19";
