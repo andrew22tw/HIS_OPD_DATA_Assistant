@@ -1,5 +1,5 @@
 ================================================================
-  HIS OPD Data Assistant v2.3.26 使用說明
+  HIS OPD Data Assistant v2.3.27 使用說明
   (原名 Lab Data Formatter)
   作者：吳岳霖醫師  DAL93@tpech.gov.tw
 ================================================================
@@ -126,7 +126,7 @@
 
 【安裝方式】
 
-  1. 從網頁下載 LabFormatter_v2.3.26.exe
+  1. 從網頁下載 LabFormatter_v2.3.27.exe
      下載網址：https://andrew22tw.github.io/HIS_OPD_DATA_Assistant/
   2. 放在桌面或任何位置
   3. 雙擊啟動，圖示出現在右下角系統匣
@@ -287,7 +287,7 @@
 
 【更新紀錄】
 
-  v2.3.26 雲端同月份合併（同月檢驗自動整合為一行）、
+  v2.3.27 WBC 四捨五入到小數 1 位、雲端同月份合併（同月檢驗自動整合為一行）、
           完整支援台大 NHI MediCloud 格式（UN→BUN、CRE→Cr、T-CHO→TC）、
           智慧名稱清理（去除 [參考值] 和 (血液)/(尿液)）、新增 GLU 2hr PC/TP/Epi/S.G.、
           完整過濾 CBC differential、修正 NameMap 重複 key 啟動錯誤、
