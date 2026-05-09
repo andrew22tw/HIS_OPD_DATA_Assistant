@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <!-- Lab Data Formatter Website -->
-<!-- Last Modified: 2026-05-07 (UTC+8) -->
-<!-- Version: v2.3.22 -->
+<!-- Last Modified: 2026-05-08 (UTC+8) -->
+<!-- Version: v2.3.23 -->
 <html lang="zh-TW">
 <head>
 <meta charset="UTF-8">
@@ -330,12 +330,12 @@ td {
   <div class="hero-content">
     <h1>Lab Data Formatter</h1>
     <p class="subtitle">檢驗報告快速整理工具 — 右鍵擷取 / Ctrl+C，Ctrl+3 貼上</p>
-    <p class="subtitle2">v2.3.22 雲端解析修正、Tab/空格相容、智慧日期、* 標記</p>
+    <p class="subtitle2">v2.3.23 雲端中文項目對應、衍生 ACR、右鍵開關修正、S.G. 支援</p>
     <div class="version-bar">
       <span class="badge badge-version"><span class="badge-dot"></span>最新版本 <span id="latestVer">載入中...</span></span>
       <span class="badge badge-date">更新日期 <span id="latestDate">...</span></span>
       <span class="badge badge-dl">下載次數 <span id="dlCount">...</span></span>
-      <span class="badge badge-new">v2.3.22 Update</span>
+      <span class="badge badge-new">v2.3.23 Update</span>
     </div>
     <div class="source-badges">
       <span class="src-badge src-ord">ORD 檢驗報告</span>
@@ -543,9 +543,23 @@ td {
   <h2 class="section-title">更新紀錄</h2>
   <div class="changelog-item">
     <div class="cl-header">
+      <span class="cl-ver">v2.3.23</span>
+      <span class="cl-date">2026-05-08</span>
+      <span class="cl-tag">Latest</span>
+    </div>
+    <ul class="cl-list">
+      <li>雲端中文項目對應：血清麩胺酸苯醋酸轉氨基→AST、血清麩胺酸丙酮酸轉氨基→ALT、血中尿素氮→BUN</li>
+      <li>自動過濾 CBC 細項：Hematocrit/MCV/MCH/MCHC/紅血球/上皮細胞不再出現</li>
+      <li>新增 Specific Gravity 顯示為 S.G.</li>
+      <li>新增衍生 ACR：微白蛋白÷尿液肌酸酐自動計算</li>
+      <li>新增游離攝護腺特異抗原→free PSA</li>
+      <li>修正右鍵擷取關閉後仍攔截滑鼠的問題（Ctrl+` 切換後立即生效）</li>
+    </ul>
+  </div>
+  <div class="changelog-item">
+    <div class="cl-header">
       <span class="cl-ver">v2.3.22</span>
       <span class="cl-date">2026-05-07</span>
-      <span class="cl-tag">Latest</span>
     </div>
     <ul class="cl-list">
       <li>雲端檢驗名稱大量擴充：Hb A1c/醣化血色素、eGFR(female/male)、ACR(Urine) 等</li>
@@ -645,7 +659,7 @@ td {
 <script>
 var readmeText = [
 "================================================================",
-"  HIS OPD Data Assistant v2.3.22 使用說明",
+"  HIS OPD Data Assistant v2.3.23 使用說明",
 "  (原名 Lab Data Formatter)",
 "  作者：吳岳霖醫師  DAL93"+String.fromCharCode(64)+"tpech.gov.tw",
 "================================================================",
@@ -750,8 +764,8 @@ function copyReadme() {
       // 下載連結固定指向 GitHub Pages（免認證）
     }
   }).catch(function(){
-    verEl.textContent = "v2.3.22";
-    dateEl.textContent = "2026-05-07";
+    verEl.textContent = "v2.3.23";
+    dateEl.textContent = "2026-05-08";
   });
 })();
 
