@@ -1,5 +1,5 @@
 ================================================================
-  HIS OPD Data Assistant v2.3.29 使用說明
+  HIS OPD Data Assistant v2.3.30 使用說明
   (原名 Lab Data Formatter)
   作者：吳岳霖醫師  DAL93@tpech.gov.tw
 ================================================================
@@ -94,7 +94,7 @@
       自動計算 / 判讀：
       - HOMA-IR  = AC × Insulin / 405      (需 GluAC + Insulin)
       - eLDL     = Chol − HDL − TG/5       (僅在無直接 LDL 量值時)
-      - GA→HbA1c = 0.216 × GA + 2.978      (需 GA)
+      - GA→A1C = 0.216 × GA + 2.978      (需 GA)
       - FIB-4    < 1.3 顯示「FIB-4(-)」
       - NT-proBNP < 125 顯示「NT-proBNP(-)」
       - ACR ≤ 30 顯示「ACR:-」（v2.3.18 由 MAU(-) 改為 ACR:-）
@@ -126,7 +126,7 @@
 
 【安裝方式】
 
-  1. 從網頁下載 LabFormatter_v2.3.29.exe
+  1. 從網頁下載 LabFormatter_v2.3.30.exe
      下載網址：https://andrew22tw.github.io/HIS_OPD_DATA_Assistant/
   2. 放在桌面或任何位置
   3. 雙擊啟動，圖示出現在右下角系統匣
@@ -227,12 +227,12 @@
 【輸出格式說明】
 
   ORD 檢驗輸出順序：
-  WBC/Hb/PLT → AC(HbA1c) → BUN/Cr → Na/K → HCO3 → ALT/AST →
+  WBC/Hb/PLT → AC(A1C) → BUN/Cr → Na/K → HCO3 → ALT/AST →
   Alb → TC/TG/L/H → UA → Ca/IP → Iron/TIBC/Ferritin → TB → ACR → PCR
 
   特殊規則：
   - CBC 項目（WBC/Hb/PLT）自動分組，排在最前面
-  - AC 有 HbA1c 時合併顯示：AC:122(6.5)
+  - AC 有 A1C 時合併顯示：AC:122(6.5)
   - eGFR 四捨五入到小數 1 位，附在 Cr 後：BUN/Cr:14.6/1.16(69.5)
   - 多份報告按採檢時間分組，同次抽血合併
   - 超過 83 字元自動換行
@@ -288,6 +288,7 @@
 
 【更新紀錄】
 
+  v2.3.30 HbA1c 顯示改為 A1C、雲端藥歷不同日期分行顯示（每行加年月日前綴）
   v2.3.29 快捷擷取改為 Alt+Q（與右鍵擷取相同效果，不受右鍵開關影響）
   v2.3.27 WBC 四捨五入到小數 1 位、雲端同月份合併（同月檢驗自動整合為一行）、
           完整支援台大 NHI MediCloud 格式（UN→BUN、CRE→Cr、T-CHO→TC）、
