@@ -1,5 +1,5 @@
 ================================================================
-  HIS OPD Data Assistant v2.3.23 使用說明
+  HIS OPD Data Assistant v2.3.24 使用說明
   (原名 Lab Data Formatter)
   作者：吳岳霖醫師  DAL93@tpech.gov.tw
 ================================================================
@@ -126,7 +126,7 @@
 
 【安裝方式】
 
-  1. 從網頁下載 LabFormatter_v2.3.23.exe
+  1. 從網頁下載 LabFormatter_v2.3.24.exe
      下載網址：https://andrew22tw.github.io/HIS_OPD_DATA_Assistant/
   2. 放在桌面或任何位置
   3. 雙擊啟動，圖示出現在右下角系統匣
@@ -287,10 +287,10 @@
 
 【更新紀錄】
 
-  v2.3.23 雲端中文項目對應（血清麩胺酸苯醋酸轉氨基→AST、血清麩胺酸丙酮酸轉氨基→ALT、
-          血中尿素氮→BUN）、過濾 CBC 細項（Hct/MCV/MCH/MCHC/紅血球/上皮細胞）、
-          新增 S.G.（Specific Gravity）、衍生 ACR（微白蛋白÷尿液肌酸酐）、
-          游離攝護腺特異抗原→free PSA、修正右鍵關閉後仍攔截的 bug
+  v2.3.24 智慧名稱清理：自動去除 [參考值] 和 (血液)/(尿液) 後比對，Na/K/Ca 等短名不再遺漏
+          新增尿液項目 Epi（Squamous Epithelial cell）、S.G.（SP.Gr./Specific Gravity）
+          雲端中文對應（血清麩胺酸苯醋酸轉氨基→AST、血清麩胺酸丙酮酸轉氨基→ALT、
+          血中尿素氮→BUN）、過濾 CBC 細項、衍生 ACR、free PSA、右鍵修正
   v2.3.22 雲端解析修正：支援 Tab/多空格兩種分隔格式、名稱擴充（Hb A1c/醣化血色素/
           eGFR(female/male)/ACR(Urine)）、過濾尿液常規和健保署重複值、失敗通知
   v2.3.20 智慧日期顯示（同月不同日→YYYMMDD，否則→YYYMM）、
