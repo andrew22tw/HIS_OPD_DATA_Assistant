@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <!-- Lab Data Formatter Website -->
 <!-- Last Modified: 2026-05-12 (UTC+8) -->
-<!-- Version: v2.3.31 -->
+<!-- Version: v2.3.32 -->
 <html lang="zh-TW">
 <head>
 <meta charset="UTF-8">
@@ -330,12 +330,12 @@ td {
   <div class="hero-content">
     <h1>Lab Data Formatter</h1>
     <p class="subtitle">檢驗報告快速整理工具 — 右鍵擷取 / Alt+Q / Ctrl+C，Ctrl+3 貼上</p>
-    <p class="subtitle2">v2.3.31 尿液 PCR/ACR 自動合併到同日抽血結果同行顯示</p>
+    <p class="subtitle2">v2.3.32 雲端檢驗中文名稱對應大幅補強，CBC differential / 電解質 / 免疫球蛋白等雜訊自動過濾</p>
     <div class="version-bar">
       <span class="badge badge-version"><span class="badge-dot"></span>最新版本 <span id="latestVer">載入中...</span></span>
       <span class="badge badge-date">更新日期 <span id="latestDate">...</span></span>
       <span class="badge badge-dl">下載次數 <span id="dlCount">...</span></span>
-      <span class="badge badge-new">v2.3.31 Update</span>
+      <span class="badge badge-new">v2.3.32 Update</span>
     </div>
     <div class="source-badges">
       <span class="src-badge src-ord">ORD 檢驗報告</span>
@@ -543,9 +543,20 @@ td {
   <h2 class="section-title">更新紀錄</h2>
   <div class="changelog-item">
     <div class="cl-header">
-      <span class="cl-ver">v2.3.31</span>
+      <span class="cl-ver">v2.3.32</span>
       <span class="cl-date">2026-05-12</span>
       <span class="cl-tag">Latest</span>
+    </div>
+    <ul class="cl-list">
+      <li>雲端檢驗中文名稱對應大幅補強：白血球計數 / 血色素檢查 / 血小板計數 / 腎絲球過濾速率 / 膽紅素總量 / 高靈敏C反應蛋白 / total CO2 等</li>
+      <li>字元變體 / 錯字容錯：氨 ↔ 胺、肌酸酐 / 肌甘 / 肌酐、血色素 / 血紅素</li>
+      <li>過濾擴充：HCT / PDW / PCT / MPV 大小寫不限、CBC 中文 differential（淋巴球 / 嗜酸性 / 嗜鹼性 / 單核球 / 嗜中性 / 分葉球）、電解質 Cl、(尿液) 非必要項目、未對應免疫球蛋白 / 抗體</li>
+    </ul>
+  </div>
+  <div class="changelog-item">
+    <div class="cl-header">
+      <span class="cl-ver">v2.3.31</span>
+      <span class="cl-date">2026-05-12</span>
     </div>
     <ul class="cl-list">
       <li>修復尿液項目（PCR / ACR）與同日抽血採檢時間不同時，自動合併到同一行顯示</li>
@@ -690,7 +701,7 @@ td {
 <script>
 var readmeText = [
 "================================================================",
-"  HIS OPD Data Assistant v2.3.31 使用說明",
+"  HIS OPD Data Assistant v2.3.32 使用說明",
 "  (原名 Lab Data Formatter)",
 "  作者：吳岳霖醫師  DAL93"+String.fromCharCode(64)+"tpech.gov.tw",
 "================================================================",
@@ -796,7 +807,7 @@ function copyReadme() {
       // 下載連結固定指向 GitHub Pages（免認證）
     }
   }).catch(function(){
-    verEl.textContent = "v2.3.31";
+    verEl.textContent = "v2.3.32";
     dateEl.textContent = "2026-05-12";
   });
 })();
