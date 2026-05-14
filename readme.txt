@@ -1,5 +1,5 @@
 ================================================================
-  HIS OPD Data Assistant v2.3.33 使用說明
+  HIS OPD Data Assistant v2.3.34 使用說明
   (原名 Lab Data Formatter)
   作者：吳岳霖醫師  DAL93@tpech.gov.tw
 ================================================================
@@ -126,7 +126,7 @@
 
 【安裝方式】
 
-  1. 從網頁下載 LabFormatter_v2.3.33.exe
+  1. 從網頁下載 LabFormatter_v2.3.34.exe
      下載網址：https://andrew22tw.github.io/HIS_OPD_DATA_Assistant/
   2. 放在桌面或任何位置
   3. 雙擊啟動，圖示出現在右下角系統匣
@@ -289,6 +289,9 @@
 
 【更新紀錄】
 
+  v2.3.34 [Hotfix] 修復 v2.3.32 起雲端報告解析失敗（"類型初始設定式發生例外狀況"）：
+          NameMap 字典 case-insensitive 比較器下 "total CO2" 與 "Total CO2" 大小寫
+          重複，導致 CloudLab 類別 static 初始化拋 ArgumentException，雲端解析全廢
   v2.3.33 ORD 檢驗同日所有報告自動合併為一行（不論採檢時間 / 血液 / 尿液），
           解決同日不同 panel 因採檢時間不同而分行的問題
   v2.3.32 雲端檢驗中文名稱大幅補強（白血球計數/血色素檢查/血小板計數/腎絲球過濾速率/
