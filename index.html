@@ -543,48 +543,17 @@ td {
   <h2 class="section-title">更新紀錄</h2>
   <div class="changelog-item">
     <div class="cl-header">
-      <span class="cl-ver">v2.3.39</span>
+      <span class="cl-ver">v2.3.36 → v2.3.39</span>
       <span class="cl-date">2026-05-16</span>
       <span class="cl-tag">Latest</span>
     </div>
     <ul class="cl-list">
-      <li><strong>設定畫面視覺翻新</strong>：提示文字調亮到清楚可讀（對比達標）、輸入框白字深底易讀</li>
-      <li>三層明顯分層：背景 / 卡片 / 輸入框 顏色拉開，卡片加框線浮起、標題加底線</li>
-      <li>次要按鈕加底色與清楚框線（不再是隱形細線）；底色由純黑微調為深灰更柔和</li>
-      <li>功能完全不變，僅外觀；全程式各視窗一致套用</li>
-    </ul>
-  </div>
-  <div class="changelog-item">
-    <div class="cl-header">
-      <span class="cl-ver">v2.3.38</span>
-      <span class="cl-date">2026-05-16</span>
-    </div>
-    <ul class="cl-list">
-      <li>藥歷每劑顆數合理性保護：解析異常（每劑 &gt; 10 顆）時不顯示錯誤的 N#，寧缺勿錯</li>
-      <li>PHI 遮罩不再誤遮合法西元日期（如 20260516）</li>
-      <li>設定存檔 / 剪貼簿例外改寫入操作日誌；設定檔建構去重，穩定性強化</li>
-    </ul>
-  </div>
-  <div class="changelog-item">
-    <div class="cl-header">
-      <span class="cl-ver">v2.3.37</span>
-      <span class="cl-date">2026-05-16</span>
-    </div>
-    <ul class="cl-list">
-      <li><strong>快速血糖獨立顯示為 <code>FS</code></strong>：快速 / 微量 / 指尖 / 床邊血糖 / FS / Fingerstick glucose 等英中混用名稱歸入新項目 FS，與靜脈 <code>AC</code> 區分（v2.3.36 曾暫歸 AC，此版修正）</li>
-      <li><code>Glucose A.C</code>（含點寫法）維持辨識為 <code>AC</code></li>
+      <li><strong>快速血糖獨立顯示為 <code>FS</code></strong>：快速 / 微量 / 指尖 / 床邊血糖 / FS / Fingerstick glucose 等英中混用名稱歸入 FS，與靜脈 <code>AC</code> 區分；<code>Glucose A.C</code>（含點寫法）顯示為 <code>AC</code></li>
       <li><strong>修復雲端報告同月多次抽血資料遺失</strong>：改為按採檢日分行（與 ORD 一致），不再壓成月份 first-wins 覆蓋舊資料</li>
-      <li>其他穩定性：Splash 啟動加速（~2.5s→~1s）、JSON 解析邊界保護、Format 不再突變來源資料</li>
-    </ul>
-  </div>
-  <div class="changelog-item">
-    <div class="cl-header">
-      <span class="cl-ver">v2.3.36</span>
-      <span class="cl-date">2026-05-16</span>
-    </div>
-    <ul class="cl-list">
-      <li>雲端報告：<code>Glucose A.C</code>（含點寫法）統一辨識為 AC</li>
-      <li>雲端報告：快速血糖等英中混用名稱辨識（v2.3.37 起改為獨立 FS）</li>
+      <li><strong>設定畫面視覺翻新</strong>：提示文字調亮到清楚可讀、輸入框白字深底易讀、背景／卡片／輸入框三層分層、卡片加框線浮起、次要按鈕加底色框線（功能不變，全程式一致套用）</li>
+      <li>藥歷每劑顆數合理性保護：解析異常（每劑 &gt; 10 顆）時不顯示錯誤 N#，寧缺勿錯</li>
+      <li>PHI 遮罩不再誤遮合法西元日期（如 20260516）</li>
+      <li>穩定性：Splash 啟動加速（~2.5s→~1s）、JSON 解析邊界保護、Format 不突變來源資料、設定存檔／剪貼簿例外寫入日誌、設定檔建構去重</li>
     </ul>
   </div>
   <div class="changelog-item">
