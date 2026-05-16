@@ -1,5 +1,5 @@
 ================================================================
-  HIS OPD Data Assistant v2.3.35 使用說明
+  HIS OPD Data Assistant v2.3.36 使用說明
   (原名 Lab Data Formatter)
   作者：吳岳霖醫師  DAL93@tpech.gov.tw
 ================================================================
@@ -126,7 +126,7 @@
 
 【安裝方式】
 
-  1. 從網頁下載 LabFormatter_v2.3.35.exe
+  1. 從網頁下載 LabFormatter_v2.3.36.exe
      下載網址：https://andrew22tw.github.io/HIS_OPD_DATA_Assistant/
   2. 放在桌面或任何位置
   3. 雙擊啟動，圖示出現在右下角系統匣
@@ -233,6 +233,8 @@
   特殊規則：
   - CBC 項目（WBC/Hb/PLT）自動分組，排在最前面
   - AC 有 A1C 時合併顯示：AC:122(6.5)
+  - 雲端報告 glucose A.C / 快速血糖 / 微量血糖 / 指尖血糖 / 床邊血糖 / FS
+    / Fingerstick glucose 等英中混用名稱，統一辨識為 AC
   - eGFR 四捨五入到小數 1 位，附在 Cr 後：BUN/Cr:14.6/1.16(69.5)
   - 多份報告按採檢時間分組，同次抽血合併
   - 超過 83 字元自動換行
@@ -289,6 +291,9 @@
 
 【更新紀錄】
 
+  v2.3.36 雲端報告 glucose A.C（含點寫法）統一辨識為 AC；快速血糖 / 微量血糖 /
+          指尖血糖 / 床邊血糖 / FS / Fingerstick glucose 等英中混用名稱，
+          統一歸入 AC（顯示為 AC:值）。NameMap 與中文 fallback 同步補強
   v2.3.35 修復 preview 視窗（整理畫面）出現時搶焦點，導致 Ctrl+3 貼上失效
           （preview / toast 改用 NoActivateForm，ShowWithoutActivation + WS_EX_NOACTIVATE）
   v2.3.34 [Hotfix] 修復 v2.3.32 起雲端報告解析失敗（"類型初始設定式發生例外狀況"）：
