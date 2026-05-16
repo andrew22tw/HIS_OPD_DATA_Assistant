@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <!-- Lab Data Formatter Website -->
 <!-- Last Modified: 2026-05-16 (UTC+8) -->
-<!-- Version: v2.3.37 -->
+<!-- Version: v2.3.38 -->
 <html lang="zh-TW">
 <head>
 <meta charset="UTF-8">
@@ -330,12 +330,12 @@ td {
   <div class="hero-content">
     <h1>Lab Data Formatter</h1>
     <p class="subtitle">檢驗報告快速整理工具 — 右鍵擷取 / Alt+Q / Ctrl+C，Ctrl+3 貼上</p>
-    <p class="subtitle2">v2.3.37 快速血糖獨立顯示 FS、glucose A.C 辨識為 AC、雲端報告同月多日不再被覆蓋</p>
+    <p class="subtitle2">v2.3.38 藥量解析合理性保護、PHI 不誤遮日期、設定存檔穩定性強化</p>
     <div class="version-bar">
       <span class="badge badge-version"><span class="badge-dot"></span>最新版本 <span id="latestVer">載入中...</span></span>
       <span class="badge badge-date">更新日期 <span id="latestDate">...</span></span>
       <span class="badge badge-dl">下載次數 <span id="dlCount">...</span></span>
-      <span class="badge badge-new">v2.3.37 Update</span>
+      <span class="badge badge-new">v2.3.38 Update</span>
     </div>
     <div class="source-badges">
       <span class="src-badge src-ord">ORD 檢驗報告</span>
@@ -543,9 +543,20 @@ td {
   <h2 class="section-title">更新紀錄</h2>
   <div class="changelog-item">
     <div class="cl-header">
-      <span class="cl-ver">v2.3.37</span>
+      <span class="cl-ver">v2.3.38</span>
       <span class="cl-date">2026-05-16</span>
       <span class="cl-tag">Latest</span>
+    </div>
+    <ul class="cl-list">
+      <li>藥歷每劑顆數合理性保護：解析異常（每劑 &gt; 10 顆）時不顯示錯誤的 N#，寧缺勿錯</li>
+      <li>PHI 遮罩不再誤遮合法西元日期（如 20260516）</li>
+      <li>設定存檔 / 剪貼簿例外改寫入操作日誌；設定檔建構去重，穩定性強化</li>
+    </ul>
+  </div>
+  <div class="changelog-item">
+    <div class="cl-header">
+      <span class="cl-ver">v2.3.37</span>
+      <span class="cl-date">2026-05-16</span>
     </div>
     <ul class="cl-list">
       <li><strong>快速血糖獨立顯示為 <code>FS</code></strong>：快速 / 微量 / 指尖 / 床邊血糖 / FS / Fingerstick glucose 等英中混用名稱歸入新項目 FS，與靜脈 <code>AC</code> 區分（v2.3.36 曾暫歸 AC，此版修正）</li>
@@ -754,7 +765,7 @@ td {
 <script>
 var readmeText = [
 "================================================================",
-"  HIS OPD Data Assistant v2.3.37 使用說明",
+"  HIS OPD Data Assistant v2.3.38 使用說明",
 "  (原名 Lab Data Formatter)",
 "  作者：吳岳霖醫師  DAL93"+String.fromCharCode(64)+"tpech.gov.tw",
 "================================================================",
@@ -863,7 +874,7 @@ function copyReadme() {
       // 下載連結固定指向 GitHub Pages（免認證）
     }
   }).catch(function(){
-    verEl.textContent = "v2.3.37";
+    verEl.textContent = "v2.3.38";
     dateEl.textContent = "2026-05-16";
   });
 })();
