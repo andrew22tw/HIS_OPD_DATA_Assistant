@@ -1,5 +1,5 @@
 ================================================================
-  HIS OPD Data Assistant v2.3.41 使用說明
+  HIS OPD Data Assistant v2.3.42 使用說明
   (原名 Lab Data Formatter)
   作者：吳岳霖醫師  DAL93@tpech.gov.tw
 ================================================================
@@ -126,7 +126,7 @@
 
 【安裝方式】
 
-  1. 從網頁下載 LabFormatter_v2.3.41.exe
+  1. 從網頁下載 LabFormatter_v2.3.42.exe
      下載網址：https://andrew22tw.github.io/HIS_OPD_DATA_Assistant/
   2. 放在桌面或任何位置
   3. 雙擊啟動，圖示出現在右下角系統匣
@@ -292,9 +292,9 @@
 
 【更新紀錄】
 
-  v2.3.41 (2026-05-19)
-          - 鹼性磷酸酵素 / 鹼性磷酸酶 / Alkaline Phosphatase → ALK-p
-            （顯示標籤由 ALP 改為 ALK-p，改為預設開啟）
+  v2.3.42 (2026-05-19)
+          - 鹼性磷酸酵素 / 鹼性磷酸酶 / Alkaline Phosphatase 顯示標籤
+            改回 ALP（中文辨識與預設開啟維持）
   v2.3.40 (2026-05-19)
           - 新增血壓：收縮壓→SBP、舒張壓→DBP（合併 SBP/DBP:120/80，預設開）
           - 飯後血糖 / Glucose PC → PC（改為預設開啟）
