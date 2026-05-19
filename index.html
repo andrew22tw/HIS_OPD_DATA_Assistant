@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <!-- Lab Data Formatter Website -->
 <!-- Last Modified: 2026-05-19 (UTC+8) -->
-<!-- Version: v2.3.40 -->
+<!-- Version: v2.3.41 -->
 <html lang="zh-TW">
 <head>
 <meta charset="UTF-8">
@@ -330,12 +330,12 @@ td {
   <div class="hero-content">
     <h1>Lab Data Formatter</h1>
     <p class="subtitle">檢驗報告快速整理工具 — 右鍵擷取 / Alt+Q / Ctrl+C，Ctrl+3 貼上</p>
-    <p class="subtitle2">v2.3.40 新增血壓 SBP/DBP、飯後血糖 PC、ALT 別名、尿酸/肌酸酐中文辨識</p>
+    <p class="subtitle2">v2.3.41 鹼性磷酸酵素 → ALK-p（中文辨識，預設開啟）</p>
     <div class="version-bar">
       <span class="badge badge-version"><span class="badge-dot"></span>最新版本 <span id="latestVer">載入中...</span></span>
       <span class="badge badge-date">更新日期 <span id="latestDate">...</span></span>
       <span class="badge badge-dl">下載次數 <span id="dlCount">...</span></span>
-      <span class="badge badge-new">v2.3.40 Update</span>
+      <span class="badge badge-new">v2.3.41 Update</span>
     </div>
     <div class="source-badges">
       <span class="src-badge src-ord">ORD 檢驗報告</span>
@@ -543,9 +543,18 @@ td {
   <h2 class="section-title">更新紀錄</h2>
   <div class="changelog-item">
     <div class="cl-header">
-      <span class="cl-ver">v2.3.40</span>
+      <span class="cl-ver">v2.3.41</span>
       <span class="cl-date">2026-05-19</span>
       <span class="cl-tag">Latest</span>
+    </div>
+    <ul class="cl-list">
+      <li>鹼性磷酸酵素 / 鹼性磷酸酶 / Alkaline Phosphatase → <code>ALK-p</code>（顯示標籤由 ALP 改為 ALK-p，改為預設開啟）</li>
+    </ul>
+  </div>
+  <div class="changelog-item">
+    <div class="cl-header">
+      <span class="cl-ver">v2.3.40</span>
+      <span class="cl-date">2026-05-19</span>
     </div>
     <ul class="cl-list">
       <li>新增血壓項目：收縮壓 → <code>SBP</code>、舒張壓 → <code>DBP</code>（合併顯示 <code>SBP/DBP:120/80</code>，預設開啟）</li>
@@ -758,7 +767,7 @@ td {
 <script>
 var readmeText = [
 "================================================================",
-"  HIS OPD Data Assistant v2.3.40 使用說明",
+"  HIS OPD Data Assistant v2.3.41 使用說明",
 "  (原名 Lab Data Formatter)",
 "  作者：吳岳霖醫師  DAL93"+String.fromCharCode(64)+"tpech.gov.tw",
 "================================================================",
@@ -867,7 +876,7 @@ function copyReadme() {
       // 下載連結固定指向 GitHub Pages（免認證）
     }
   }).catch(function(){
-    verEl.textContent = "v2.3.40";
+    verEl.textContent = "v2.3.41";
     dateEl.textContent = "2026-05-19";
   });
 })();
