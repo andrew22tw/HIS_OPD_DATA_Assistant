@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <!-- Lab Data Formatter Website -->
 <!-- Last Modified: 2026-06-04 (UTC+8) -->
-<!-- Version: v2.3.46 -->
+<!-- Version: v2.3.47 -->
 <html lang="zh-TW">
 <head>
 <meta charset="UTF-8">
@@ -330,12 +330,12 @@ td {
   <div class="hero-content">
     <h1>Lab Data Formatter</h1>
     <p class="subtitle">檢驗報告快速整理工具 — 右鍵擷取 / Alt+Q / Ctrl+C，Ctrl+3 貼上</p>
-    <p class="subtitle2">v2.3.46 重要修復：雲端檢驗解析崩潰（NameMap 重複鍵）；含 ACR 整數與中文對應強化</p>
+    <p class="subtitle2">v2.3.47 CBC（WBC/Hb/PLT）改排在整理結果最後面</p>
     <div class="version-bar">
       <span class="badge badge-version"><span class="badge-dot"></span>最新版本 <span id="latestVer">載入中...</span></span>
       <span class="badge badge-date">更新日期 <span id="latestDate">...</span></span>
       <span class="badge badge-dl">下載次數 <span id="dlCount">...</span></span>
-      <span class="badge badge-new">v2.3.46 Update</span>
+      <span class="badge badge-new">v2.3.47 Update</span>
     </div>
     <div class="source-badges">
       <span class="src-badge src-ord">ORD 檢驗報告</span>
@@ -452,7 +452,7 @@ td {
     <div class="feat">
       <div class="feat-icon">🩺</div>
       <div class="feat-title">CBC 優先分組</div>
-      <div class="feat-desc">WBC/Hb/PLT 自動分組排在最前面，一目了然</div>
+      <div class="feat-desc">WBC/Hb/PLT 自動分組排在整理結果最後面</div>
     </div>
     <div class="feat">
       <div class="feat-icon">☁️</div>
@@ -515,20 +515,20 @@ td {
   <h3 style="font-size:1.05rem;font-weight:600;margin-bottom:12px;">檢驗報告（濃縮格式）</h3>
   <table>
     <tr><th>順序</th><th>項目</th><th>自動分組</th></tr>
-    <tr><td>1</td><td>WBC / Hb / PLT</td><td>WBC/Hb/PLT:6.97/15.8/184</td></tr>
-    <tr><td>2</td><td>AC（A1C）</td><td>AC 有 A1C 時顯示 AC:值(A1C值)</td></tr>
-    <tr><td>3</td><td>BUN / Cr</td><td>BUN/Cr:14.6/1.16(69.5) eGFR 四捨五入到小數 1 位</td></tr>
-    <tr><td>4</td><td>Na / K</td><td>Na/K:139/3.5</td></tr>
-    <tr><td>5</td><td>HCO3</td><td>四捨五入取整數（從 VBG 報告擷取）</td></tr>
-    <tr><td>6</td><td>ALT / AST</td><td>ALT/AST:14/22</td></tr>
-    <tr><td>7</td><td>Alb</td><td></td></tr>
-    <tr><td>8</td><td>TC / TG / L / H</td><td>TC/TG/L/H:165/121/81/53（TG/L/H 取整數）</td></tr>
-    <tr><td>9</td><td>UA</td><td></td></tr>
-    <tr><td>10</td><td>Ca / IP</td><td>Ca/IP:9.3/5.9</td></tr>
-    <tr><td>11</td><td>Iron / TIBC / Ferritin</td><td>Iron/TIBC/Ferritin:49/286/328（四捨五入取整數）</td></tr>
-    <tr><td>12</td><td>TB</td><td>Total Bilirubin</td></tr>
-    <tr><td>13</td><td>ACR</td><td>從尿液檢體擷取</td></tr>
-    <tr><td>14</td><td>PCR</td><td>從尿液檢體擷取（支援 P/C 格式）</td></tr>
+    <tr><td>1</td><td>AC（A1C）</td><td>AC 有 A1C 時顯示 AC:值(A1C值)</td></tr>
+    <tr><td>2</td><td>BUN / Cr</td><td>BUN/Cr:14.6/1.16(69.5) eGFR 四捨五入到小數 1 位</td></tr>
+    <tr><td>3</td><td>Na / K</td><td>Na/K:139/3.5</td></tr>
+    <tr><td>4</td><td>HCO3</td><td>四捨五入取整數（從 VBG 報告擷取）</td></tr>
+    <tr><td>5</td><td>ALT / AST</td><td>ALT/AST:14/22</td></tr>
+    <tr><td>6</td><td>Alb</td><td></td></tr>
+    <tr><td>7</td><td>TC / TG / L / H</td><td>TC/TG/L/H:165/121/81/53（TG/L/H 取整數）</td></tr>
+    <tr><td>8</td><td>UA</td><td></td></tr>
+    <tr><td>9</td><td>Ca / IP</td><td>Ca/IP:9.3/5.9</td></tr>
+    <tr><td>10</td><td>Iron / TIBC / Ferritin</td><td>Iron/TIBC/Ferritin:49/286/328（四捨五入取整數）</td></tr>
+    <tr><td>11</td><td>TB</td><td>Total Bilirubin</td></tr>
+    <tr><td>12</td><td>ACR</td><td>從尿液檢體擷取，取整數（15.9→ACR:16）</td></tr>
+    <tr><td>13</td><td>PCR</td><td>從尿液檢體擷取（支援 P/C 格式）</td></tr>
+    <tr><td>14</td><td>WBC / Hb / PLT</td><td>CBC 排最後面：WBC/Hb/PLT:6.97/15.8/184</td></tr>
   </table>
   <h3 style="font-size:1.05rem;font-weight:600;margin-top:28px;margin-bottom:12px;">藥歷（橫式學名格式）<span class="feat-new">New</span></h3>
   <div style="background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:16px 20px;font-size:0.9rem;color:var(--text2);">
@@ -543,9 +543,18 @@ td {
   <h2 class="section-title">更新紀錄</h2>
   <div class="changelog-item">
     <div class="cl-header">
-      <span class="cl-ver">v2.3.46</span>
+      <span class="cl-ver">v2.3.47</span>
       <span class="cl-date">2026-06-04</span>
       <span class="cl-tag">Latest</span>
+    </div>
+    <ul class="cl-list">
+      <li>CBC（<code>WBC</code> / <code>Hb</code> / <code>PLT</code>）改排在整理結果<strong>最後面</strong>（原本在最前面）；不論三項合併（<code>WBC/Hb/PLT</code>）或單獨出現（如只有 <code>Hb</code>）都置於結尾</li>
+    </ul>
+  </div>
+  <div class="changelog-item">
+    <div class="cl-header">
+      <span class="cl-ver">v2.3.46</span>
+      <span class="cl-date">2026-06-04</span>
       <span class="cl-tag-major">Hotfix</span>
     </div>
     <ul class="cl-list">
@@ -808,7 +817,7 @@ td {
 <script>
 var readmeText = [
 "================================================================",
-"  HIS OPD Data Assistant v2.3.46 使用說明",
+"  HIS OPD Data Assistant v2.3.47 使用說明",
 "  (原名 Lab Data Formatter)",
 "  作者：吳岳霖醫師  DAL93"+String.fromCharCode(64)+"tpech.gov.tw",
 "================================================================",
@@ -859,11 +868,12 @@ var readmeText = [
 "【輸出格式】",
 "",
 "  輸出順序：",
-"  WBC/Hb/PLT → AC(A1C) → BUN/Cr → Na/K → HCO3 → ALT/AST →",
-"  Alb → TC/TG/L/H → UA → Ca/IP → Iron/TIBC/Ferritin → TB → ACR → PCR",
+"  AC(A1C) → BUN/Cr → Na/K → HCO3 → ALT/AST → Alb →",
+"  TC/TG/L/H → UA → Ca/IP → Iron/TIBC/Ferritin → TB → ACR → PCR →",
+"  …（其餘）→ WBC/Hb/PLT（CBC 排最後面）",
 "",
 "  特殊規則：",
-"  - CBC 項目（WBC/Hb/PLT）自動分組，排在最前面",
+"  - CBC 項目（WBC/Hb/PLT）自動分組，排在整理結果最後面",
 "  - AC 有 A1C 時合併：AC:122(6.5)",
 "  - glucose A.C（含點寫法）辨識為 AC",
 "  - 快速 / 微量 / 指尖 / 床邊血糖 / FS / Fingerstick 獨立顯示為 FS",
@@ -921,7 +931,7 @@ function copyReadme() {
       // 下載連結固定指向 GitHub Pages（免認證）
     }
   }).catch(function(){
-    verEl.textContent = "v2.3.46";
+    verEl.textContent = "v2.3.47";
     dateEl.textContent = "2026-06-04";
   });
 })();

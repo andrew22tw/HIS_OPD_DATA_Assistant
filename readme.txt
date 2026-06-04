@@ -1,5 +1,5 @@
 ================================================================
-  HIS OPD Data Assistant v2.3.46 使用說明
+  HIS OPD Data Assistant v2.3.47 使用說明
   (原名 Lab Data Formatter)
   作者：吳岳霖醫師  DAL93@tpech.gov.tw
 ================================================================
@@ -110,9 +110,9 @@
       雲端資料自動加 * 號標記（如 1150430*），院內不加。
       適用於 round 病房或追蹤趨勢。
 
-  19. CBC 優先分組（v2.3.19 新增）
-      WBC/Hb/PLT 自動分組並排在輸出最前面：
-      WBC/Hb/PLT:6.97/15.8/184
+  19. CBC 自動分組（v2.3.47 起排在整理結果最後面）
+      WBC/Hb/PLT 自動分組，置於輸出結尾（單獨出現也排最後）：
+      …,ALT/AST:28/21,WBC/Hb/PLT:6.97/15.8/184
 
   20. 數值精度調整（v2.3.19 調整）
       - BUN 保留原始小數（不再取整數）
@@ -126,7 +126,7 @@
 
 【安裝方式】
 
-  1. 從網頁下載 LabFormatter_v2.3.46.exe
+  1. 從網頁下載 LabFormatter_v2.3.47.exe
      下載網址：https://andrew22tw.github.io/HIS_OPD_DATA_Assistant/
   2. 放在桌面或任何位置
   3. 雙擊啟動，圖示出現在右下角系統匣
@@ -227,11 +227,12 @@
 【輸出格式說明】
 
   ORD 檢驗輸出順序：
-  WBC/Hb/PLT → AC(A1C) → BUN/Cr → Na/K → HCO3 → ALT/AST →
-  Alb → TC/TG/L/H → UA → Ca/IP → Iron/TIBC/Ferritin → TB → ACR → PCR
+  AC(A1C) → BUN/Cr → Na/K → HCO3 → ALT/AST → Alb →
+  TC/TG/L/H → UA → Ca/IP → Iron/TIBC/Ferritin → TB → ACR → PCR →
+  …（其餘）→ WBC/Hb/PLT（CBC 排最後面）
 
   特殊規則：
-  - CBC 項目（WBC/Hb/PLT）自動分組，排在最前面
+  - CBC 項目（WBC/Hb/PLT）自動分組，排在整理結果最後面（v2.3.47）
   - AC 有 A1C 時合併顯示：AC:122(6.5)
   - 雲端報告 glucose A.C（含點寫法）辨識為 AC
   - 快速 / 微量 / 指尖 / 床邊血糖 / FS / Fingerstick glucose 獨立顯示為 FS
@@ -298,6 +299,9 @@
 
 【更新紀錄】
 
+  v2.3.47 (2026-06-04)
+          - CBC（WBC/Hb/PLT）改排在整理結果最後面（原本在最前面）；
+            不論三項合併或單獨出現（如只有 Hb）都置於結尾
   v2.3.46 (2026-06-04) [Hotfix]
           - 重要修復：雲端檢驗名稱對應表（NameMap）有重複鍵 ALK-P / ALK-p
             （不分大小寫比對下視為同鍵），導致自 v2.3.41 起靜態初始化拋例外、
