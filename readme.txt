@@ -1,5 +1,5 @@
 ================================================================
-  HIS OPD Data Assistant v2.3.51 使用說明
+  HIS OPD Data Assistant v2.3.52 使用說明
   (原名 Lab Data Formatter)
   作者：吳岳霖醫師  DAL93@tpech.gov.tw
 ================================================================
@@ -126,7 +126,7 @@
 
 【安裝方式】
 
-  1. 從網頁下載 LabFormatter_v2.3.51.exe
+  1. 從網頁下載 LabFormatter_v2.3.52.exe
      下載網址：https://andrew22tw.github.io/HIS_OPD_DATA_Assistant/
   2. 放在桌面或任何位置
   3. 雙擊啟動，圖示出現在右下角系統匣
@@ -299,6 +299,12 @@
 
 【更新紀錄】
 
+  v2.3.52 (2026-09-05)
+          - NT-proBNP 統一顯示為 BNP:xxx（不再顯示 NT-proBNP: 冗長字串）
+          - 修正 BNP 與 NTproBNP 兩個項目重複匹配 NT-proBNP 造成的抓取問題
+          - 移除獨立的 NTproBNP 項目；BNP Pattern 涵蓋 NT-proBNP / proBNP / BNP 三種
+          - BNP 改為預設 On（原為 Off），舊設定檔會自動加入 BNP 到啟用清單
+          - 陰性判讀：BNP < 125 顯示為 BNP(-)
   v2.3.51 (2026-08-19)
           - Lab.Convert 改回按月份分組（撤銷 v2.3.33 的 per-day 分組）：
             同一個月不同日的報告，會併入同一行呈現
