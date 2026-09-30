@@ -366,7 +366,7 @@ td {
   K                          3.6         mEq/L        3.5 - 5.1
   ALT                        25           U/L           7 - 42</div>
   <div class="demo-arrow">▼ ▼ ▼</div>
-  <div class="demo-output">11503 AC:122(6.8),BUN/Cr:27.0/1.71,Na/K:140/3.6,ALT:25</div>
+  <div class="demo-output">11503 AC:122(6.8),BUN/Cr:27/1.71,Na/K:140/3.6,ALT:25</div>
 </div>
 
 <!-- ══════ Demo: Medication ══════ -->
@@ -446,8 +446,8 @@ td {
     </div>
     <div class="feat">
       <div class="feat-icon">📋</div>
-      <div class="feat-title">多份合併 + 採檢時間分組</div>
-      <div class="feat-desc">20 秒內連續擷取多份報告自動合併，依採檢時間分組獨立成行</div>
+      <div class="feat-title">多份合併 + 同月整合</div>
+      <div class="feat-desc">20 秒內連續擷取多份報告自動合併；院內報告同月合併成一行，健保雲端按採檢日分行</div>
     </div>
     <div class="feat">
       <div class="feat-icon">🩺</div>
@@ -954,12 +954,12 @@ var readmeText = [
 "  - iFOB / Transferrin（糞便）：陽性/陰性顯示為 iFOB(+)、Transferrin(-)；其他寫法原樣顯示",
 "  - 雲端未對應項目去除中文，只留英文名稱（純中文名整項略過）",
 "  - 雲端藥歷藥名同樣去除中文，只留英文（純中文藥名整項略過）",
-"  - 多份報告按採檢時間分組，同次抽血合併",
-"  - 智慧日期：同月不同日顯示 YYYMMDD，否則 YYYMM",
+"  - 院內報告同月合併成一行（前綴 YYYMM）；健保雲端按採檢日分行",
+"  - 健保雲端智慧日期：同月不同日顯示 YYYMMDD，否則 YYYMM",
 "  - 雲端資料加 * 號標記（如 1150430*）",
 "  - 血液/尿液/糞便自動分離",
 "  - 衍生公式：HOMA-IR、eLDL、GA→A1C",
-"  - 臨床判讀：FIB-4(-)、NT-proBNP(-)、ACR:-",
+"  - 臨床判讀：FIB-4(-)、BNP(-)",
 "",
 "================================================================",
 "",
