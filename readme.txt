@@ -1,5 +1,5 @@
 ================================================================
-  HIS OPD Data Assistant v2.3.52 使用說明
+  HIS OPD Data Assistant v2.3.53 使用說明
   (原名 Lab Data Formatter)
   作者：吳岳霖醫師  DAL93@tpech.gov.tw
 ================================================================
@@ -62,7 +62,7 @@
       - 心臟：Troponin、CK、CK-MB、BNP/NT-proBNP
       - 胰臟：Amylase、Lipase
       - 肝膽：ALP、GGT、D-Bil
-      - 內分泌：T3、Cortisol
+      - 內分泌：T3、Cortisol（Cortisol 自 v2.3.53 起預設開啟）
       - 維生素：Vitamin D、B12、Folate
       - 腫瘤：CEA、AFP、PSA、CA-199、CA-125、CA-153
       - 風濕：RF、ANA、Anti-CCP
@@ -126,7 +126,7 @@
 
 【安裝方式】
 
-  1. 從網頁下載 LabFormatter_v2.3.52.exe
+  1. 從網頁下載 LabFormatter_v2.3.53.exe
      下載網址：https://andrew22tw.github.io/HIS_OPD_DATA_Assistant/
   2. 放在桌面或任何位置
   3. 雙擊啟動，圖示出現在右下角系統匣
@@ -244,6 +244,8 @@
   - 雲端檢驗中文項目對應強化：鈉離子→Na、鉀離子→K、低密度膽固醇→L、肌酸酐→Cr，
     並可處理字間空白（如 鉀 離 子）；未對應的純中文項目整項略過
   - ACR 取整數（個位數，四捨五入，如 15.9→ACR:16），不再顯示陰性 -
+  - Cortisol：名稱後的時段（8 AM / (8AM) / 4 PM）不會誤抓成數值，
+    輸出 Cortisol:7.17（不標示時段）
   - 多份報告按採檢時間分組，同次抽血合併
   - 超過 83 字元自動換行
 
@@ -299,6 +301,11 @@
 
 【更新紀錄】
 
+  v2.3.53 (2026-09-30)
+          - 新增 Cortisol（皮質醇）整理：Cortisol 8 AM 7.17 → Cortisol:7.17
+            （院內 ORD 與健保雲端皆適用）
+          - 名稱後的採檢時段（8 AM / (8AM) / 4 PM）不會被誤抓成數值；輸出不標示時段
+          - Cortisol 改為預設 On（原為 Off），顯示名稱由 Cor 改為 Cortisol
   v2.3.52 (2026-09-05)
           - NT-proBNP 統一顯示為 BNP:xxx（不再顯示 NT-proBNP: 冗長字串）
           - 修正 BNP 與 NTproBNP 兩個項目重複匹配 NT-proBNP 造成的抓取問題

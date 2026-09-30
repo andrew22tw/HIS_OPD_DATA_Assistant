@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <!-- Lab Data Formatter Website -->
-<!-- Last Modified: 2026-06-04 (UTC+8) -->
-<!-- Version: v2.3.52 -->
+<!-- Last Modified: 2026-09-30 (UTC+8) -->
+<!-- Version: v2.3.53 -->
 <html lang="zh-TW">
 <head>
 <meta charset="UTF-8">
@@ -330,12 +330,12 @@ td {
   <div class="hero-content">
     <h1>Lab Data Formatter</h1>
     <p class="subtitle">檢驗報告快速整理工具 — 右鍵擷取 / Alt+Q / Ctrl+C，Ctrl+3 貼上</p>
-    <p class="subtitle2">v2.3.52 CBC（WBC/Hb/PLT）改排在整理結果最後面</p>
+    <p class="subtitle2">v2.3.53 新增 Cortisol（皮質醇）整理，預設開啟</p>
     <div class="version-bar">
       <span class="badge badge-version"><span class="badge-dot"></span>最新版本 <span id="latestVer">載入中...</span></span>
       <span class="badge badge-date">更新日期 <span id="latestDate">...</span></span>
       <span class="badge badge-dl">下載次數 <span id="dlCount">...</span></span>
-      <span class="badge badge-new">v2.3.52 Update</span>
+      <span class="badge badge-new">v2.3.53 Update</span>
     </div>
     <div class="source-badges">
       <span class="src-badge src-ord">ORD 檢驗報告</span>
@@ -528,7 +528,8 @@ td {
     <tr><td>11</td><td>TB</td><td>Total Bilirubin</td></tr>
     <tr><td>12</td><td>ACR</td><td>從尿液檢體擷取，取整數（15.9→ACR:16）</td></tr>
     <tr><td>13</td><td>PCR</td><td>從尿液檢體擷取（支援 P/C 格式）</td></tr>
-    <tr><td>14</td><td>WBC / Hb / PLT</td><td>CBC 排最後面：WBC/Hb/PLT:6.97/15.8/184</td></tr>
+    <tr><td>14</td><td>Cortisol</td><td>Cortisol 8 AM 7.17 → Cortisol:7.17（不標示時段）</td></tr>
+    <tr><td>15</td><td>WBC / Hb / PLT</td><td>CBC 排最後面：WBC/Hb/PLT:7.0/15.8/184（WBC 取小數 1 位）</td></tr>
   </table>
   <h3 style="font-size:1.05rem;font-weight:600;margin-top:28px;margin-bottom:12px;">藥歷（橫式學名格式）<span class="feat-new">New</span></h3>
   <div style="background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:16px 20px;font-size:0.9rem;color:var(--text2);">
@@ -543,9 +544,20 @@ td {
   <h2 class="section-title">更新紀錄</h2>
   <div class="changelog-item">
     <div class="cl-header">
+      <span class="cl-ver">v2.3.53</span>
+      <span class="cl-date">2026-09-30</span>
+      <span class="cl-tag">Latest</span>
+    </div>
+    <ul class="cl-list">
+      <li>🧪 <strong>新增 Cortisol（皮質醇）整理</strong>：<code>Cortisol 8 AM 7.17</code> → <code>Cortisol:7.17</code>（院內 ORD 與健保雲端皆適用）</li>
+      <li>🕗 名稱後的採檢時段（8 AM / (8AM) / 4 PM）不會被誤抓成數值；輸出不標示時段</li>
+      <li>✅ Cortisol 改為預設 On，顯示名稱由 <code>Cor</code> 改為 <code>Cortisol</code></li>
+    </ul>
+  </div>
+  <div class="changelog-item">
+    <div class="cl-header">
       <span class="cl-ver">v2.3.52</span>
       <span class="cl-date">2026-09-05</span>
-      <span class="cl-tag">Latest</span>
     </div>
     <ul class="cl-list">
       <li>💓 <strong>NT-proBNP 統一顯示為 <code>BNP:xxx</code></strong>：不再顯示 <code>NT-proBNP:</code> 冗長字串</li>
@@ -862,7 +874,7 @@ td {
 <script>
 var readmeText = [
 "================================================================",
-"  HIS OPD Data Assistant v2.3.52 使用說明",
+"  HIS OPD Data Assistant v2.3.53 使用說明",
 "  (原名 Lab Data Formatter)",
 "  作者：吳岳霖醫師  DAL93"+String.fromCharCode(64)+"tpech.gov.tw",
 "================================================================",
@@ -926,6 +938,7 @@ var readmeText = [
 "  - eGFR 四捨五入到小數 1 位：BUN/Cr:14.6/1.16(69.5)",
 "  - 血脂 TG/L/H 取整數（個位數，四捨五入）",
 "  - ACR 取整數（個位數，四捨五入），如 15.9→ACR:16（不再顯示陰性 -）",
+"  - Cortisol：名稱後的時段（8 AM / 4 PM）不會誤抓成數值，輸出 Cortisol:7.17（不標示時段）",
 "  - 雲端未對應項目去除中文，只留英文名稱（純中文名整項略過）",
 "  - 雲端藥歷藥名同樣去除中文，只留英文（純中文藥名整項略過）",
 "  - 多份報告按採檢時間分組，同次抽血合併",
@@ -976,8 +989,8 @@ function copyReadme() {
       // 下載連結固定指向 GitHub Pages（免認證）
     }
   }).catch(function(){
-    verEl.textContent = "v2.3.52";
-    dateEl.textContent = "2026-06-04";
+    verEl.textContent = "v2.3.53";
+    dateEl.textContent = "2026-09-30";
   });
 })();
 
