@@ -1,5 +1,5 @@
 ================================================================
-  HIS OPD Data Assistant v2.3.55 使用說明
+  HIS OPD Data Assistant v2.3.56 使用說明
   (原名 Lab Data Formatter)
   作者：吳岳霖醫師  DAL93@tpech.gov.tw
 ================================================================
@@ -59,7 +59,7 @@
   11. 大量檢驗項目擴充（v2.3.15 新增）
       新增 30+ 個項目可在設定中啟用：
       - 凝血：PT、INR、APTT、D-Dimer
-      - 心臟：Troponin、CK、CK-MB、BNP/NT-proBNP
+      - 心臟：Troponin、CK（CPK）、CK-MB、BNP/NT-proBNP（CPK 自 v2.3.56 起預設開啟）
       - 胰臟：Amylase、Lipase
       - 肝膽：ALP、GGT、D-Bil
       - 內分泌：T3、Cortisol（Cortisol 自 v2.3.53 起預設開啟）
@@ -123,12 +123,13 @@
       從「檢體 糞便」段落擷取陽性 / 陰性結果：
       iFOB(+),Transferrin(-)
       其他寫法（如 Weakly positive、定量數值）原樣顯示。
+      健保雲端（v2.3.56 起）也支援陽性/陰性文字；化學法潛血不處理。
 
 ================================================================
 
 【安裝方式】
 
-  1. 從網頁下載 LabFormatter_v2.3.55.exe
+  1. 從網頁下載 LabFormatter_v2.3.56.exe
      下載網址：https://andrew22tw.github.io/HIS_OPD_DATA_Assistant/
   2. 放在桌面或任何位置
   3. 雙擊啟動，圖示出現在右下角系統匣
@@ -224,7 +225,7 @@
   - 血液項目（BUN、Cr、Na、K 等）只從「檢體 血液」擷取
   - 尿液項目（ACR、PCR）只從「檢體 尿液」擷取
   - 糞便項目（iFOB、Transferrin）只從「檢體 糞便」擷取
-  - 健保雲端依「檢體採檢方法／檢驗類別」判斷：尿液列只取 ACR、PCR
+  - 健保雲端依「檢體採檢方法／檢驗類別」判斷：尿液列只取 ACR、PCR；糞便列只取 iFOB、Transferrin
 
 ================================================================
 
@@ -254,6 +255,8 @@
     其他寫法（如 Weakly positive、定量數值）原樣顯示
   - 健保雲端依「檢體採檢方法／檢驗類別」分流：尿液只取 ACR、PCR（試紙、沉渣項目略過）
   - 健保雲端保留比較符號並去尾零（如 ACR:≧300、CRP:<0.5、350.00→350）
+  - 健保雲端 iFOB / Transferrin：陽性/陰性文字顯示為 iFOB(+)、Transferrin(-)（化學法潛血不處理）
+  - CPK：H 6776.0 → CPK:6776（也認 CK；CK-MB 預設不顯示）
   - 院內報告同月合併成一行（前綴 YYYMM）；健保雲端按採檢日分行
   - 超過 83 字元自動換行
 
@@ -309,6 +312,14 @@
 
 【更新紀錄】
 
+  v2.3.56 (2026-10-03)
+          - 新增 CPK 整理（預設開啟）：CPK H 6776.0 → CPK:6776；
+            也認 CK、Creatine (phospho)kinase，CK-MB 不會被當成 CPK
+          - 健保雲端 iFOB / Transferrin：陽性／陰性文字 → iFOB(+)、Transferrin(-)；
+            定量結果只取數值（iFOB:125、iFOB:<50）
+          - 化學法潛血不處理（避免標成 iFOB）；糞便常規、寄生蟲等其他糞便項目略過
+          - 陽性／陰性判斷放寬：開頭是 Positive／陽性即視為陽性（如 Positive (1+)），
+            Weakly positive 等仍原樣顯示
   v2.3.55 (2026-09-30)
           - 健保雲端依檢體分流：讀取「檢體採檢方法／檢驗類別」欄，尿液列只取 ACR、PCR；
             尿液試紙的 Albumin/Creatinine 不再被誤判為血清 Cr / Alb，

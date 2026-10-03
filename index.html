@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <!-- Lab Data Formatter Website -->
-<!-- Last Modified: 2026-09-30 (UTC+8) -->
-<!-- Version: v2.3.55 -->
+<!-- Last Modified: 2026-10-03 (UTC+8) -->
+<!-- Version: v2.3.56 -->
 <html lang="zh-TW">
 <head>
 <meta charset="UTF-8">
@@ -330,12 +330,12 @@ td {
   <div class="hero-content">
     <h1>Lab Data Formatter</h1>
     <p class="subtitle">檢驗報告快速整理工具 — 右鍵擷取 / Alt+Q / Ctrl+C，Ctrl+3 貼上</p>
-    <p class="subtitle2">v2.3.55 健保雲端尿液報告不再誤判、熱鍵說明更正</p>
+    <p class="subtitle2">v2.3.56 新增 CPK、健保雲端 iFOB / Transferrin 陽性／陰性整理</p>
     <div class="version-bar">
       <span class="badge badge-version"><span class="badge-dot"></span>最新版本 <span id="latestVer">載入中...</span></span>
       <span class="badge badge-date">更新日期 <span id="latestDate">...</span></span>
       <span class="badge badge-dl">下載次數 <span id="dlCount">...</span></span>
-      <span class="badge badge-new">v2.3.55 Update</span>
+      <span class="badge badge-new">v2.3.56 Update</span>
     </div>
     <div class="source-badges">
       <span class="src-badge src-ord">ORD 檢驗報告</span>
@@ -529,9 +529,10 @@ td {
     <tr><td>11</td><td>TB</td><td>Total Bilirubin</td></tr>
     <tr><td>12</td><td>ACR</td><td>從尿液檢體擷取，取整數（15.9→ACR:16）</td></tr>
     <tr><td>13</td><td>PCR</td><td>從尿液檢體擷取（支援 P/C 格式）</td></tr>
-    <tr><td>14</td><td>Cortisol</td><td>Cortisol 8 AM 7.17 → Cortisol:7.17（不標示時段）</td></tr>
-    <tr><td>15</td><td>iFOB / Transferrin</td><td>從糞便檢體擷取，陽性/陰性顯示為 iFOB(+)、Transferrin(-)</td></tr>
-    <tr><td>16</td><td>WBC / Hb / PLT</td><td>CBC 排最後面：WBC/Hb/PLT:7.0/15.8/184（WBC 取小數 1 位）</td></tr>
+    <tr><td>14</td><td>CPK</td><td>H 6776.0 → CPK:6776（也認 CK）</td></tr>
+    <tr><td>15</td><td>Cortisol</td><td>Cortisol 8 AM 7.17 → Cortisol:7.17（不標示時段）</td></tr>
+    <tr><td>16</td><td>iFOB / Transferrin</td><td>從糞便檢體擷取（院內與健保雲端），陽性/陰性顯示為 iFOB(+)、Transferrin(-)</td></tr>
+    <tr><td>17</td><td>WBC / Hb / PLT</td><td>CBC 排最後面：WBC/Hb/PLT:7.0/15.8/184（WBC 取小數 1 位）</td></tr>
   </table>
   <h3 style="font-size:1.05rem;font-weight:600;margin-top:28px;margin-bottom:12px;">藥歷（橫式學名格式）<span class="feat-new">New</span></h3>
   <div style="background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:16px 20px;font-size:0.9rem;color:var(--text2);">
@@ -546,9 +547,21 @@ td {
   <h2 class="section-title">更新紀錄</h2>
   <div class="changelog-item">
     <div class="cl-header">
+      <span class="cl-ver">v2.3.56</span>
+      <span class="cl-date">2026-10-03</span>
+      <span class="cl-tag">Latest</span>
+    </div>
+    <ul class="cl-list">
+      <li>🧪 <strong>新增 CPK 整理（預設開啟）</strong>：<code>CPK H 6776.0</code> → <code>CPK:6776</code>；也認 CK、Creatine (phospho)kinase，CK-MB 不會被當成 CPK</li>
+      <li>🔬 <strong>健保雲端 iFOB / Transferrin</strong>：陽性／陰性文字 → <code>iFOB(+)</code>、<code>Transferrin(-)</code>；定量結果只取數值（<code>iFOB:125</code>、<code>iFOB:&lt;50</code>）</li>
+      <li>🚫 化學法潛血不處理（避免標成 iFOB）；糞便常規、寄生蟲等其他糞便項目略過</li>
+      <li>🧩 陽性／陰性判斷放寬：開頭是 Positive／陽性即視為陽性（如 <code>Positive (1+)</code>），Weakly positive 等仍原樣顯示</li>
+    </ul>
+  </div>
+  <div class="changelog-item">
+    <div class="cl-header">
       <span class="cl-ver">v2.3.55</span>
       <span class="cl-date">2026-09-30</span>
-      <span class="cl-tag">Latest</span>
     </div>
     <ul class="cl-list">
       <li>🩺 <strong>健保雲端依檢體分流</strong>：讀取「檢體採檢方法／檢驗類別」欄，尿液列只取 ACR、PCR；尿液試紙的 Albumin/Creatinine 不再被誤判為血清 Cr / Alb，尿沉渣 WBC 不再被當成血液 WBC</li>
@@ -899,7 +912,7 @@ td {
 <script>
 var readmeText = [
 "================================================================",
-"  HIS OPD Data Assistant v2.3.55 使用說明",
+"  HIS OPD Data Assistant v2.3.56 使用說明",
 "  (原名 Lab Data Formatter)",
 "  作者：吳岳霖醫師  DAL93"+String.fromCharCode(64)+"tpech.gov.tw",
 "================================================================",
@@ -971,6 +984,8 @@ var readmeText = [
 "  - 健保雲端智慧日期：同月不同日顯示 YYYMMDD，否則 YYYMM",
 "  - 健保雲端依「檢體採檢方法／檢驗類別」分流：尿液只取 ACR、PCR（試紙、沉渣項目略過）",
 "  - 健保雲端保留比較符號並去尾零（如 ACR:≧300、CRP:<0.5、350.00→350）",
+"  - 健保雲端 iFOB / Transferrin：陽性/陰性文字顯示為 iFOB(+)、Transferrin(-)（化學法潛血不處理）",
+"  - CPK：H 6776.0 → CPK:6776（也認 CK；CK-MB 預設不顯示）",
 "  - 雲端資料加 * 號標記（如 1150430*）",
 "  - 血液/尿液/糞便自動分離",
 "  - 衍生公式：HOMA-IR、eLDL、GA→A1C",
@@ -1017,8 +1032,8 @@ function copyReadme() {
       // 下載連結固定指向 GitHub Pages（免認證）
     }
   }).catch(function(){
-    verEl.textContent = "v2.3.55";
-    dateEl.textContent = "2026-09-30";
+    verEl.textContent = "v2.3.56";
+    dateEl.textContent = "2026-10-03";
   });
 })();
 
