@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <!-- Lab Data Formatter Website -->
-<!-- Last Modified: 2026-10-23 (UTC+8) -->
-<!-- Version: v2.3.57 -->
+<!-- Last Modified: 2026-11-07 (UTC+8) -->
+<!-- Version: v2.3.59 -->
 <html lang="zh-TW">
 <head>
 <meta charset="UTF-8">
@@ -330,12 +330,12 @@ td {
   <div class="hero-content">
     <h1>Lab Data Formatter</h1>
     <p class="subtitle">檢驗報告快速整理工具 — 右鍵擷取 / Alt+Q / Ctrl+C，Ctrl+3 貼上</p>
-    <p class="subtitle2">v2.3.57 設定視窗全面改版（分頁、按鍵錄製、防呆），新增尿液培養 U/C 與 ANA 力價整理</p>
+    <p class="subtitle2">v2.3.59 支援北榮等院所的健保雲端寫法、eGFR 取 eGFR(M)，修正雲端擷取卡住與多項解析問題</p>
     <div class="version-bar">
       <span class="badge badge-version"><span class="badge-dot"></span>最新版本 <span id="latestVer">載入中...</span></span>
       <span class="badge badge-date">更新日期 <span id="latestDate">...</span></span>
       <span class="badge badge-dl">下載次數 <span id="dlCount">...</span></span>
-      <span class="badge badge-new">v2.3.57 Update</span>
+      <span class="badge badge-new">v2.3.59 Update</span>
     </div>
     <div class="source-badges">
       <span class="src-badge src-ord">ORD 檢驗報告</span>
@@ -549,9 +549,24 @@ td {
   <h2 class="section-title">更新紀錄</h2>
   <div class="changelog-item">
     <div class="cl-header">
+      <span class="cl-ver">v2.3.59</span>
+      <span class="cl-date">2026-11-07</span>
+      <span class="cl-tag">Latest</span>
+    </div>
+    <ul class="cl-list">
+      <li>🛡️ <strong>右鍵擷取安全修正</strong>：擷取失敗時不再把上一位病人的整理結果寫回剪貼簿</li>
+      <li>🏥 <strong>健保雲端支援北榮等院所寫法</strong>：<code>Crea,</code>、<code>ALT,</code>、<code>T4 Free,</code>、<code>Glu fasting</code>、<code>ACRatio</code>、<code>PCRatio</code> 都能辨識，整理成和院內一樣的格式（如 <code>AC:98,Cr:1.16(44.4),ALT:13,L:89,TSH/FT4:5.26/1.07</code>）</li>
+      <li>🧮 <strong>eGFR</strong>：同一天同時有 eGFR 與 eGFR(M) 時取 eGFR(M)，與健保摘要顯示的值一致</li>
+      <li>✂️ <strong>只選取部分列（沒有標題列）也能整理</strong>：例如只複製 TSH、Free T4 兩列 → <code>TSH/FT4:&lt;0.03/2.01</code>；<code>&gt;=</code> / <code>&lt;=</code> 一律顯示為 <code>≧</code> / <code>≦</code></li>
+      <li>🧊 <strong>修正雲端擷取偶爾卡住、沒有輸出</strong>：讀取視窗文字加上逾時；3 秒內沒取得資料會自動結束並提示「請再試一次」；隔一段時間重新複製同一頁會重新整理</li>
+      <li>🔧 檢驗修正：西元年與兩位數民國年日期、HbA1c 各種寫法、飯後／2 小時血糖歸為 PC、游離鈣不當成總鈣、全形字與千分位數字、病毒 PCR 不當成尿液 PCR、尿液肌酸酐不當成血液 Cr、試紙尿蛋白不當成 PCR、ANA ≦1:40 顯示為 <code>ANA(-)</code></li>
+      <li>💊 藥歷修正：劑量尾零、ASORDER／PRN 用法、複方劑量（如 5/80）、全形字、小寫 po、診斷碼殘留文字</li>
+    </ul>
+  </div>
+  <div class="changelog-item">
+    <div class="cl-header">
       <span class="cl-ver">v2.3.57</span>
       <span class="cl-date">2026-10-23</span>
-      <span class="cl-tag">Latest</span>
     </div>
     <ul class="cl-list">
       <li>🎛️ <strong>設定視窗全面改版</strong>：分成「熱鍵與擷取／輸出項目／快貼槽／進階」4 個分頁，儲存列固定在底部；視窗高度依螢幕調整，1366×768 也能完整操作；72 個輸出項目全部看得到</li>
@@ -928,7 +943,7 @@ td {
 <script>
 var readmeText = [
 "================================================================",
-"  HIS OPD Data Assistant v2.3.57 使用說明",
+"  HIS OPD Data Assistant v2.3.59 使用說明",
 "  (原名 Lab Data Formatter)",
 "  作者：吳岳霖醫師  DAL93"+String.fromCharCode(64)+"tpech.gov.tw",
 "================================================================",
@@ -1002,6 +1017,8 @@ var readmeText = [
 "  - 健保雲端智慧日期：同月不同日顯示 YYYMMDD，否則 YYYMM",
 "  - 健保雲端依「檢體採檢方法／檢驗類別」分流：尿液只取 ACR、PCR（試紙、沉渣項目略過）",
 "  - 健保雲端保留比較符號並去尾零（如 ACR:≧300、CRP:<0.5、350.00→350）",
+"  - 健保雲端支援北榮等院所寫法（Crea,、ALT,、T4 Free,、ACRatio…），同日 eGFR 與 eGFR(M) 取 eGFR(M)",
+"  - 健保雲端只選取部分列（沒有標題列）也能整理，如 TSH/FT4:<0.03/2.01",
 "  - 健保雲端 iFOB / Transferrin：陽性/陰性文字顯示為 iFOB(+)、Transferrin(-)（化學法潛血不處理）",
 "  - CPK：H 6776.0 → CPK:6776（也認 CK；CK-MB 預設不顯示）",
 "  - 雲端資料加 * 號標記（如 1150430*）",
@@ -1050,8 +1067,8 @@ function copyReadme() {
       // 下載連結固定指向 GitHub Pages（免認證）
     }
   }).catch(function(){
-    verEl.textContent = "v2.3.57";
-    dateEl.textContent = "2026-10-23";
+    verEl.textContent = "v2.3.59";
+    dateEl.textContent = "2026-11-07";
   });
 })();
 
